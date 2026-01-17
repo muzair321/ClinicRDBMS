@@ -7,6 +7,9 @@ import java.sql.Statement;
 import java.util.Properties;
 
 public class Database {
+    public static void main(String[] args){
+        createTables();
+    }
     private static final String URL = "jdbc:sqlite:clinic.db";
 
     public static Connection getConnection() throws SQLException {
@@ -24,35 +27,40 @@ public class Database {
     }
     public static void createTables(){
         String[] sqls = {"""
-                CREATE TABLE IF NOT EXISTS patients(
+            CREATE TABLE IF NOT EXISTS patients(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                phone TEXT UNIQUE
-                );
-                """,
-                """
-                CREATE TABLE IF NOT EXISTS visits(
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                phone TEXT UNIQUE NOT NULL,
                 name TEXT,
-                gender TEXT,
-                age INTEGER,
-                date TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+            """,
+                """
+            CREATE TABLE IF NOT EXISTS visits(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 inventory_id INTEGER,
-                paid INTEGER,
-                phone TEXT,
                 patient_id INTEGER,
-                treatment TEXT
-                );
-                """,
+                name TEXT NOT NULL,
+                gender TEXT,
+                age INTEGER CHECK (age >= 0),
+                paid INTEGER DEFAULT 0,
+                phone TEXT,
+                treatment TEXT,
+                visit_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE SET NULL,
+                FOREIGN KEY (inventory_id) REFERENCES inventory(id) ON DELETE SET NULL
+            );
+            """,
                 """
-                CREATE TABLE IF NOT EXISTS inventory(
+            CREATE TABLE IF NOT EXISTS inventory(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                amount INTEGER,
-                age INTEGER,
+                name TEXT NOT NULL,
+                dosage TEXT,
+                amount INTEGER DEFAULT 0 CHECK (amount >= 0),
                 expy TEXT,
-                dosage TEXT
-                );
-                """};
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+            """};
         try(Connection conn = getConnection()){
             Statement stmt = conn.createStatement();
             for(String sql: sqls){
