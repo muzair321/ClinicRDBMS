@@ -65,7 +65,6 @@ public class Database {
                 dosage TEXT,
                 amount INTEGER DEFAULT 0 CHECK (amount >= 0),
                 unit_price DECIMAL(10, 2) DEFAULT 0.0 CHECK (unit_price >= 0),
-                expy DATE,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             );
