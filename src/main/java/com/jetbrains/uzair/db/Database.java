@@ -136,7 +136,6 @@ public class Database {
                 "CREATE INDEX IF NOT EXISTS idx_visits_patient_id ON visits(patient_id)",
                 "CREATE INDEX IF NOT EXISTS idx_visits_date ON visits(visit_date)",
                 "CREATE INDEX IF NOT EXISTS idx_inventory_name ON inventory(name)",
-                "CREATE INDEX IF NOT EXISTS idx_inventory_expy ON inventory(expy)",
                 "CREATE INDEX IF NOT EXISTS idx_visit_inventory_visit ON visit_inventory(visit_id)",
                 "CREATE INDEX IF NOT EXISTS idx_visit_inventory_inv ON visit_inventory(inventory_id)"
         };
