@@ -74,7 +74,7 @@ public class Database {
                 visit_id INTEGER NOT NULL,
                 inventory_id INTEGER NOT NULL,
                 quantity INTEGER NOT NULL CHECK (quantity > 0),
-                price_per_unit DECIMAL(10, 2) NOT NULL CHECK (price_per_unit >= 0),
+                unit_price DECIMAL(10, 2) DEFAULT 0.0 CHECK (unit_price >= 0),
                 PRIMARY KEY (visit_id, inventory_id),
                 FOREIGN KEY (visit_id) REFERENCES visits(id) ON DELETE CASCADE,
                 FOREIGN KEY (inventory_id) REFERENCES inventory(id) ON DELETE RESTRICT
@@ -84,18 +84,18 @@ public class Database {
             CREATE TRIGGER IF NOT EXISTS trg_inventory_updated_at
             AFTER UPDATE ON inventory
             BEGIN
-                UPDATE inventory 
-                SET updated_at = CURRENT_TIMESTAMP 
+                UPDATE inventory
+                SET updated_at = CURRENT_TIMESTAMP
                 WHERE id = NEW.id;
             END;
             """,
                 """
-            CREATE TRIGGER IF NOT EXISTS trg_update_visit_total
+            CREATE TRIGGER IF NOT EXISTS trg_update_visit_total_on_insert
             AFTER INSERT ON visit_inventory
             BEGIN
                 UPDATE visits
                 SET total_amount = (
-                    SELECT COALESCE(SUM(vi.quantity * vi.price_per_unit), 0)
+                    SELECT COALESCE(SUM(vi.quantity * vi.unit_price), 0)
                     FROM visit_inventory vi
                     WHERE vi.visit_id = NEW.visit_id
                 )
@@ -108,7 +108,7 @@ public class Database {
             BEGIN
                 UPDATE visits
                 SET total_amount = (
-                    SELECT COALESCE(SUM(vi.quantity * vi.price_per_unit), 0)
+                    SELECT COALESCE(SUM(vi.quantity * vi.unit_price), 0)
                     FROM visit_inventory vi
                     WHERE vi.visit_id = NEW.visit_id
                 )
@@ -121,7 +121,7 @@ public class Database {
             BEGIN
                 UPDATE visits
                 SET total_amount = (
-                    SELECT COALESCE(SUM(vi.quantity * vi.price_per_unit), 0)
+                    SELECT COALESCE(SUM(vi.quantity * vi.unit_price), 0)
                     FROM visit_inventory vi
                     WHERE vi.visit_id = OLD.visit_id
                 )
