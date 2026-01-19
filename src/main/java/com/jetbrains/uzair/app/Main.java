@@ -6,7 +6,7 @@ import com.jetbrains.uzair.model.ValidationException;
 public class Main {
     public static void main(String[] args){
         try {
-            Patient.addPatient(new Patient("Muhammad Uzair", 20, "Male"));
+            Patient.addPatient(new Patient("Muhammad Uzair", 20, "Me"));
         }catch (ValidationException e){
             System.err.println("Error: " + e.getMessage());
         }

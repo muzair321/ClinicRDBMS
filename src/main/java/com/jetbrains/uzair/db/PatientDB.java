@@ -19,4 +19,5 @@ public class PatientDB {
             System.err.println("Error Inserting Data Into 'patients': " + e.getMessage());
         }
     }
+    public static
 }
