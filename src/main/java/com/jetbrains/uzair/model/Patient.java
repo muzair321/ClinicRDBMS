@@ -1,5 +1,7 @@
 package com.jetbrains.uzair.model;
 
+import com.jetbrains.uzair.db.PatientDB;
+
 public class Patient {
     //object parameters
     private int id;
@@ -25,19 +27,19 @@ public class Patient {
     public void setAge(int age){this.age = age;}
     public void setName(String name){this.name = name;}
     public void setGender(String gender){this.gender = gender;}
-
-    public void addPatient(Patient p){
+    //checks for adding patient
+    public static void addPatient(Patient p){
         if(p.getName().isEmpty()){
-            throw new Exception("Name Cannot Be Null");
+            throw new ValidationException("Name Cannot Be Null");
         }
         if(p.getAge() < 0 ){
-            throw new Exception("Age Cannot Be Negative");
+            throw new ValidationException("Age Cannot Be Negative");
         }
         if(p.getGender().isEmpty()){
-            throw new Exception("Gender Cannot Be Null");
+            throw new ValidationException("Gender Cannot Be Null");
         }
-        if(!p.getGender().equals("Male")|| !p.getGender().equals("Female") || !p.getGender().equals("Other")){
-            throw new Exception("Gender Can Only Be: 'Male', 'Female', 'Other'");
+        if(!p.getGender().equals("Male") && !p.getGender().equals("Female") && !p.getGender().equals("Other")){
+            throw new ValidationException("Gender Can Only Be: 'Male', 'Female', 'Other'");
         }
         PatientDB.insert(p);
     }
