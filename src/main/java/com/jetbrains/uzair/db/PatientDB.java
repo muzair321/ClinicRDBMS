@@ -30,7 +30,7 @@ public class PatientDB {
             while(rs.next()){
                 count++;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Error Counting Rows In Database: " + e.getMessage());
         }
         returnSet = new String[count][4];
@@ -43,9 +43,22 @@ public class PatientDB {
                 returnSet[i][2] = Integer.toString(rs.getInt(3));
                 returnSet[i][3] = rs.getString(4);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Error Reading Database: " + e.getMessage());
         }
         return returnSet;
+    }
+    public static void edit(Patient p){
+        String sql = "UPDATE patients SET name =  ?, age = ?, gender = ? WHERE id = ?";
+        try(Connection conn = Database.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt( 4, p.getId());
+            stmt.setString(1, p.getName());
+            stmt.setInt(2, p.getAge());
+            stmt.setString(3, p.getGender());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error Editing Database: " + e.getMessage());
+        }
     }
 }

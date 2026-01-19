@@ -28,6 +28,7 @@ public class Patient {
     public String getName(){return name;}
     public String getGender(){return gender;}
     //setters
+    public void setId(int id){this.id = id;}
     public void setAge(int age){this.age = age;}
     public void setName(String name){this.name = name;}
     public void setGender(String gender){this.gender = gender;}
@@ -35,9 +36,13 @@ public class Patient {
     //for ui data to turn into datatypes accepted by db
     public static Patient convArrayToOb(String[] raw){
         Patient p = new Patient();
-        p.setName(raw[0]);
-        p.setAge(Integer.parseInt(raw[1]));
-        p.setGender(raw[2]);
+        int x = (Integer.parseInt(raw[0]));
+        if( x > 0) {
+            p.setId(x);
+        }
+        p.setName(raw[1]);
+        p.setAge(Integer.parseInt(raw[2]));
+        p.setGender(raw[3]);
         return p;
     }
 
