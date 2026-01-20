@@ -61,4 +61,14 @@ public class PatientDB {
             System.err.println("Error Editing Database: " + e.getMessage());
         }
     }
+    public static void delete(int id){
+        String sql = "DELETE FROM patients WHERE id = ?";
+        try(Connection conn = Database.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error Deleting Patient id(" + id + "): " + e.getMessage());
+        }
+    }
 }
