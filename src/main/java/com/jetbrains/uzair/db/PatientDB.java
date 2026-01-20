@@ -1,13 +1,16 @@
 package com.jetbrains.uzair.db;
 
 import com.jetbrains.uzair.model.Patient;
+import com.jetbrains.uzair.model.ValidationException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class PatientDB {
+    //Create
     public static void insert(Patient p){
         String sql = "INSERT INTO patients(name, age, gender) VALUES( ?, ?, ?)";
         try(Connection conn = Database.getConnection()){
@@ -20,6 +23,7 @@ public class PatientDB {
             System.err.println("Error Inserting Data Into 'patients': " + e.getMessage());
         }
     }
+    //Read all
     public static String[][] returnUI(){
         String[][] returnSet;
         int count = 0;
@@ -48,6 +52,7 @@ public class PatientDB {
         }
         return returnSet;
     }
+    //Edit
     public static void edit(Patient p){
         String sql = "UPDATE patients SET name =  ?, age = ?, gender = ? WHERE id = ?";
         try(Connection conn = Database.getConnection()){
@@ -61,6 +66,8 @@ public class PatientDB {
             System.err.println("Error Editing Database: " + e.getMessage());
         }
     }
+    //Delete
+    // Delete by single id
     public static void delete(int id){
         String sql = "DELETE FROM patients WHERE id = ?";
         try(Connection conn = Database.getConnection()){
@@ -69,6 +76,22 @@ public class PatientDB {
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error Deleting Patient id(" + id + "): " + e.getMessage());
+        }
+    }
+    // delete by list of ids for multi selected patients
+    public static void deleteList(List<Integer> list){
+        String sql = "DELETE FROM patients WHERE id = ?";
+        if(list == null || list.isEmpty()){
+            throw new ValidationException("No Patients Selected");
+        }
+        try(Connection conn = Database.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            for(int id: list){
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error Deleting Patient List: " + e.getMessage());
         }
     }
 }

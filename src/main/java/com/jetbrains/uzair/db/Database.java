@@ -15,6 +15,7 @@ public class Database {
         }
         return  conn;
     }
+    //initial tables
     public static void createTables(){
         String[] sqls = {"""
                 CREATE TABLE IF NOT EXISTS patients(
