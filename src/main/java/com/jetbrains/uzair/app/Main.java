@@ -9,6 +9,7 @@ public class Main {
     public static void main(String[] args){
         String[] a = {"4", "Zara",  "16", "Female"};
         PatientDB.edit(Patient.check(Patient.convArrayToOb(a)));
+        PatientDB.insert(Patient.check(Patient.convArrayToOb(a)));
         PatientPanel.mainWindow();
     }
 }
