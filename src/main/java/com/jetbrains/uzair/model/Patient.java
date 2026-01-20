@@ -2,6 +2,8 @@ package com.jetbrains.uzair.model;
 
 import com.jetbrains.uzair.db.PatientDB;
 
+import java.util.List;
+
 public class Patient {
     //object parameters
     private int id;
@@ -61,6 +63,19 @@ public class Patient {
             throw new ValidationException("Gender Can Only Be: 'Male', 'Female', 'Other'");
         }
         return p;
+    }
+
+    //checks of list of patients for deletion
+    public static void checkListAndDelete (List<Integer> ids){
+        if(ids == null || ids.isEmpty()){
+            throw new ValidationException("No Patients Selected");
+        }
+        for(int id: ids){
+            if(id <= 0 ){
+                throw new ValidationException("Invalid ID(s)");
+            }
+        }
+        PatientDB.deleteList(ids);
     }
 
 }

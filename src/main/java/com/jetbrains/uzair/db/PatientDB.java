@@ -1,7 +1,6 @@
 package com.jetbrains.uzair.db;
 
 import com.jetbrains.uzair.model.Patient;
-import com.jetbrains.uzair.model.ValidationException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -81,9 +80,6 @@ public class PatientDB {
     // delete by list of ids for multi selected patients
     public static void deleteList(List<Integer> list){
         String sql = "DELETE FROM patients WHERE id = ?";
-        if(list == null || list.isEmpty()){
-            throw new ValidationException("No Patients Selected");
-        }
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
             for(int id: list){
