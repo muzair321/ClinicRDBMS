@@ -18,7 +18,7 @@ public class PatientPanel {
         window.setSize(900, 700);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JTable table = getDBData();
+        JTable table = getDBData(window);
 
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
@@ -44,18 +44,27 @@ public class PatientPanel {
     }
     //refresh the table
     private static void refresh(JTable table) {
-        try {
-            String[][] data = PatientDB.returnUI();
-            DefaultTableModel model = (DefaultTableModel) table.getModel();
-            model.setRowCount(0);
-
-            for (String[] row : data) {
-                model.addRow(row);
+        SwingWorker<String[][], Void> worker = new SwingWorker<>() {
+            @Override
+            protected String[][] doInBackground() throws SQLException {
+                return PatientDB.returnUI(); // Database call
             }
 
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(table, "Failed To Refresh Data");
-        }
+            @Override
+            protected void done() {
+                try {
+                    String[][] data = get();
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    model.setRowCount(0);
+                    for (String[] row : data) {
+                        model.addRow(row);
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(table, "Failed To Refresh Data");
+                }
+            }
+        };
+        worker.execute();
     }
     // selected delete
     private static JButton deleteButton(JTable table, JFrame window){
@@ -346,12 +355,12 @@ public class PatientPanel {
         return forum;
     }
     //get data base table into GUI table
-    private static JTable getDBData(){
+    private static JTable getDBData(JFrame window){
         String[] headers = {"ID", "Name", "Age", "Gender"};
         String[][] data;
         try{ data = PatientDB.returnUI();} catch (SQLException e) {
-            // todo: add dialog menu
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(window, e.getMessage());
+            throw new RuntimeException("Error While Reading Data");
         }
         DefaultTableModel model = new DefaultTableModel(data, headers) {
             @Override
