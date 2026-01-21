@@ -2,6 +2,7 @@ package com.jetbrains.uzair.model;
 
 import com.jetbrains.uzair.db.PatientDB;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class Patient {
@@ -49,7 +50,7 @@ public class Patient {
     }
 
     //checks for adding patient
-    public static Patient check(Patient p){
+    public static Patient check(Patient p) throws ValidationException{
         if(p.getName().isEmpty()){
             throw new ValidationException("Name Cannot Be Null");
         }
@@ -66,7 +67,7 @@ public class Patient {
     }
 
     //checks of list of patients for deletion
-    public static void checkListAndDelete (List<Integer> ids){
+    public static void checkListAndDelete (List<Integer> ids) throws ValidationException, SQLException {
         if(ids == null || ids.isEmpty()){
             throw new ValidationException("No Patients Selected");
         }

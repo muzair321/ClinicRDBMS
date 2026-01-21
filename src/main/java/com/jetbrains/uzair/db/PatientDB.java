@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PatientDB {
     //Create
-    public static void insert(Patient p){
+    public static void insert(Patient p) throws SQLException{
         String sql = "INSERT INTO patients(name, age, gender) VALUES( ?, ?, ?)";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -19,11 +19,11 @@ public class PatientDB {
             stmt.setString(3, p.getGender());
             stmt.executeUpdate();
         }catch (SQLException e){
-            System.err.println("Error Inserting Data Into 'patients': " + e.getMessage());
+            throw new SQLException("Error Inserting Data Into 'patients': " + e.getMessage());
         }
     }
     //Read all
-    public static String[][] returnUI(){
+    public static String[][] returnUI() throws SQLException{
         String[][] returnSet;
         int count = 0;
         String sql = "SELECT * FROM patients";
@@ -34,7 +34,7 @@ public class PatientDB {
                 count++;
             }
         } catch (SQLException e) {
-            System.err.println("Error Counting Rows In Database: " + e.getMessage());
+            throw new SQLException("Error Counting Rows In Database: " + e.getMessage());
         }
         returnSet = new String[count][4];
         try(Connection conn = Database.getConnection()){
@@ -47,12 +47,12 @@ public class PatientDB {
                 returnSet[i][3] = rs.getString(4);
             }
         } catch (SQLException e) {
-            System.err.println("Error Reading Database: " + e.getMessage());
+            throw new SQLException("Error Reading Database: " + e.getMessage());
         }
         return returnSet;
     }
     //Edit
-    public static void edit(Patient p){
+    public static void edit(Patient p) throws SQLException{
         String sql = "UPDATE patients SET name =  ?, age = ?, gender = ? WHERE id = ?";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -62,23 +62,23 @@ public class PatientDB {
             stmt.setString(3, p.getGender());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Error Editing Database: " + e.getMessage());
+            throw new SQLException("Error Editing Database: " + e.getMessage());
         }
     }
     //Delete
     // Delete by single id
-    public static void delete(int id){
+    public static void delete(int id) throws SQLException{
         String sql = "DELETE FROM patients WHERE id = ?";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Error Deleting Patient id(" + id + "): " + e.getMessage());
+            throw new SQLException("Error Deleting Patient id(" + id + "): " + e.getMessage());
         }
     }
     // delete by list of ids for multi selected patients
-    public static void deleteList(List<Integer> list){
+    public static void deleteList(List<Integer> list) throws SQLException{
         String sql = "DELETE FROM patients WHERE id = ?";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -87,7 +87,7 @@ public class PatientDB {
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            System.err.println("Error Deleting Patient List: " + e.getMessage());
+            throw new SQLException("Error Deleting Patient List: " + e.getMessage());
         }
     }
 }

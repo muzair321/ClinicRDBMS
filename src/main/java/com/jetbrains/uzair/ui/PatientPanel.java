@@ -3,6 +3,7 @@ package com.jetbrains.uzair.ui;
 import com.jetbrains.uzair.db.PatientDB;
 
 import javax.swing.*;
+import java.sql.SQLException;
 
 public class PatientPanel {
     public static void mainWindow(){
@@ -11,7 +12,11 @@ public class PatientPanel {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         String[] headers = {"ID", "Name", "Age", "Gender"};
-        String[][] data = PatientDB.returnUI();
+        String[][] data;
+        try{ data = PatientDB.returnUI();} catch (SQLException e) {
+            // add dialog menu
+            throw new RuntimeException(e);
+        }
         JTable table = new JTable(data, headers);
         JScrollPane scroll = new JScrollPane(table);
         window.add(scroll);
