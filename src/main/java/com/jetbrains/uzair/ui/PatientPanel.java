@@ -7,6 +7,7 @@ import com.jetbrains.uzair.model.ValidationException;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public class PatientPanel {
     public static void mainWindow(){
         JFrame window = new JFrame("Patient Data");
-        window.setSize(400, 800);
+        window.setSize(900, 700);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         String[] headers = {"ID", "Name", "Age", "Gender"};
@@ -37,11 +38,18 @@ public class PatientPanel {
 
         JButton btnDel = deleteButton(table, window);
         JButton btnAdd = addButton(table);
+        JButton btnRef = new JButton("Refresh");
+        btnRef.addActionListener(e -> {
+            refresh(table);
+        });
+        JButton btnVew = viewPatient(table, window);
 
         window.setLayout(new BoxLayout(window.getContentPane(), BoxLayout.Y_AXIS));
         window.add(scroll);
         window.add(btnDel);
         window.add(btnAdd);
+        window.add(btnRef);
+        window.add(btnVew);
         window.setVisible(true);
     }
     public static void refresh(JTable table) {
@@ -55,7 +63,7 @@ public class PatientPanel {
             }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(table, "Failed to refresh data");
+            JOptionPane.showMessageDialog(table, "Failed To Refresh Data");
         }
     }
     public static JButton deleteButton(JTable table, JFrame window){
@@ -65,7 +73,7 @@ public class PatientPanel {
             int[] selectedRows = table.getSelectedRows();
 
             if (selectedRows.length == 0) {
-                JOptionPane.showMessageDialog(window, "No patients selected");
+                JOptionPane.showMessageDialog(window, "No Patient(s) Selected");
                 return;
             }
 
@@ -79,7 +87,7 @@ public class PatientPanel {
 
             int choice = JOptionPane.showConfirmDialog(
                     window,
-                    "Are you sure you want to delete the selected patient(s)?",
+                    "Are You Sure You Want To Delete The Selected Patient(s)?",
                     "Confirm Deletion",
                     JOptionPane.YES_NO_OPTION
             );
@@ -90,10 +98,10 @@ public class PatientPanel {
 
             try {
                 PatientDB.deleteList(patientIds);
-                JOptionPane.showMessageDialog(window, "Deleted successfully");
+                JOptionPane.showMessageDialog(window, "Deleted Successfully");
                 refresh(table);
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(window, "Delete failed");
+                JOptionPane.showMessageDialog(window, "Delete Failed");
             }
         });
         return btnDel;
@@ -140,5 +148,85 @@ public class PatientPanel {
             forum.setVisible(true);
         });
         return btnAdd;
+    }
+    private static JTextField createReadOnlyField(String text, Font font) {
+        JTextField field = new JTextField(text);
+        field.setEditable(false);
+        field.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        field.setBackground(UIManager.getColor("Panel.background"));
+        field.setFont(font);
+        field.setColumns(15);
+        return field;
+    }
+    private static JButton viewPatient(JTable table, JFrame window){
+        JButton btnVew = new JButton("View Patient Data");
+        btnVew.addActionListener(e -> {
+            int[] selectedRows = table.getSelectedRows();
+
+            if (selectedRows.length == 0) {
+                JOptionPane.showMessageDialog(window, "No Patient(s) Selected");
+                return;
+            }
+            if (selectedRows.length > 1){
+                JOptionPane.showMessageDialog(window, "Select Only 1 Patient");
+                return;
+            }
+
+            int modelRow = table.convertRowIndexToModel(selectedRows[0]);
+            int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
+            try {
+                Patient p = PatientDB.returnUISingle(id);
+                JFrame disp = new JFrame("Patient Details");
+                disp.setSize(400, 300);
+                disp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                disp.setLocationRelativeTo(null); // center on screen
+
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridBagLayout());
+                panel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.insets = new Insets(8, 8, 8, 8);
+                gbc.anchor = GridBagConstraints.WEST;
+
+                Font labelFont = new Font("Segoe UI", Font.BOLD, 13);
+                Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
+
+                int row = 0;
+                gbc.gridx = 0; gbc.gridy = row;
+                panel.add(new JLabel("ID:"), gbc);
+
+                gbc.gridx = 1;
+                panel.add(createReadOnlyField(String.valueOf(p.getId()), valueFont), gbc);
+                row++;
+
+                gbc.gridx = 0; gbc.gridy = row;
+                panel.add(new JLabel("Name:"), gbc);
+
+                gbc.gridx = 1;
+                panel.add(createReadOnlyField(p.getName(), valueFont), gbc);
+                row++;
+
+                gbc.gridx = 0; gbc.gridy = row;
+                panel.add(new JLabel("Age:"), gbc);
+
+                gbc.gridx = 1;
+                panel.add(createReadOnlyField(String.valueOf(p.getAge()), valueFont), gbc);
+                row++;
+
+                gbc.gridx = 0; gbc.gridy = row;
+                panel.add(new JLabel("Gender:"), gbc);
+
+                gbc.gridx = 1;
+                panel.add(createReadOnlyField(p.getGender(), valueFont), gbc);
+
+                disp.add(panel);
+                disp.setVisible(true);
+            }catch (SQLException sqle){
+                JOptionPane.showMessageDialog(window,  "Error Occured: " + sqle.getMessage());
+                return;
+            }
+        });
+        return btnVew;
     }
 }

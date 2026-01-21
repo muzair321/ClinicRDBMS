@@ -52,23 +52,23 @@ public class PatientDB {
         return returnSet;
     }
     //Read By id
-    public static Patient returnUISingle(int id) throws SQLException{
-        Patient p = new Patient();
-        String sql = "SELECT * FROM patients WHERE id = ?";
-        try(Connection conn = Database.getConnection()){
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
+    public static Patient returnUISingle(int id) throws SQLException {
+        String sql = "SELECT id, name, age, gender FROM patients WHERE id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            stmt.executeUpdate();
-            p.setId(rs.getInt("id"));
-            p.setName(rs.getString("name"));
-            p.setAge(rs.getInt("age"));
-            p.setGender(rs.getString("gender"));
-            rs.close();
-        }catch (SQLException e){
-            throw new SQLException("Error Retrieving Patient (id: " + ") Data: " + e.getMessage());
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {throw new SQLException("Patient not found with id: " + id);}
+                Patient p = new Patient();
+                p.setId(rs.getInt("id"));
+                p.setName(rs.getString("name"));
+                p.setAge(rs.getInt("age"));
+                p.setGender(rs.getString("gender"));
+                return p;
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error retrieving patient (id: " + id + "): " + e.getMessage());
         }
-        return p;
     }
     //Edit
     public static void edit(Patient p) throws SQLException{
