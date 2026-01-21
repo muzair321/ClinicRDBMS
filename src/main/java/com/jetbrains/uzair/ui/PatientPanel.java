@@ -15,33 +15,86 @@ import java.util.List;
 public class PatientPanel {
     public static void mainWindow(){
         JFrame window = new JFrame("Patient Data");
-        window.setSize(900, 700);
+        window.setSize(1200, 900);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
         window.setLocationRelativeTo(null);
-        JTable table = getDBData(window);
 
+//Table
+        JTable table = getDBData(window);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         JScrollPane scroll = new JScrollPane(table);
 
-        JButton btnDel = deleteButton(table, window);
+//Buttons
         JButton btnAdd = addButton(table);
-        JButton btnRef = new JButton("Refresh");
-        btnRef.addActionListener(e -> {
-            refresh(table);
-        });
-        JButton btnVew = viewPatient(table, window);
         JButton btnEdit = editButton1(table, window);
+        JButton btnView = viewPatient(table, window);
+        JButton btnDel = deleteButton(table, window);
+        JButton btnRef = new JButton("Refresh");
+        btnRef.addActionListener(e -> refresh(table));
+        btnEdit.setEnabled(false);
+        btnView.setEnabled(false);
+        btnDel.setEnabled(false);
 
-        window.setLayout(new BoxLayout(window.getContentPane(), BoxLayout.Y_AXIS));
-        window.add(scroll);
-        window.add(btnDel);
-        window.add(btnAdd);
-        window.add(btnRef);
-        window.add(btnVew);
-        window.add(btnEdit);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            boolean selected = table.getSelectedRowCount() > 0;
+            btnView.setEnabled(selected);
+            btnEdit.setEnabled(table.getSelectedRowCount() == 1);
+            btnDel.setEnabled(selected);
+        });
+
+
+//Toolbar panel
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+        toolbar.add(btnAdd);
+
+        toolbar.add(Box.createHorizontalStrut(20));
+
+        toolbar.add(btnEdit);
+        toolbar.add(btnView);
+
+        toolbar.add(Box.createHorizontalStrut(20));
+
+        toolbar.add(btnDel);
+        toolbar.add(btnRef);
+
+// Main layout
+        window.setLayout(new BorderLayout());
+        window.add(toolbar, BorderLayout.NORTH);
+        window.add(scroll, BorderLayout.CENTER);
+
         window.setVisible(true);
+
+//        JFrame window = new JFrame("Patient Data");
+//        window.setSize(900, 700);
+//        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//
+//        window.setLocationRelativeTo(null);
+//        JTable table = getDBData(window);
+//
+//        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+//
+//        JScrollPane scroll = new JScrollPane(table);
+//
+//        JButton btnDel = deleteButton(table, window);
+//        JButton btnAdd = addButton(table);
+//        JButton btnRef = new JButton("Refresh");
+//        btnRef.addActionListener(e -> {
+//            refresh(table);
+//        });
+//        JButton btnVew = viewPatient(table, window);
+//        JButton btnEdit = editButton1(table, window);
+//
+//        window.setLayout(new BoxLayout(window.getContentPane(), BoxLayout.Y_AXIS));
+//        window.add(scroll);
+//        window.add(btnDel);
+//        window.add(btnAdd);
+//        window.add(btnRef);
+//        window.add(btnVew);
+//        window.add(btnEdit);
+//        window.setVisible(true);
     }
     //refresh the table
     private static void refresh(JTable table) {
@@ -112,44 +165,11 @@ public class PatientPanel {
     private static JButton addButton(JTable table){
         JButton btnAdd = new JButton("Add New");
         btnAdd.addActionListener(e -> {
-            JFrame forum = new JFrame("Add New Patient");
-            forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            forum.setSize(200,400);
-            forum.setLocationRelativeTo(table);
-            JLabel t1 = new JLabel("Name: ");
-            JTextField name = new JTextField();
-            JLabel t2 = new JLabel("Age: ");
-            JTextField age = new JTextField();
-            JLabel t3 = new JLabel("Gender: ");
-            JTextField gender = new JTextField();
-
-            JButton btnCon = new JButton("Confirm");
-            JButton btnCan = new JButton("Cancel");
-            btnCon.addActionListener(e1 -> {
-                String[] raw = {"-1", name.getText(), age.getText(), gender.getText()};
-                try {
-                    PatientDB.insert(Patient.check(Patient.convArrayToOb(raw)));
-                    refresh(table);
-                    forum.dispose();
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(forum, ex.getMessage());
-                }catch (ValidationException ve){
-                    JOptionPane.showMessageDialog(forum, ve.getMessage());
-                }
-            });
-            btnCan.addActionListener(e1 -> {
-                forum.dispose();
-            });
-            forum.setLayout(new BoxLayout(forum.getContentPane(), BoxLayout.Y_AXIS));
-            forum.add(t1);
-            forum.add(name);
-            forum.add(t2);
-            forum.add(age);
-            forum.add(t3);
-            forum.add(gender);
-            forum.add(btnCon);
-            forum.add(btnCan);
-            forum.setVisible(true);
+            try{
+                commonForum(table, -1);
+            }catch (SQLException sqle){
+                JOptionPane.showMessageDialog(null, "Error Adding Patient: " + sqle.getMessage());
+            }
         });
         return btnAdd;
     }
@@ -274,15 +294,12 @@ public class PatientPanel {
         JButton btn = new JButton("Edit Patient");
 
         btn.addActionListener(e -> {
-
-            Patient p;
             try {
-                p = PatientDB.returnUISingle(id);
+                commonForum(table, id);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed to load patient data");
                 return;
             }
-            editForum(table, id, p);
         });
 
         return btn;
@@ -302,80 +319,16 @@ public class PatientPanel {
                 JOptionPane.showMessageDialog(window, "Select Only 1 Patient");
                 return;
             }
-
             int modelRow = table.convertRowIndexToModel(selectedRows[0]);
             int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
 
-            Patient p;
-            try {
-                p = PatientDB.returnUISingle(id);
-            } catch (SQLException ex) {
+            try {commonForum(table, id);} catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed to load patient data");
                 return;
             }
-            editForum(table, id, p);
         });
 
         return btn;
-    }
-    //edit patient forum
-    private static JFrame editForum(JTable table, int id, Patient p){
-
-        JFrame forum = new JFrame("Edit Patient");
-        forum.setSize(250, 300);
-        forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        forum.setLocationRelativeTo(null);
-        forum.setLayout(new BoxLayout(forum.getContentPane(), BoxLayout.Y_AXIS));
-
-        JLabel l1 = new JLabel("Name:");
-        JTextField name = new JTextField(p.getName());
-
-        JLabel l2 = new JLabel("Age:");
-        JTextField age = new JTextField(String.valueOf(p.getAge()));
-
-        JLabel l3 = new JLabel("Gender:");
-        JComboBox<String> gender =
-                new JComboBox<>(new String[]{"Male", "Female", "Other"});
-        gender.setSelectedItem(p.getGender());
-
-        JButton btnSave = new JButton("Save");
-        JButton btnCancel = new JButton("Cancel");
-
-        btnSave.addActionListener(ev -> {
-            try {
-                String[] raw = {
-                        String.valueOf(p.getId()),
-                        name.getText(),
-                        age.getText(),
-                        gender.getSelectedItem().toString()
-                };
-
-                Patient updated = Patient.check(Patient.convArrayToOb(raw));
-                PatientDB.edit(updated);
-
-                refresh(table);
-                forum.dispose();
-
-            } catch (ValidationException ve) {
-                JOptionPane.showMessageDialog(forum, ve.getMessage());
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(forum, "Update failed");
-            }
-        });
-
-        btnCancel.addActionListener(ev -> forum.dispose());
-
-        forum.add(l1);
-        forum.add(name);
-        forum.add(l2);
-        forum.add(age);
-        forum.add(l3);
-        forum.add(gender);
-        forum.add(btnSave);
-        forum.add(btnCancel);
-
-        forum.setVisible(true);
-        return forum;
     }
     //get data base table into GUI table
     private static JTable getDBData(JFrame window){
@@ -392,5 +345,142 @@ public class PatientPanel {
             }
         };
         return new JTable(model);
+    }
+    // common forum for both add and edit
+    private static JFrame commonForum(JTable table, int id)  throws SQLException{
+        Patient p;
+        String t = "Error";
+        String nameS;
+        int ageS;
+        String genderS;
+
+        if(id != -1) {
+            t = "Edit Patient";
+            p = PatientDB.returnUISingle(id);
+            nameS = p.getName();
+            ageS = p.getAge();
+            genderS = p.getGender();
+        }else{
+            t = "Add Patient";
+            p = new Patient();
+            p.setId(-1);
+            nameS = null;
+            genderS = "Other";
+            ageS = 0;
+        }
+        JFrame forum = new JFrame(t);
+        forum.setSize(320, 260);
+        forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        forum.setLocationRelativeTo(null);
+        forum.setLayout(new BorderLayout());
+
+// ===== Form panel =====
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        int row = 0;
+
+// Name
+        gbc.gridx = 0; gbc.gridy = row;
+        formPanel.add(new JLabel("Name:"), gbc);
+
+        gbc.gridx = 1;
+        JTextField name = new JTextField(nameS, 15);
+        formPanel.add(name, gbc);
+        row++;
+
+// Age
+        gbc.gridx = 0; gbc.gridy = row;
+        formPanel.add(new JLabel("Age:"), gbc);
+
+        gbc.gridx = 1;
+        JTextField age = new JTextField(String.valueOf(ageS), 15);
+        formPanel.add(age, gbc);
+        row++;
+
+// Gender
+        gbc.gridx = 0; gbc.gridy = row;
+        formPanel.add(new JLabel("Gender:"), gbc);
+
+        gbc.gridx = 1;
+        JComboBox<String> gender =
+                new JComboBox<>(new String[]{"Male", "Female", "Other"});
+        gender.setSelectedItem(genderS);
+        formPanel.add(gender, gbc);
+
+// ===== Button panel =====
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+
+        JButton btnSave = new JButton("Save");
+        JButton btnCancel = new JButton("Cancel");
+
+        buttonPanel.add(btnCancel);
+        buttonPanel.add(btnSave);
+//        JFrame forum = new JFrame(t);
+//        forum.setSize(250, 300);
+//        forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+//        forum.setLocationRelativeTo(null);
+//        forum.setLayout(new BoxLayout(forum.getContentPane(), BoxLayout.Y_AXIS));
+//
+//        JLabel l1 = new JLabel("Name:");
+//        JTextField name = new JTextField(nameS);
+//
+//        JLabel l2 = new JLabel("Age:");
+//        JTextField age = new JTextField(String.valueOf(ageS));
+//
+//        JLabel l3 = new JLabel("Gender:");
+//        JComboBox<String> gender =
+//                new JComboBox<>(new String[]{"Male", "Female", "Other"});
+//        gender.setSelectedItem(genderS);
+//
+//        JButton btnSave = new JButton("Save");
+//        JButton btnCancel = new JButton("Cancel");
+
+        btnSave.addActionListener(ev -> {
+            try {
+                String[] raw = {
+                        String.valueOf(p.getId()),
+                        name.getText(),
+                        age.getText(),
+                        gender.getSelectedItem().toString()
+                };
+                Patient newP = Patient.check(Patient.convArrayToOb(raw));
+                if(id != -1) {
+                    PatientDB.edit(newP);
+                }else{
+                    PatientDB.insert(Patient.check(newP));
+                }
+                refresh(table);
+                forum.dispose();
+
+            } catch (ValidationException ve) {
+                JOptionPane.showMessageDialog(forum, ve.getMessage());
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(forum, "Modification Failed:" + ex.getMessage());
+            }
+        });
+
+        btnCancel.addActionListener(ev -> forum.dispose());
+
+//        forum.add(l1);
+//        forum.add(name);
+//        forum.add(l2);
+//        forum.add(age);
+//        forum.add(l3);
+//        forum.add(gender);
+//        forum.add(btnSave);
+//        forum.add(btnCancel);
+        forum.add(formPanel, BorderLayout.CENTER);
+        forum.add(buttonPanel, BorderLayout.SOUTH);
+
+        forum.setVisible(true);
+        return forum;
     }
 }
