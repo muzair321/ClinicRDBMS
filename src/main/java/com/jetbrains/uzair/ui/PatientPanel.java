@@ -1,8 +1,12 @@
 package com.jetbrains.uzair.ui;
 
 import com.jetbrains.uzair.db.PatientDB;
+import com.jetbrains.uzair.model.Patient;
+import com.jetbrains.uzair.model.ValidationException;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +23,20 @@ public class PatientPanel {
             // todo: add dialog menu
             throw new RuntimeException(e);
         }
-        JTable table = new JTable(data, headers);
+        DefaultTableModel model = new DefaultTableModel(data, headers) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // prevent accidental edits
+            }
+        };
+
+        JTable table = new JTable(model);
+
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         JScrollPane scroll = new JScrollPane(table);
 
-        JButton btn = new JButton("Delete");
-        btn.addActionListener(e -> {
+        JButton btnDel = new JButton("Delete");
+        btnDel.addActionListener(e -> {
 
             int[] selectedRows = table.getSelectedRows();
 
@@ -55,15 +67,70 @@ public class PatientPanel {
             try {
                 PatientDB.deleteList(patientIds);
                 JOptionPane.showMessageDialog(window, "Deleted successfully");
-                // todo: refresh table data
+                refresh(table);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Delete failed");
             }
         });
+        JButton btnAdd = new JButton("Add New");
+        btnAdd.addActionListener(e -> {
+            JFrame forum = new JFrame("Add New Patient");
+            forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            forum.setSize(200,400);
+            JLabel t1 = new JLabel("Name: ");
+            JTextField name = new JTextField();
+            JLabel t2 = new JLabel("Age: ");
+            JTextField age = new JTextField();
+            JLabel t3 = new JLabel("Gender: ");
+            JTextField gender = new JTextField();
+
+            JButton btnCon = new JButton("Confirm");
+            JButton btnCan = new JButton("Cancel");
+            btnCon.addActionListener(e1 -> {
+                String[] raw = {"-1", name.getText(), age.getText(), gender.getText()};
+                try {
+                    PatientDB.insert(Patient.check(Patient.convArrayToOb(raw)));
+                    refresh(table);
+                    forum.dispose();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(forum, ex.getMessage());
+                }catch (ValidationException ve){
+                    JOptionPane.showMessageDialog(forum, ve.getMessage());
+                }
+            });
+            btnCan.addActionListener(e1 -> {
+                forum.dispose();
+            });
+            forum.setLayout(new BoxLayout(forum.getContentPane(), BoxLayout.Y_AXIS));
+            forum.add(t1);
+            forum.add(name);
+            forum.add(t2);
+            forum.add(age);
+            forum.add(t3);
+            forum.add(gender);
+            forum.add(btnCon);
+            forum.add(btnCan);
+            forum.setVisible(true);
+        });
 
         window.setLayout(new BoxLayout(window.getContentPane(), BoxLayout.Y_AXIS));
         window.add(scroll);
-        window.add(btn);
+        window.add(btnDel);
+        window.add(btnAdd);
         window.setVisible(true);
+    }
+    public static void refresh(JTable table) {
+        try {
+            String[][] data = PatientDB.returnUI();
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            model.setRowCount(0);
+
+            for (String[] row : data) {
+                model.addRow(row);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(table, "Failed to refresh data");
+        }
     }
 }
