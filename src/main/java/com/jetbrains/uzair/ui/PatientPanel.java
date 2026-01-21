@@ -35,6 +35,30 @@ public class PatientPanel {
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         JScrollPane scroll = new JScrollPane(table);
 
+        JButton btnDel = deleteButton(table, window);
+        JButton btnAdd = addButton(table);
+
+        window.setLayout(new BoxLayout(window.getContentPane(), BoxLayout.Y_AXIS));
+        window.add(scroll);
+        window.add(btnDel);
+        window.add(btnAdd);
+        window.setVisible(true);
+    }
+    public static void refresh(JTable table) {
+        try {
+            String[][] data = PatientDB.returnUI();
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            model.setRowCount(0);
+
+            for (String[] row : data) {
+                model.addRow(row);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(table, "Failed to refresh data");
+        }
+    }
+    public static JButton deleteButton(JTable table, JFrame window){
         JButton btnDel = new JButton("Delete");
         btnDel.addActionListener(e -> {
 
@@ -72,6 +96,9 @@ public class PatientPanel {
                 JOptionPane.showMessageDialog(window, "Delete failed");
             }
         });
+        return btnDel;
+    }
+    public static JButton addButton(JTable table){
         JButton btnAdd = new JButton("Add New");
         btnAdd.addActionListener(e -> {
             JFrame forum = new JFrame("Add New Patient");
@@ -112,25 +139,6 @@ public class PatientPanel {
             forum.add(btnCan);
             forum.setVisible(true);
         });
-
-        window.setLayout(new BoxLayout(window.getContentPane(), BoxLayout.Y_AXIS));
-        window.add(scroll);
-        window.add(btnDel);
-        window.add(btnAdd);
-        window.setVisible(true);
-    }
-    public static void refresh(JTable table) {
-        try {
-            String[][] data = PatientDB.returnUI();
-            DefaultTableModel model = (DefaultTableModel) table.getModel();
-            model.setRowCount(0);
-
-            for (String[] row : data) {
-                model.addRow(row);
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(table, "Failed to refresh data");
-        }
+        return btnAdd;
     }
 }

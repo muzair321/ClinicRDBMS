@@ -51,6 +51,25 @@ public class PatientDB {
         }
         return returnSet;
     }
+    //Read By id
+    public static Patient returnUISingle(int id) throws SQLException{
+        Patient p = new Patient();
+        String sql = "SELECT * FROM patients WHERE id = ?";
+        try(Connection conn = Database.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            p.setId(rs.getInt("id"));
+            p.setName(rs.getString("name"));
+            p.setAge(rs.getInt("age"));
+            p.setGender(rs.getString("gender"));
+            rs.close();
+        }catch (SQLException e){
+            throw new SQLException("Error Retrieving Patient (id: " + ") Data: " + e.getMessage());
+        }
+        return p;
+    }
     //Edit
     public static void edit(Patient p) throws SQLException{
         String sql = "UPDATE patients SET name =  ?, age = ?, gender = ? WHERE id = ?";
