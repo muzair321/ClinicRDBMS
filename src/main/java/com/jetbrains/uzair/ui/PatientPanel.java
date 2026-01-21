@@ -18,6 +18,7 @@ public class PatientPanel {
         window.setSize(900, 700);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        window.setLocationRelativeTo(null);
         JTable table = getDBData(window);
 
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -114,6 +115,7 @@ public class PatientPanel {
             JFrame forum = new JFrame("Add New Patient");
             forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             forum.setSize(200,400);
+            forum.setLocationRelativeTo(table);
             JLabel t1 = new JLabel("Name: ");
             JTextField name = new JTextField();
             JLabel t2 = new JLabel("Age: ");
@@ -231,8 +233,29 @@ public class PatientPanel {
                 JButton btnEdit = editButton2(table, window, id);
                 JButton btnClose = new JButton("Close");
                 btnClose.addActionListener(e1 -> {disp.dispose();});
+                JButton btnDel = new JButton("Delete");
+                btnDel.addActionListener(e1 -> {
+                    int choice = JOptionPane.showConfirmDialog(
+                            window,
+                            "Are You Sure You Want To Delete The Selected Patient(s)?",
+                            "Confirm Deletion",
+                            JOptionPane.YES_NO_OPTION
+                    );
+
+                    if (choice != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+                    try{
+                    PatientDB.delete(id);
+                    JOptionPane.showMessageDialog(window, "Patient Deleted Successfully");
+                    disp.dispose();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(disp, ex.getMessage());
+                    return;
+                }});
 
                 buttonPanel.add(btnEdit);
+                buttonPanel.add(btnDel);
                 buttonPanel.add(btnClose);
 
                 disp.setLayout(new BorderLayout());
@@ -259,7 +282,7 @@ public class PatientPanel {
                 JOptionPane.showMessageDialog(window, "Failed to load patient data");
                 return;
             }
-            editForum(table, window, id, p);
+            editForum(table, id, p);
         });
 
         return btn;
@@ -290,18 +313,18 @@ public class PatientPanel {
                 JOptionPane.showMessageDialog(window, "Failed to load patient data");
                 return;
             }
-            editForum(table, window, id, p);
+            editForum(table, id, p);
         });
 
         return btn;
     }
     //edit patient forum
-    private static JFrame editForum(JTable table, JFrame window, int id, Patient p){
+    private static JFrame editForum(JTable table, int id, Patient p){
 
         JFrame forum = new JFrame("Edit Patient");
         forum.setSize(250, 300);
         forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        forum.setLocationRelativeTo(window);
+        forum.setLocationRelativeTo(null);
         forum.setLayout(new BoxLayout(forum.getContentPane(), BoxLayout.Y_AXIS));
 
         JLabel l1 = new JLabel("Name:");
