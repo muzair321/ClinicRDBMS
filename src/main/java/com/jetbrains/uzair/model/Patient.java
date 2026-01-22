@@ -11,18 +11,20 @@ public class Patient {
     private String name;
     private int age;
     private String gender;
+    private String phone;
     //constructors
     public Patient(){}
 
-    public Patient(int id, String name, int age, String gender){
+    public Patient(int id, String name, int age, String gender, String phone){
         this.id = id;
         this.name = name;
         this.age = age;
         this.gender = gender;
+        this.phone = phone;
     }
 
-    public Patient(String name, int age, String gender){
-        this(-1, name, age, gender);
+    public Patient(String name, int age, String gender, String phone){
+        this(-1, name, age, gender, phone);
     }
 
     //getters
@@ -30,11 +32,13 @@ public class Patient {
     public int getAge(){return age;}
     public String getName(){return name;}
     public String getGender(){return gender;}
+    public String getPhone(){return phone;}
     //setters
     public void setId(int id){this.id = id;}
     public void setAge(int age){this.age = age;}
     public void setName(String name){this.name = name;}
     public void setGender(String gender){this.gender = gender;}
+    public void setPhone(String phone){this.phone = phone;}
 
     //for ui data to turn into datatypes accepted by db
     public static Patient convArrayToOb(String[] raw){
@@ -46,6 +50,7 @@ public class Patient {
         p.setName(raw[1]);
         p.setAge(Integer.parseInt(raw[2]));
         p.setGender(raw[3]);
+        p.setPhone(raw[4]);
         return p;
     }
 
@@ -62,6 +67,12 @@ public class Patient {
         }
         if(!p.getGender().equals("Male") && !p.getGender().equals("Female") && !p.getGender().equals("Other")){
             throw new ValidationException("Gender Can Only Be: 'Male', 'Female', 'Other'");
+        }
+        if(!PatientDB.checkPhone(p.getPhone())){
+            throw new ValidationException("Phone Number Already Exists In Records");
+        }
+        if(!p.getPhone().matches("[0-9-]+")){
+            throw new ValidationException("Phone Number Can Only Contain Dashes And Numbers");
         }
         return p;
     }

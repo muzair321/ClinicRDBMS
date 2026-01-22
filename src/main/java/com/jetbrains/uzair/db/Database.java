@@ -22,7 +22,8 @@ public class Database {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 age INTEGER NOT NULL CHECK (age >= 0),
-                gender TEXT NOT NULL CHECK ( gender IN ('Male', 'Female', 'Other'))
+                gender TEXT NOT NULL CHECK ( gender IN ('Male', 'Female', 'Other')),
+                phone TEXT UNIQUE CHECK (phone IS NULL OR length(phone) >= 7)
                 );
                 """};
         try(Connection conn = getConnection()){
