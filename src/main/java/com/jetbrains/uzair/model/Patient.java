@@ -71,8 +71,13 @@ public class Patient {
         if(!PatientDB.checkPhone(p.getPhone())){
             throw new ValidationException("Phone Number Already Exists In Records");
         }
-        if(!p.getPhone().matches("[0-9-]+")){
-            throw new ValidationException("Phone Number Can Only Contain Dashes And Numbers");
+        if(!p.getPhone().isEmpty()) {
+            if((p.getPhone().length() < 7)){
+                throw new ValidationException("Phone Number Has To Be Longer Than 7");
+            }
+            if(!p.getPhone().matches("^[0-9-]+$")){
+                throw new ValidationException("Phone Number Can Only Contain Dashes And Numbers");
+            }
         }
         return p;
     }

@@ -17,7 +17,11 @@ public class PatientDB {
             stmt.setString(1, p.getName());
             stmt.setInt(2, p.getAge());
             stmt.setString(3, p.getGender());
-            stmt.setString(4, p.getPhone());
+            if (p.getPhone() == null || p.getPhone().trim().isEmpty()) {
+                stmt.setNull(4, java.sql.Types.VARCHAR);
+            } else {
+                stmt.setString(4, p.getPhone());
+            }
             stmt.executeUpdate();
         }catch (SQLException e){
             throw new SQLException("Error Inserting Data Into 'patients': " + e.getMessage());
@@ -115,7 +119,7 @@ public class PatientDB {
     }
     public static boolean checkPhone(String phone) {
         if (phone == null) return true;
-        if (phone.trim().isEmpty()) return false;
+        if (phone.trim().isEmpty()) return true;
         String sql = "SELECT 1 FROM patients WHERE phone = ? LIMIT 1";
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

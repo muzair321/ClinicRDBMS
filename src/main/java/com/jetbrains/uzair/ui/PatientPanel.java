@@ -38,7 +38,7 @@ public class PatientPanel {
 
         table.getSelectionModel().addListSelectionListener(e -> {
             boolean selected = table.getSelectedRowCount() > 0;
-            btnView.setEnabled(selected);
+            btnView.setEnabled(table.getSelectedRowCount() == 1);
             btnEdit.setEnabled(table.getSelectedRowCount() == 1);
             btnDel.setEnabled(selected);
         });
@@ -235,6 +235,7 @@ public class PatientPanel {
                     try{
                     PatientDB.delete(id);
                     JOptionPane.showMessageDialog(window, "Patient Deleted Successfully");
+                    refresh(table);
                     disp.dispose();
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(disp, ex.getMessage());
@@ -336,7 +337,7 @@ public class PatientPanel {
             nameS = null;
             genderS = "Other";
             ageS = 0;
-            phoneS = "";
+            phoneS = null;
         }
         JFrame forum = new JFrame(t);
         forum.setSize(320, 260);
@@ -389,7 +390,7 @@ public class PatientPanel {
         formPanel.add(new JLabel("Phone Number:"), gbc);
 
         gbc.gridx = 1;
-        JTextField phone = new JTextField(String.valueOf(phoneS), 15);
+        JTextField phone = new JTextField(phoneS, 15);
         formPanel.add(phone, gbc);
 
 //button panel
