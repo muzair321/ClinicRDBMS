@@ -141,7 +141,7 @@ public class PatientDB {
 
         String sql = """
         SELECT id, name, age, 
-               phone, gender, created_at
+                gender,phone, created_at
         FROM patients 
         WHERE name LIKE ? 
            OR id LIKE ? 

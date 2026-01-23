@@ -3,6 +3,7 @@ package com.jetbrains.uzair.db;
 import java.sql.*;
 
 public class Database {
+
     // For Getting Connection, Initializing Database and Creating Tables
     public static Connection getConnection(){
         String userHome = System.getProperty("user.home");
@@ -10,6 +11,9 @@ public class Database {
         Connection conn = null;
         try{
             conn = DriverManager.getConnection(URL);
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("PRAGMA foreign_keys = ON");
+            }
         } catch (SQLException e) {
             System.err.println("Error Connecting To Database: " + e.getMessage());
         }
@@ -31,10 +35,14 @@ public class Database {
                 CREATE TABLE IF NOT EXISTS visits(
                 id INTEGER  PRIMARY KEY AUTOINCREMENT,
                 patient_id INTEGER NOT NULL,
-                vi_id INTEGER,
                 treatment TEXT,
-                paid INTEGER,
-                date TEXT NOT NULL DEFAULT (datetime('now'))
+                paid INTEGER NOT NULL CHECK (paid >= 0),
+                date TEXT NOT NULL DEFAULT (datetime('now')),
+                FOREIGN KEY (patient_id)
+                    REFERENCES patients(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                );
                 """};
         try(Connection conn = getConnection()){
             Statement stmt = conn.createStatement();
@@ -42,7 +50,7 @@ public class Database {
                 stmt.execute(sql);
             }
         } catch (SQLException e) {
-            System.err.println("Error Connecting To Database: " + e.getMessage());
+            System.err.println("Error Creating Tables: " + e.getMessage());
         }
     }
 //    public static void newColumn(){
