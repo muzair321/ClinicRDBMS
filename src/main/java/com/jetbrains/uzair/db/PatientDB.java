@@ -120,17 +120,31 @@ public class PatientDB {
             throw new SQLException("Error Deleting Patient List: " + e.getMessage());
         }
     }
+    //checking if phone doesnt exist
     public static boolean checkPhone(String phone) {
         if (phone == null) return true;
         if (phone.trim().isEmpty()) return true;
         String sql = "SELECT 1 FROM patients WHERE phone = ? LIMIT 1";
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, phone);
             ResultSet rs = stmt.executeQuery();
             return !rs.next();
         } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    //check existence
+    public static boolean exists(int patientId){
+        String sql = "SELECT 1 FROM patients WHERE id = ? LIMIT 1";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, patientId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }catch (SQLException e){
             e.printStackTrace();
             return false;
         }

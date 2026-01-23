@@ -2,9 +2,6 @@ package com.jetbrains.uzair.model;
 
 import com.jetbrains.uzair.db.PatientDB;
 
-import java.sql.SQLException;
-import java.util.List;
-
 public class Patient {
     //object parameters
     private int id;
@@ -55,7 +52,7 @@ public class Patient {
         try {
             p.setAge(Integer.parseInt(raw[2]));
         } catch (NumberFormatException e) {
-            throw new ValidationException("Enter Only Numbers");
+            throw new ValidationException("Enter Only Numbers In Phone Number");
         }
         p.setGender(raw[3]);
         p.setPhone(raw[4]);
