@@ -19,8 +19,16 @@ public class PatientPanel {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
 
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        //search
+        PlaceholderTextField searchField = new PlaceholderTextField("Search Patient");
+
+        searchField.setPreferredSize(new Dimension(250, 30));
+        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        searchField.setBackground(new Color(255, 255, 255));
+        searchField.setOpaque(true);
 //table
-        JTable table = getDBData(window);
+        JTable table = getDBData(window, searchField.getText());
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         JScrollPane scroll = new JScrollPane(table);
@@ -32,6 +40,8 @@ public class PatientPanel {
         JButton btnDel = deleteButton(table, window);
         JButton btnRef = new JButton("Refresh");
         btnRef.addActionListener(e -> refresh(table));
+        JButton btnSearch = new JButton("Search");
+        btnSearch.addActionListener(e -> search(table, searchField.getText()));
         btnEdit.setEnabled(false);
         btnView.setEnabled(false);
         btnDel.setEnabled(false);
@@ -42,16 +52,8 @@ public class PatientPanel {
             btnEdit.setEnabled(table.getSelectedRowCount() == 1);
             btnDel.setEnabled(selected);
         });
-//search
-        PlaceholderTextField searchField = new PlaceholderTextField("Search Patient");
-
-        searchField.setPreferredSize(new Dimension(250, 30));
-        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        searchField.setBackground(new Color(255, 255, 255));
-        searchField.setOpaque(true);
 
 //toolbar panel
-        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         toolbar.add(btnAdd);
@@ -62,6 +64,7 @@ public class PatientPanel {
         toolbar.add(btnDel);
         toolbar.add(btnRef);
         toolbar.add(searchField);
+        toolbar.add(btnSearch);
 //main layout
         window.setLayout(new BorderLayout());
         window.add(toolbar, BorderLayout.NORTH);
@@ -329,14 +332,15 @@ public class PatientPanel {
         return btn;
     }
     //get data base table into GUI table
-    private static JTable getDBData(JFrame window){
+    private static JTable getDBData(JFrame window, String search){
         String[] headers = {"ID", "Name", "Age", "Gender", "Phone Number", "Created At"};
         String[][] data;
-        try{ data = PatientDB.returnUI();} catch (SQLException e) {
+        try {
+            data = PatientDB.returnUI();
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(window, e.getMessage());
             window.dispose();
             throw new RuntimeException("Error While Reading Data");
-
         }
         DefaultTableModel model = new DefaultTableModel(data, headers) {
             @Override
@@ -461,5 +465,28 @@ public class PatientPanel {
         forum.add(buttonPanel, BorderLayout.SOUTH);
         forum.setVisible(true);
         return forum;
+    }
+    //return search data
+    private static void search(JTable table, String search) {
+        SwingWorker<String[][], Void> worker = new SwingWorker<>() {
+            @Override
+            protected String[][] doInBackground() throws SQLException {
+                return PatientDB.returnUI(search); // Database call
+            }
+            @Override
+            protected void done() {
+                try {
+                    String[][] data = get();
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    model.setRowCount(0);
+                    for (String[] row : data) {
+                        model.addRow(row);
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(table, e.getMessage() + "Failed To Search");
+                }
+            }
+        };
+        worker.execute();
     }
 }
