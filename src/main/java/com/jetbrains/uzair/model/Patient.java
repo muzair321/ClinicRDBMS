@@ -12,19 +12,21 @@ public class Patient {
     private int age;
     private String gender;
     private String phone;
+    private String createdAt;
     //constructors
     public Patient(){}
 
-    public Patient(int id, String name, int age, String gender, String phone){
+    public Patient(int id, String name, int age, String gender, String phone, String createdAt){
         this.id = id;
         this.name = name;
         this.age = age;
         this.gender = gender;
         this.phone = phone;
+        this.createdAt = createdAt;
     }
 
-    public Patient(String name, int age, String gender, String phone){
-        this(-1, name, age, gender, phone);
+    public Patient(String name, int age, String gender, String phone, String createdAt){
+        this(-1, name, age, gender, phone, createdAt);
     }
 
     //getters
@@ -33,12 +35,14 @@ public class Patient {
     public String getName(){return name;}
     public String getGender(){return gender;}
     public String getPhone(){return phone;}
+    public String getCreatedAt(){return createdAt;}
     //setters
     public void setId(int id){this.id = id;}
     public void setAge(int age){this.age = age;}
     public void setName(String name){this.name = name;}
     public void setGender(String gender){this.gender = gender;}
     public void setPhone(String phone){this.phone = phone;}
+    public void setCreatedAt(String createdAt){this.createdAt = createdAt;}
 
     //for ui data to turn into datatypes accepted by db
     public static Patient convArrayToOb(String[] raw){
@@ -48,7 +52,11 @@ public class Patient {
             p.setId(x);
         }
         p.setName(raw[1]);
-        p.setAge(Integer.parseInt(raw[2]));
+        try {
+            p.setAge(Integer.parseInt(raw[2]));
+        } catch (NumberFormatException e) {
+            throw new ValidationException("Enter Only Numbers");
+        }
         p.setGender(raw[3]);
         p.setPhone(raw[4]);
         return p;
@@ -83,18 +91,4 @@ public class Patient {
         }
         return p;
     }
-
-    //checks of list of patients for deletion
-    public static void checkListAndDelete (List<Integer> ids) throws ValidationException, SQLException {
-        if(ids == null || ids.isEmpty()){
-            throw new ValidationException("No Patients Selected");
-        }
-        for(int id: ids){
-            if(id <= 0 ){
-                throw new ValidationException("Invalid ID(s)");
-            }
-        }
-        PatientDB.deleteList(ids);
-    }
-
 }

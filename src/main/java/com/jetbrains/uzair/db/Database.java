@@ -26,6 +26,15 @@ public class Database {
                 phone TEXT UNIQUE CHECK (phone IS NULL OR length(phone) >= 7),
                 created_at TEXT NOT NULL DEFAULT (datetime('now'))
                 );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS visits(
+                id INTEGER  PRIMARY KEY AUTOINCREMENT,
+                patient_id INTEGER NOT NULL,
+                vi_id INTEGER,
+                treatment TEXT,
+                paid INTEGER,
+                date TEXT NOT NULL DEFAULT (datetime('now'))
                 """};
         try(Connection conn = getConnection()){
             Statement stmt = conn.createStatement();
@@ -36,16 +45,16 @@ public class Database {
             System.err.println("Error Connecting To Database: " + e.getMessage());
         }
     }
-    public static void newColumn(){
-        String sql = """
-                ALTER TABLE patients
-                ADD COLUMN created_at TEXT DEFAULT (datetime('now'));
-                """;
-        try(Connection conn = getConnection()){
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.err.println("Error Altering Database: " + e.getMessage());
-        }
-    }
+//    public static void newColumn(){
+//        String sql = """
+//                ALTER TABLE patients
+//                ADD COLUMN created_at TEXT DEFAULT (datetime('now'));
+//                """;
+//        try(Connection conn = getConnection()){
+//            Statement stmt = conn.createStatement();
+//            stmt.execute(sql);
+//        } catch (SQLException e) {
+//            System.err.println("Error Altering Database: " + e.getMessage());
+//        }
+//    }
 }

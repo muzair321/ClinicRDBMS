@@ -60,7 +60,7 @@ public class PatientDB {
     }
     //Read By id
     public static Patient returnUISingle(int id) throws SQLException {
-        String sql = "SELECT id, name, age, gender, phone FROM patients WHERE id = ?";
+        String sql = "SELECT id, name, age, gender, phone, created_at FROM patients WHERE id = ?";
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -72,6 +72,7 @@ public class PatientDB {
                 p.setAge(rs.getInt("age"));
                 p.setGender(rs.getString("gender"));
                 p.setPhone(rs.getString("phone"));
+                p.setCreatedAt(rs.getString("created_at"));
                 return p;
             }
         } catch (SQLException e) {

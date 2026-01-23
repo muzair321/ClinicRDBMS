@@ -106,7 +106,11 @@ public class PatientPanel {
                 int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
                 patientIds.add(id);
             }
-
+            try {
+                SoundPlayer.play("popup.wav");
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(window, ex.getMessage());
+            }
             int choice = JOptionPane.showConfirmDialog(
                     window,
                     "Are You Sure You Want To Delete The Selected Patient(s)?",
@@ -170,7 +174,7 @@ public class PatientPanel {
             try {
                 Patient p = PatientDB.returnUISingle(id);
                 JFrame disp = new JFrame("Patient Details");
-                disp.setSize(400, 300);
+                disp.setSize(500, 700);
                 disp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                 disp.setLocationRelativeTo(null); // center on screen
 
@@ -212,6 +216,20 @@ public class PatientPanel {
 
                 gbc.gridx = 1;
                 panel.add(createReadOnlyField(p.getGender(), valueFont), gbc);
+                row++;
+
+                gbc.gridx = 0; gbc.gridy = row;
+                panel.add(new JLabel("Phone Number:"), gbc);
+
+                gbc.gridx = 1;
+                panel.add(createReadOnlyField(p.getPhone(), valueFont), gbc);
+                row++;
+
+                gbc.gridx = 0; gbc.gridy = row;
+                panel.add(new JLabel("Date Of Creation:"), gbc);
+
+                gbc.gridx = 1;
+                panel.add(createReadOnlyField(p.getCreatedAt(), valueFont), gbc);
 
                 JPanel buttonPanel = new JPanel();
                 buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
@@ -222,6 +240,11 @@ public class PatientPanel {
                 btnClose.addActionListener(e1 -> {disp.dispose();});
                 JButton btnDel = new JButton("Delete");
                 btnDel.addActionListener(e1 -> {
+                    try {
+                        SoundPlayer.play("popup.wav");
+                    } catch (RuntimeException ex) {
+                        JOptionPane.showMessageDialog(window, ex.getMessage());
+                    }
                     int choice = JOptionPane.showConfirmDialog(
                             window,
                             "Are You Sure You Want To Delete The Selected Patient(s)?",
@@ -321,15 +344,20 @@ public class PatientPanel {
         Patient p;
         String t = "Error";
         String nameS;
-        int ageS;
+        String ageF;
         String genderS;
         String phoneS;
 
         if(id != -1) {
+            try {
+                SoundPlayer.play("popup.wav");
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
             t = "Edit Patient";
             p = PatientDB.returnUISingle(id);
             nameS = p.getName();
-            ageS = p.getAge();
+            ageF = String.valueOf(p.getAge());
             genderS = p.getGender();
             phoneS = p.getPhone();
         }else{
@@ -338,7 +366,7 @@ public class PatientPanel {
             p.setId(-1);
             nameS = null;
             genderS = "Other";
-            ageS = 0;
+            ageF = null;
             phoneS = null;
         }
         JFrame forum = new JFrame(t);
@@ -346,7 +374,6 @@ public class PatientPanel {
         forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         forum.setLocationRelativeTo(null);
         forum.setLayout(new BorderLayout());
-
 //Form panel
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
@@ -356,27 +383,21 @@ public class PatientPanel {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
-
         int row = 0;
-
 //name
         gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(new JLabel("Name:"), gbc);
-
         gbc.gridx = 1;
         JTextField name = new JTextField(nameS, 15);
         formPanel.add(name, gbc);
         row++;
-
 //age
         gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(new JLabel("Age:"), gbc);
-
         gbc.gridx = 1;
-        JTextField age = new JTextField(String.valueOf(ageS), 15);
+        JTextField age = new JTextField(ageF, 15);
         formPanel.add(age, gbc);
         row++;
-
 //gender
         gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(new JLabel("Gender:"), gbc);
@@ -390,22 +411,17 @@ public class PatientPanel {
 //phone
         gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(new JLabel("Phone Number:"), gbc);
-
         gbc.gridx = 1;
         JTextField phone = new JTextField(phoneS, 15);
         formPanel.add(phone, gbc);
-
 //button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
-
         JButton btnSave = new JButton("Save");
         JButton btnCancel = new JButton("Cancel");
 
         buttonPanel.add(btnCancel);
         buttonPanel.add(btnSave);
-
-
         btnSave.addActionListener(ev -> {
             try {
                 String[] raw = {
@@ -432,12 +448,10 @@ public class PatientPanel {
                 JOptionPane.showMessageDialog(forum, "Modification Failed:" + ex.getMessage());
             }
         });
-
         btnCancel.addActionListener(ev -> forum.dispose());
 
         forum.add(formPanel, BorderLayout.CENTER);
         forum.add(buttonPanel, BorderLayout.SOUTH);
-
         forum.setVisible(true);
         return forum;
     }
