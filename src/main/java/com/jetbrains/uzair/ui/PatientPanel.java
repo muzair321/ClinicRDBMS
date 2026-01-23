@@ -19,7 +19,7 @@ public class PatientPanel {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
 
-//t able
+//table
         JTable table = getDBData(window);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
@@ -42,7 +42,13 @@ public class PatientPanel {
             btnEdit.setEnabled(table.getSelectedRowCount() == 1);
             btnDel.setEnabled(selected);
         });
+//search
+        PlaceholderTextField searchField = new PlaceholderTextField("Search Patient");
 
+        searchField.setPreferredSize(new Dimension(250, 30));
+        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        searchField.setBackground(new Color(255, 255, 255));
+        searchField.setOpaque(true);
 
 //toolbar panel
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
@@ -55,6 +61,7 @@ public class PatientPanel {
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnDel);
         toolbar.add(btnRef);
+        toolbar.add(searchField);
 //main layout
         window.setLayout(new BorderLayout());
         window.add(toolbar, BorderLayout.NORTH);
