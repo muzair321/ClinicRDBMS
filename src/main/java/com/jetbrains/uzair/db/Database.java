@@ -23,7 +23,8 @@ public class Database {
                 name TEXT NOT NULL,
                 age INTEGER NOT NULL CHECK (age >= 0),
                 gender TEXT NOT NULL CHECK ( gender IN ('Male', 'Female', 'Other')),
-                phone TEXT UNIQUE CHECK (phone IS NULL OR length(phone) >= 7)
+                phone TEXT UNIQUE CHECK (phone IS NULL OR length(phone) >= 7),
+                created_at TEXT NOT NULL DEFAULT (datetime('now'))
                 );
                 """};
         try(Connection conn = getConnection()){
@@ -33,6 +34,18 @@ public class Database {
             }
         } catch (SQLException e) {
             System.err.println("Error Connecting To Database: " + e.getMessage());
+        }
+    }
+    public static void newColumn(){
+        String sql = """
+                ALTER TABLE patients
+                ADD COLUMN created_at TEXT DEFAULT (datetime('now'));
+                """;
+        try(Connection conn = getConnection()){
+            Statement stmt = conn.createStatement();
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.err.println("Error Altering Database: " + e.getMessage());
         }
     }
 }

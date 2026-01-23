@@ -41,7 +41,7 @@ public class PatientDB {
         } catch (SQLException e) {
             throw new SQLException("Error Counting Rows In Database: " + e.getMessage());
         }
-        returnSet = new String[count][5];
+        returnSet = new String[count][6];
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
@@ -51,6 +51,7 @@ public class PatientDB {
                 returnSet[i][2] = Integer.toString(rs.getInt(3));
                 returnSet[i][3] = rs.getString(4);
                 returnSet[i][4] = rs.getString(5);
+                returnSet[i][5] = rs.getString(6);
             }
         } catch (SQLException e) {
             throw new SQLException("Error Reading Database: " + e.getMessage());

@@ -55,7 +55,7 @@ public class Patient {
     }
 
     //checks for adding patient
-    public static Patient check(Patient p) throws ValidationException{
+    public static Patient check(Patient p, boolean b) throws ValidationException{
         if(p.getName().isEmpty()){
             throw new ValidationException("Name Cannot Be Null");
         }
@@ -68,8 +68,10 @@ public class Patient {
         if(!p.getGender().equals("Male") && !p.getGender().equals("Female") && !p.getGender().equals("Other")){
             throw new ValidationException("Gender Can Only Be: 'Male', 'Female', 'Other'");
         }
-        if(!PatientDB.checkPhone(p.getPhone())){
-            throw new ValidationException("Phone Number Already Exists In Records");
+        if(b) {
+            if (!PatientDB.checkPhone(p.getPhone())) {
+                throw new ValidationException("Phone Number Already Exists In Records");
+            }
         }
         if(!p.getPhone().isEmpty()) {
             if((p.getPhone().length() < 7)){

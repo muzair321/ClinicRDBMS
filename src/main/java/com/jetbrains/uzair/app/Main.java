@@ -5,7 +5,6 @@ import com.jetbrains.uzair.ui.PatientPanel;
 
 public class Main {
     public static void main(String[] args){
-        Database.createTables();
         PatientPanel.mainWindow();
     }
 }

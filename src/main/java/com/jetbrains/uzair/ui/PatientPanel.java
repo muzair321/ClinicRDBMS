@@ -300,11 +300,13 @@ public class PatientPanel {
     }
     //get data base table into GUI table
     private static JTable getDBData(JFrame window){
-        String[] headers = {"ID", "Name", "Age", "Gender", "Phone Number"};
+        String[] headers = {"ID", "Name", "Age", "Gender", "Phone Number", "Created At"};
         String[][] data;
         try{ data = PatientDB.returnUI();} catch (SQLException e) {
             JOptionPane.showMessageDialog(window, e.getMessage());
+            window.dispose();
             throw new RuntimeException("Error While Reading Data");
+
         }
         DefaultTableModel model = new DefaultTableModel(data, headers) {
             @Override
@@ -413,11 +415,13 @@ public class PatientPanel {
                         gender.getSelectedItem().toString(),
                         phone.getText()
                 };
-                Patient newP = Patient.check(Patient.convArrayToOb(raw));
+
                 if(id != -1) {
+                    Patient newP = Patient.check(Patient.convArrayToOb(raw), false);
                     PatientDB.edit(newP);
                 }else{
-                    PatientDB.insert(Patient.check(newP));
+                    Patient newP = Patient.check(Patient.convArrayToOb(raw), true);
+                    PatientDB.insert(newP);
                 }
                 refresh(table);
                 forum.dispose();
