@@ -151,7 +151,7 @@ public class PatientPanel {
         return btnAdd;
     }
     //make text field read only
-    private static JTextField createReadOnlyField(String text, Font font) {
+    public static JTextField createReadOnlyField(String text, Font font) {
         JTextField field = new JTextField(text);
         field.setEditable(false);
         field.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
@@ -446,7 +446,7 @@ public class PatientPanel {
                     PatientDB.edit(newP);
                 }else{
                     Patient newP = Patient.check(Patient.convArrayToOb(raw), true);
-                    PatientDB.insert(newP);
+                    VisitPanel.commonForum(window, PatientDB.insert(newP));
                 }
                 refresh(table);
                 forum.dispose();

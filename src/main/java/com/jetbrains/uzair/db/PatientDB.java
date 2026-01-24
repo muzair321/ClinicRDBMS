@@ -2,16 +2,13 @@ package com.jetbrains.uzair.db;
 
 import com.jetbrains.uzair.model.Patient;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 
 public class PatientDB {
     //Create
-    public static void insert(Patient p) throws SQLException{
+    public static int insert(Patient p) throws SQLException{
         String sql = "INSERT INTO patients(name, age, gender, phone) VALUES( ?, ?, ?, ?)";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -24,6 +21,13 @@ public class PatientDB {
                 stmt.setString(4, p.getPhone());
             }
             stmt.executeUpdate();
+            try (Statement s = conn.createStatement();
+                 ResultSet rs = s.executeQuery("SELECT last_insert_rowid()")) {
+                if (rs.next()) {
+                     return rs.getInt(1);
+                }
+                return -1;
+            }
         }catch (SQLException e){
             throw new SQLException("Error Inserting Data Into 'patients': " + e.getMessage());
         }
@@ -95,7 +99,18 @@ public class PatientDB {
             throw new SQLException("Error Editing Database: " + e.getMessage());
         }
     }
-    //Delete
+    //get name by id
+    public static String getName(int id) throws SQLException{
+        String sql = "SELECT name FROM patients WHERE id = ?";
+        try(Connection conn = Database.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            return rs.getString("name");
+        } catch (SQLException e) {
+            throw new SQLException("Error Getting Patient Name");
+        }
+    }
     // Delete by single id
     public static void delete(int id) throws SQLException{
         String sql = "DELETE FROM patients WHERE id = ?";

@@ -86,4 +86,31 @@ public class commonUI {
         };
         worker.execute();
     }
+    public static void refresh(JTable table, int ui) {
+        SwingWorker<String[][], Void> worker = new SwingWorker<>() {
+            @Override
+            protected String[][] doInBackground() throws SQLException {
+                if(ui == 1) {
+                    return PatientDB.returnUI();
+                } else if (ui == 2) {
+                    return VisitDB.returnUI();
+                }
+                return null; // Database call
+            }
+            @Override
+            protected void done() {
+                try {
+                    String[][] data = get();
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    model.setRowCount(0);
+                    for (String[] row : data) {
+                        model.addRow(row);
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(table, "Failed To Refresh Data");
+                }
+            }
+        };
+        worker.execute();
+    }
 }
