@@ -270,7 +270,16 @@ public class PatientPanel {
                     JOptionPane.showMessageDialog(disp, ex.getMessage());
                     return;
                 }});
+                JButton btnAddVisit = new JButton("Add Visit");
+                btnAddVisit.addActionListener(e1 -> {
+                    try {
+                        VisitPanel.commonForum(window, id, -1);
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(window, ex.getMessage());
+                    }
+                });
 
+                buttonPanel.add(btnAddVisit);
                 buttonPanel.add(btnEdit);
                 buttonPanel.add(btnDel);
                 buttonPanel.add(btnClose);
@@ -446,7 +455,7 @@ public class PatientPanel {
                     PatientDB.edit(newP);
                 }else{
                     Patient newP = Patient.check(Patient.convArrayToOb(raw), true);
-                    VisitPanel.commonForum(window, PatientDB.insert(newP));
+                    VisitPanel.commonForum(window, PatientDB.insert(newP), -1);
                 }
                 refresh(table);
                 forum.dispose();

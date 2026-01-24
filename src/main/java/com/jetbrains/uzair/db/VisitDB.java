@@ -1,5 +1,6 @@
 package com.jetbrains.uzair.db;
 
+import com.jetbrains.uzair.model.Patient;
 import com.jetbrains.uzair.model.Visit;
 
 import java.sql.Connection;
@@ -20,6 +21,19 @@ public class VisitDB {
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+        }
+    }
+    public static void edit(Visit v) throws SQLException{
+        String sql = "UPDATE visits SET patient_id = ?, treatment = ?, paid = ? WHERE id = ?";
+        try(Connection conn = Database.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt( 4, v.getId());
+            stmt.setInt(1, v.getPatientId());
+            stmt.setString(2, v.getTreatment());
+            stmt.setInt(3, v.getPaid());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error Editing Database: " + e.getMessage());
         }
     }
     public static String[][] returnUI() throws SQLException {
@@ -93,5 +107,24 @@ public class VisitDB {
 
         // Convert List to array
         return rows.toArray(new String[0][]);
+    }
+    public static Visit returnUISingle(int id) throws SQLException{
+        String sql = "SELECT id, patient_id, treatment, paid, date FROM visits WHERE id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {throw new SQLException("Visit Not Found With Id: " + id);}
+                Visit v = new Visit();
+                v.setId(rs.getInt("id"));
+                v.setPatientId(rs.getInt("patient_id"));
+                v.setTreatment(rs.getString("treatment"));
+                v.setPaid(rs.getInt("paid"));
+                v.setDate(rs.getString("date"));
+                return v;
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error retrieving patient (id: " + id + "): " + e.getMessage());
+        }
     }
 }
