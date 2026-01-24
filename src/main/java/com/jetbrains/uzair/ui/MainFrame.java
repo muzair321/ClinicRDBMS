@@ -22,11 +22,22 @@ public class MainFrame {
         header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
         header.setBackground(new Color(12, 38, 78));
 
+        ImageIcon logo = new ImageIcon(MainFrame.class.getResource("/img/Clinic-Uncolored.png"));
+        Image scaled = logo.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        JLabel logoLabel = new JLabel(new ImageIcon(scaled));
+
         JLabel title = new JLabel("Changez Clinic - Chak Beli Khan");
         title.setForeground(Color.WHITE);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        title.setFont(new Font("Segoe UI", Font.BOLD, 30));
 
-        header.add(title, BorderLayout.WEST);
+        JPanel leftHeader = new JPanel();
+        leftHeader.setLayout(new BoxLayout(leftHeader, BoxLayout.X_AXIS));
+        leftHeader.setOpaque(false); // keep header background visible
+        leftHeader.add(logoLabel);
+        leftHeader.add(Box.createHorizontalStrut(15));
+
+        header.add(leftHeader, BorderLayout.WEST);
+        header.add(title, BorderLayout.CENTER);
 
         // ================= TABS =================
         JTabbedPane tabs = new JTabbedPane();
@@ -34,7 +45,7 @@ public class MainFrame {
 
         // Example panels (replace with your real panels)
         tabs.addTab("Patients", PatientPanel.mainWindow(frame));
-        tabs.addTab("Visits", createPlaceholderPanel("Visits Panel"));
+        tabs.addTab("Visits", VisitPanel.mainWindow(frame));
         tabs.addTab("Inventory", createPlaceholderPanel("Inventory Panel"));
         tabs.addTab("Reports", createPlaceholderPanel("Reports Panel"));
 
