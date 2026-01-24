@@ -52,4 +52,46 @@ public class VisitDB {
         }
         return rows.toArray(new String[0][0]);
     }
+    public static String[][] returnUI(String searchTerm) throws SQLException {
+        List<String[]> rows = new ArrayList<>();
+
+        String sql = """
+        SELECT v.id,
+               v.patient_id,
+               p.name AS patient_name,
+               v.treatment,
+               v.paid,
+               v.date
+        FROM visits v
+        JOIN patients p ON p.id = v.patient_id
+        WHERE p.name LIKE ?
+            OR date LIKE ?
+            OR v.patient_id LIKE ?
+        """;
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            String searchPattern = "%" + searchTerm + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setString(3, searchPattern);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                java.sql.ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+
+                while (rs.next()) {
+                    String[] row = new String[columnCount];
+                    for (int i = 0; i < columnCount; i++) {
+                        row[i] = rs.getString(i + 1);
+                    }
+                    rows.add(row);
+                }
+            }
+        }
+
+        // Convert List to array
+        return rows.toArray(new String[0][]);
+    }
 }

@@ -41,7 +41,7 @@ public class PatientPanel {
         JButton btnRef = new JButton("Refresh");
         btnRef.addActionListener(e -> refresh(table));
         JButton btnSearch = new JButton("Search");
-        btnSearch.addActionListener(e -> search(table, searchField.getText()));
+        btnSearch.addActionListener(e -> commonUI.search(table, searchField.getText(), 1));
         btnEdit.setEnabled(false);
         btnView.setEnabled(false);
         btnDel.setEnabled(false);
@@ -331,25 +331,6 @@ public class PatientPanel {
 
         return btn;
     }
-    //get data base table into GUI table
-    private static JTable getDBData(JFrame window){
-        String[] headers = {"ID", "Name", "Age", "Gender", "Phone Number", "Created At"};
-        String[][] data;
-        try {
-            data = PatientDB.returnUI();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(window, e.getMessage());
-            window.dispose();
-            throw new RuntimeException("Error While Reading Data");
-        }
-        DefaultTableModel model = new DefaultTableModel(data, headers) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // prevent accidental edits
-            }
-        };
-        return new JTable(model);
-    }
     // common forum for both add and edit
     private static JFrame commonForum(JTable table, int id)  throws SQLException{
         Patient p;
@@ -465,28 +446,5 @@ public class PatientPanel {
         forum.add(buttonPanel, BorderLayout.SOUTH);
         forum.setVisible(true);
         return forum;
-    }
-    //return search data
-    private static void search(JTable table, String search) {
-        SwingWorker<String[][], Void> worker = new SwingWorker<>() {
-            @Override
-            protected String[][] doInBackground() throws SQLException {
-                return PatientDB.returnUI(search); // Database call
-            }
-            @Override
-            protected void done() {
-                try {
-                    String[][] data = get();
-                    DefaultTableModel model = (DefaultTableModel) table.getModel();
-                    model.setRowCount(0);
-                    for (String[] row : data) {
-                        model.addRow(row);
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(table, e.getMessage() + "Failed To Search");
-                }
-            }
-        };
-        worker.execute();
     }
 }
