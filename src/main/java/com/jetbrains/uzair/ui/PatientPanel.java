@@ -28,7 +28,7 @@ public class PatientPanel {
         searchField.setBackground(new Color(255, 255, 255));
         searchField.setOpaque(true);
 //table
-        JTable table = getDBData(window, searchField.getText());
+        JTable table = commonUI.getDBData(window, 1);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         JScrollPane scroll = new JScrollPane(table);
@@ -332,7 +332,7 @@ public class PatientPanel {
         return btn;
     }
     //get data base table into GUI table
-    private static JTable getDBData(JFrame window, String search){
+    private static JTable getDBData(JFrame window){
         String[] headers = {"ID", "Name", "Age", "Gender", "Phone Number", "Created At"};
         String[][] data;
         try {
