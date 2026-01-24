@@ -13,11 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PatientPanel {
-    public static void mainWindow(){
-        JFrame window = new JFrame("Patient Data");
-        window.setSize(1200, 900);
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setLocationRelativeTo(null);
+    public static JPanel mainWindow(JFrame window){
+        JPanel panel = new JPanel();
 
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         //search
@@ -66,12 +63,12 @@ public class PatientPanel {
         toolbar.add(searchField);
         toolbar.add(btnSearch);
 //main layout
-        window.setLayout(new BorderLayout());
-        window.add(toolbar, BorderLayout.NORTH);
-        window.add(scroll, BorderLayout.CENTER);
+        panel.setLayout(new BorderLayout());
+        panel.add(toolbar, BorderLayout.NORTH);
+        panel.add(scroll, BorderLayout.CENTER);
 
-        window.setVisible(true);
-
+        panel.setVisible(true);
+        return panel;
     }
     //refresh the table
     private static void refresh(JTable table) {
