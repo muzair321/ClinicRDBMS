@@ -29,9 +29,8 @@ public class PatientPanel {
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         JScrollPane scroll = new JScrollPane(table);
-
 //buttons
-        JButton btnAdd = addButton(table);
+        JButton btnAdd = addButton(table, window);
         JButton btnEdit = editButton1(table, window);
         JButton btnView = viewPatient(table, window);
         JButton btnDel = deleteButton(table, window);
@@ -140,11 +139,11 @@ public class PatientPanel {
         return btnDel;
     }
     //add new record forum
-    private static JButton addButton(JTable table){
+    private static JButton addButton(JTable table, JFrame window){
         JButton btnAdd = new JButton("Add New");
         btnAdd.addActionListener(e -> {
             try{
-                commonForum(table, -1);
+                commonForum(table, -1, window);
             }catch (SQLException sqle){
                 JOptionPane.showMessageDialog(null, "Error Adding Patient: " + sqle.getMessage());
             }
@@ -305,7 +304,7 @@ public class PatientPanel {
 
         btn.addActionListener(e -> {
             try {
-                commonForum(table, id);
+                commonForum(table, id, window);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed to load patient data");
                 return;
@@ -332,7 +331,7 @@ public class PatientPanel {
             int modelRow = table.convertRowIndexToModel(selectedRows[0]);
             int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
 
-            try {commonForum(table, id);} catch (SQLException ex) {
+            try {commonForum(table, id, window);} catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed to load patient data");
                 return;
             }
@@ -341,7 +340,7 @@ public class PatientPanel {
         return btn;
     }
     // common forum for both add and edit
-    private static JFrame commonForum(JTable table, int id)  throws SQLException{
+    private static JDialog commonForum(JTable table, int id, JFrame window)  throws SQLException{
         Patient p;
         String t = "Error";
         String nameS;
@@ -370,7 +369,7 @@ public class PatientPanel {
             ageF = null;
             phoneS = null;
         }
-        JFrame forum = new JFrame(t);
+        JDialog forum = new JDialog(window, t, true);
         forum.setSize(500, 600);
         forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         forum.setLocationRelativeTo(null);

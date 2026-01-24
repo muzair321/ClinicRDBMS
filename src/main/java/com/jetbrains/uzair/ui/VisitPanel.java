@@ -6,6 +6,8 @@ import java.awt.*;
 public class VisitPanel {
     public static JPanel mainWindow(JFrame window){
         JPanel panel = new JPanel();
+
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         //search
         PlaceholderTextField searchField = new PlaceholderTextField("Search Visit");
 
@@ -22,8 +24,9 @@ public class VisitPanel {
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(_ -> commonUI.search(table, searchField.getText(), 2));
         //toolbar
-        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        toolbar.add(new JButton("Visit Details"));
+        toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(searchField);
         toolbar.add(btnSearch);
         //main layout
