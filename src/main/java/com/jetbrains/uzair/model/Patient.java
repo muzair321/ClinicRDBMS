@@ -55,7 +55,12 @@ public class Patient {
             throw new ValidationException("Enter Only Numbers In Phone Number");
         }
         p.setGender(raw[3]);
-        p.setPhone(raw[4]);
+        String phone = raw[4];
+        if (phone == null || phone.trim().isEmpty()) {
+            p.setPhone(null);
+        } else {
+            p.setPhone(phone.trim());
+        }
         return p;
     }
 
@@ -78,7 +83,7 @@ public class Patient {
                 throw new ValidationException("Phone Number Already Exists In Records");
             }
         }
-        if(!p.getPhone().isEmpty()) {
+        if(p.getPhone() != null) {
             if((p.getPhone().length() < 7)){
                 throw new ValidationException("Phone Number Has To Be Longer Than 7");
             }
@@ -86,6 +91,7 @@ public class Patient {
                 throw new ValidationException("Phone Number Can Only Contain Dashes And Numbers");
             }
         }
+        System.out.println(p.getPhone());
         return p;
     }
 }

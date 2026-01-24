@@ -41,7 +41,7 @@ public class MainFrame {
 
         // ================= TABS =================
         JTabbedPane tabs = new JTabbedPane();
-        tabs.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        tabs.setFont(new Font("Segoe UI", Font.PLAIN, 17));
 
         // Example panels (replace with your real panels)
         tabs.addTab("Patients", PatientPanel.mainWindow(frame));

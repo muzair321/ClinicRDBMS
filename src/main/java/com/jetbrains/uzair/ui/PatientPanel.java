@@ -276,7 +276,19 @@ public class PatientPanel {
                 buttonPanel.add(btnDel);
                 buttonPanel.add(btnClose);
 
+                //header
+                JPanel header = new JPanel();
+                header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+                header.setBackground(new Color(12, 38, 78));
+
+                JLabel head = new JLabel("Patient Data");
+                head.setForeground(Color.WHITE);
+                head.setFont(new Font("Segoe UI", Font.BOLD, 30));
+                header.add(head);
+
+                //panels
                 disp.setLayout(new BorderLayout());
+                disp.add(header, BorderLayout.NORTH);
                 disp.add(panel, BorderLayout.CENTER);
                 disp.add(buttonPanel, BorderLayout.SOUTH);
                 disp.setVisible(true);
@@ -359,10 +371,19 @@ public class PatientPanel {
             phoneS = null;
         }
         JFrame forum = new JFrame(t);
-        forum.setSize(320, 260);
+        forum.setSize(500, 600);
         forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         forum.setLocationRelativeTo(null);
         forum.setLayout(new BorderLayout());
+        //header
+        JPanel header = new JPanel();
+        header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        header.setBackground(new Color(12, 38, 78));
+
+        JLabel head = new JLabel(t);
+        head.setForeground(Color.WHITE);
+        head.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        header.add(head);
 //Form panel
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
@@ -438,7 +459,7 @@ public class PatientPanel {
             }
         });
         btnCancel.addActionListener(ev -> forum.dispose());
-
+        forum.add(header, BorderLayout.NORTH);
         forum.add(formPanel, BorderLayout.CENTER);
         forum.add(buttonPanel, BorderLayout.SOUTH);
         forum.setVisible(true);
