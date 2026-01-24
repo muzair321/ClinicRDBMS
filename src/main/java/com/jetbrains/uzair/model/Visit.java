@@ -46,7 +46,6 @@ public class Visit {
         } catch (NumberFormatException e) {
             throw new ValidationException("Enter Numbers Only In Paid");
         }
-        v.setDate(raw[4]);
         return v;
     }
     public static Visit check(Visit v) throws ValidationException{
