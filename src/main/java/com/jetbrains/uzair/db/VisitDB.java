@@ -12,25 +12,27 @@ import java.util.ArrayList;
 
 public class VisitDB {
     public static void insert(Visit v){
-        String sql = "INSERT INTO visits(patient_id, treatment, paid)  VALUES(?, ?, ?)";
+        String sql = "INSERT INTO visits(patient_id, illness, treatment, paid)  VALUES(?, ?, ?, ?)";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, v.getPatientId());
-            stmt.setString(2, v.getTreatment());
-            stmt.setInt(3, v.getPaid());
+            stmt.setString(2, v.getIll());
+            stmt.setString(3, v.getTreatment());
+            stmt.setInt(4, v.getPaid());
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
     }
     public static void edit(Visit v) throws SQLException{
-        String sql = "UPDATE visits SET patient_id = ?, treatment = ?, paid = ? WHERE id = ?";
+        String sql = "UPDATE visits SET patient_id = ?, illness = ?, treatment = ?, paid = ? WHERE id = ?";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt( 4, v.getId());
+            stmt.setInt( 5, v.getId());
             stmt.setInt(1, v.getPatientId());
-            stmt.setString(2, v.getTreatment());
-            stmt.setInt(3, v.getPaid());
+            stmt.setString(2, v.getIll());
+            stmt.setString(3, v.getTreatment());
+            stmt.setInt(4, v.getPaid());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException("Error Editing Database: " + e.getMessage());
@@ -41,8 +43,7 @@ public class VisitDB {
         SELECT v.id,
                v.patient_id,
                p.name AS patient_name,
-               v.treatment,
-               v.paid,
+               v.illness,
                v.date
         FROM visits v
         JOIN patients p ON p.id = v.patient_id
@@ -56,8 +57,7 @@ public class VisitDB {
                         String.valueOf(rs.getInt("id")),
                         String.valueOf(rs.getInt("patient_id")),
                         rs.getString("patient_name"),
-                        rs.getString("treatment"),
-                        String.valueOf(rs.getInt("paid")),
+                        rs.getString("illness"),
                         rs.getString("date")
                 });
             }
@@ -73,8 +73,8 @@ public class VisitDB {
         SELECT v.id,
                v.patient_id,
                p.name AS patient_name,
+               v.illness,
                v.treatment,
-               v.paid,
                v.date
         FROM visits v
         JOIN patients p ON p.id = v.patient_id
@@ -92,24 +92,22 @@ public class VisitDB {
             stmt.setString(3, searchPattern);
 
             try (ResultSet rs = stmt.executeQuery()) {
-                java.sql.ResultSetMetaData metaData = rs.getMetaData();
-                int columnCount = metaData.getColumnCount();
-
                 while (rs.next()) {
-                    String[] row = new String[columnCount];
-                    for (int i = 0; i < columnCount; i++) {
-                        row[i] = rs.getString(i + 1);
-                    }
-                    rows.add(row);
+                    rows.add(new String[]{
+                            String.valueOf(rs.getInt("id")),
+                            String.valueOf(rs.getInt("patient_id")),
+                            rs.getString("patient_name"),
+                            rs.getString("illness"),
+                            rs.getString("date")
+                    });
                 }
             }
         }
-
         // Convert List to array
         return rows.toArray(new String[0][]);
     }
     public static Visit returnUISingle(int id) throws SQLException{
-        String sql = "SELECT id, patient_id, treatment, paid, date FROM visits WHERE id = ?";
+        String sql = "SELECT id, patient_id, illness, treatment, paid, date FROM visits WHERE id = ?";
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -118,13 +116,14 @@ public class VisitDB {
                 Visit v = new Visit();
                 v.setId(rs.getInt("id"));
                 v.setPatientId(rs.getInt("patient_id"));
+                v.setIll(rs.getString("illness"));
                 v.setTreatment(rs.getString("treatment"));
                 v.setPaid(rs.getInt("paid"));
                 v.setDate(rs.getString("date"));
                 return v;
             }
         } catch (SQLException e) {
-            throw new SQLException("Error retrieving patient (id: " + id + "): " + e.getMessage());
+            throw new SQLException("Error retrieving Visit (id: " + id + "): " + e.getMessage());
         }
     }
     public static void delete(int id) throws SQLException{

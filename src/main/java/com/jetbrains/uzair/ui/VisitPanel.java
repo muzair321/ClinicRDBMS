@@ -55,17 +55,20 @@ public class VisitPanel {
         String name = "Error";
         String treatS;
         String payS;
+        String illS;
         String t;
         if(id != -1){
             v = VisitDB.returnUISingle(id);
             t = "Edit Visit Details";
             treatS = v.getTreatment();
             payS = Integer.toString(v.getPaid());
+            illS = v.getIll();
         }else{
             v = new Visit();
             t =  "Add Visit Details";
-            treatS = v.getTreatment();
-            payS = Integer.toString(v.getPaid());
+            treatS = null;
+            payS = null;
+            illS = null;
         }
 
         Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
@@ -104,6 +107,13 @@ public class VisitPanel {
         gbc.gridx = 1;
         formPanel.add(commonUI.createReadOnlyField(name, valueFont), gbc);
         row++;
+        //illness
+        gbc.gridx = 0; gbc.gridy = row;
+        formPanel.add(new JLabel("Illness:"), gbc);
+        gbc.gridx = 1;
+        JTextField ill = new JTextField(illS, 15);
+        formPanel.add(ill, gbc);
+        row++;
 //treatment
         gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(new JLabel("Treatment:"), gbc);
@@ -131,6 +141,7 @@ public class VisitPanel {
                 String[] raw = {
                         String.valueOf(v.getId()),
                         Integer.toString(patientId),
+                        ill.getText(),
                         treat.getText(),
                         pay.getText()
                 };
@@ -232,6 +243,13 @@ public class VisitPanel {
 
             gbc.gridx = 1;
             panel.add(commonUI.createReadOnlyField(PatientDB.getName(v.getPatientId()), valueFont), gbc);
+            row++;
+
+            gbc.gridx = 0; gbc.gridy = row;
+            panel.add(new JLabel("Illness:"), gbc);
+
+            gbc.gridx = 1;
+            panel.add(commonUI.createReadOnlyField(v.getIll(), valueFont), gbc);
             row++;
 
             gbc.gridx = 0; gbc.gridy = row;

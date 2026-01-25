@@ -51,8 +51,7 @@ public class commonUI {
             headers.add("Visit ID");
             headers.add("Patient ID");
             headers.add("Patient Name");
-            headers.add("Treatment");
-            headers.add("Payment");
+            headers.add("Illness");
             headers.add("Date Of Visit");
         }else{
             headers.add("Error");

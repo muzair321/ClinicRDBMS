@@ -35,6 +35,7 @@ public class Database {
                 CREATE TABLE IF NOT EXISTS visits(
                 id INTEGER  PRIMARY KEY AUTOINCREMENT,
                 patient_id INTEGER NOT NULL,
+                illness TEXT,
                 treatment TEXT,
                 paid INTEGER NOT NULL CHECK (paid >= 0),
                 date TEXT NOT NULL DEFAULT (datetime('now')),
