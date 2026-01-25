@@ -70,7 +70,7 @@ public class PatientPanel {
         return panel;
     }
     //refresh the table
-    private static void refresh(JTable table) {
+    public static void refresh(JTable table) {
         SwingWorker<String[][], Void> worker = new SwingWorker<>() {
             @Override
             protected String[][] doInBackground() throws SQLException {
@@ -151,15 +151,15 @@ public class PatientPanel {
         return btnAdd;
     }
     //make text field read only
-    public static JTextField createReadOnlyField(String text, Font font) {
-        JTextField field = new JTextField(text);
-        field.setEditable(false);
-        field.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-        field.setBackground(UIManager.getColor("Panel.background"));
-        field.setFont(font);
-        field.setColumns(15);
-        return field;
-    }
+//    public static JTextField createReadOnlyField(String text, Font font) {
+//        JTextField field = new JTextField(text);
+//        field.setEditable(false);
+//        field.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+//        field.setBackground(UIManager.getColor("Panel.background"));
+//        field.setFont(font);
+//        field.setColumns(15);
+//        return field;
+//    }
     //view selected patient
     private static JButton viewPatient(JTable table, JFrame window){
         JButton btnVew = new JButton("View Patient Data");
@@ -177,138 +177,12 @@ public class PatientPanel {
 
             int modelRow = table.convertRowIndexToModel(selectedRows[0]);
             int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
-            try {
-                Patient p = PatientDB.returnUISingle(id);
-                JFrame disp = new JFrame("Patient Details");
-                disp.setSize(500, 700);
-                disp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                disp.setLocationRelativeTo(null); // center on screen
-
-                JPanel panel = new JPanel();
-                panel.setLayout(new GridBagLayout());
-                panel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-
-                GridBagConstraints gbc = new GridBagConstraints();
-                gbc.insets = new Insets(8, 8, 8, 8);
-                gbc.anchor = GridBagConstraints.WEST;
-
-                Font labelFont = new Font("Segoe UI", Font.BOLD, 13);
-                Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
-
-                int row = 0;
-                gbc.gridx = 0; gbc.gridy = row;
-                panel.add(new JLabel("ID:"), gbc);
-
-                gbc.gridx = 1;
-                panel.add(createReadOnlyField(String.valueOf(p.getId()), valueFont), gbc);
-                row++;
-
-                gbc.gridx = 0; gbc.gridy = row;
-                panel.add(new JLabel("Name:"), gbc);
-
-                gbc.gridx = 1;
-                panel.add(createReadOnlyField(p.getName(), valueFont), gbc);
-                row++;
-
-                gbc.gridx = 0; gbc.gridy = row;
-                panel.add(new JLabel("Age:"), gbc);
-
-                gbc.gridx = 1;
-                panel.add(createReadOnlyField(String.valueOf(p.getAge()), valueFont), gbc);
-                row++;
-
-                gbc.gridx = 0; gbc.gridy = row;
-                panel.add(new JLabel("Gender:"), gbc);
-
-                gbc.gridx = 1;
-                panel.add(createReadOnlyField(p.getGender(), valueFont), gbc);
-                row++;
-
-                gbc.gridx = 0; gbc.gridy = row;
-                panel.add(new JLabel("Phone Number:"), gbc);
-
-                gbc.gridx = 1;
-                panel.add(createReadOnlyField(p.getPhone(), valueFont), gbc);
-                row++;
-
-                gbc.gridx = 0; gbc.gridy = row;
-                panel.add(new JLabel("Date Of Creation:"), gbc);
-
-                gbc.gridx = 1;
-                panel.add(createReadOnlyField(p.getCreatedAt(), valueFont), gbc);
-
-                JPanel buttonPanel = new JPanel();
-                buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
-                buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-
-                JButton btnEdit = editButton2(table, window, id);
-                JButton btnClose = new JButton("Close");
-                btnClose.addActionListener(e1 -> {disp.dispose();});
-                JButton btnDel = new JButton("Delete");
-                btnDel.addActionListener(e1 -> {
-                    try {
-                        SoundPlayer.play("popup.wav");
-                    } catch (RuntimeException ex) {
-                        JOptionPane.showMessageDialog(window, ex.getMessage());
-                    }
-                    int choice = JOptionPane.showConfirmDialog(
-                            window,
-                            "Are You Sure You Want To Delete The Selected Patient(s)?",
-                            "Confirm Deletion",
-                            JOptionPane.YES_NO_OPTION
-                    );
-
-                    if (choice != JOptionPane.YES_OPTION) {
-                        return;
-                    }
-                    try{
-                    PatientDB.delete(id);
-                    JOptionPane.showMessageDialog(window, "Patient Deleted Successfully");
-                    refresh(table);
-                    disp.dispose();
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(disp, ex.getMessage());
-                    return;
-                }});
-                JButton btnAddVisit = new JButton("Add Visit");
-                btnAddVisit.addActionListener(e1 -> {
-                    try {
-                        VisitPanel.commonForum(window, id, -1);
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(window, ex.getMessage());
-                    }
-                });
-
-                buttonPanel.add(btnAddVisit);
-                buttonPanel.add(btnEdit);
-                buttonPanel.add(btnDel);
-                buttonPanel.add(btnClose);
-
-                //header
-                JPanel header = new JPanel();
-                header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-                header.setBackground(new Color(12, 38, 78));
-
-                JLabel head = new JLabel("Patient Data");
-                head.setForeground(Color.WHITE);
-                head.setFont(new Font("Segoe UI", Font.BOLD, 30));
-                header.add(head);
-
-                //panels
-                disp.setLayout(new BorderLayout());
-                disp.add(header, BorderLayout.NORTH);
-                disp.add(panel, BorderLayout.CENTER);
-                disp.add(buttonPanel, BorderLayout.SOUTH);
-                disp.setVisible(true);
-            }catch (SQLException sqle){
-                JOptionPane.showMessageDialog(window,  "Error Occured: " + sqle.getMessage());
-                return;
-            }
+            commonUI.patientDetails(table, window, id);
         });
         return btnVew;
     }
     //edit button for patient info frame
-    private static JButton editButton2(JTable table, JFrame window, int id) {
+    public static JButton editButton2(JTable table, JFrame window, int id) {
         JButton btn = new JButton("Edit Patient");
 
         btn.addActionListener(e -> {

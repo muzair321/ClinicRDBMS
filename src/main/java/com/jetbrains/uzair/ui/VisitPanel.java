@@ -33,7 +33,7 @@ public class VisitPanel {
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(_ -> commonUI.search(table, searchField.getText(), 2));
         JButton btnDelete = new JButton("Delete Visit");
-        JButton btnView = new JButton("Details");
+        JButton btnView = viewVisit(table, window);
         //toolbar
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         toolbar.add(btnView);
@@ -102,7 +102,7 @@ public class VisitPanel {
         gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(new JLabel("Name:"), gbc);
         gbc.gridx = 1;
-        formPanel.add(PatientPanel.createReadOnlyField(name, valueFont), gbc);
+        formPanel.add(commonUI.createReadOnlyField(name, valueFont), gbc);
         row++;
 //treatment
         gbc.gridx = 0; gbc.gridy = row;
@@ -176,6 +176,149 @@ public class VisitPanel {
             }
         });
 
+        return btn;
+    }
+    private static JButton viewVisit(JTable table, JFrame window){
+        JButton btnVew = new JButton("Details");
+        btnVew.addActionListener(e -> {
+        int[] selectedRows = table.getSelectedRows();
+
+        if (selectedRows.length == 0) {
+            JOptionPane.showMessageDialog(window, "No Visit(s) Selected");
+            return;
+        }
+        if (selectedRows.length > 1){
+            JOptionPane.showMessageDialog(window, "Select Only 1 Visit");
+            return;
+        }
+
+        int modelRow = table.convertRowIndexToModel(selectedRows[0]);
+        int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
+        try {
+            com.jetbrains.uzair.model.Visit v = VisitDB.returnUISingle(id);
+            JDialog disp = new JDialog(window,"Visit Details", true);
+            disp.setSize(500, 700);
+            disp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            disp.setLocationRelativeTo(null); // center on screen
+
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridBagLayout());
+            panel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(8, 8, 8, 8);
+            gbc.anchor = GridBagConstraints.WEST;
+
+            Font labelFont = new Font("Segoe UI", Font.BOLD, 13);
+            Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
+
+            int row = 0;
+            gbc.gridx = 0; gbc.gridy = row;
+            panel.add(new JLabel("Visit ID:"), gbc);
+
+            gbc.gridx = 1;
+            panel.add(commonUI.createReadOnlyField(String.valueOf(v.getId()), valueFont), gbc);
+            row++;
+
+            gbc.gridx = 0; gbc.gridy = row;
+            panel.add(new JLabel("Patient ID:"), gbc);
+
+            gbc.gridx = 1;
+            panel.add(commonUI.createReadOnlyField(String.valueOf(v.getPatientId()), valueFont), gbc);
+            row++;
+
+            gbc.gridx = 0; gbc.gridy = row;
+            panel.add(new JLabel("Patient Name:"), gbc);
+
+            gbc.gridx = 1;
+            panel.add(commonUI.createReadOnlyField(PatientDB.getName(v.getPatientId()), valueFont), gbc);
+            row++;
+
+            gbc.gridx = 0; gbc.gridy = row;
+            panel.add(new JLabel("Treatement:"), gbc);
+
+            gbc.gridx = 1;
+            panel.add(commonUI.createReadOnlyField(v.getTreatment(), valueFont), gbc);
+            row++;
+
+            gbc.gridx = 0; gbc.gridy = row;
+            panel.add(new JLabel("Date Of Visit:"), gbc);
+
+            gbc.gridx = 1;
+            panel.add(commonUI.createReadOnlyField(v.getDate(), valueFont), gbc);
+
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
+            buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+
+            JButton btnEdit = editButton2(v.getPatientId(), window, id);
+            JButton btnClose = new JButton("Close");
+            btnClose.addActionListener(e1 -> {disp.dispose();});
+            JButton btnDel = new JButton("Delete");
+            btnDel.addActionListener(e1 -> {
+                try {
+                    SoundPlayer.play("popup.wav");
+                } catch (RuntimeException ex) {
+                    JOptionPane.showMessageDialog(window, ex.getMessage());
+                }
+                int choice = JOptionPane.showConfirmDialog(
+                        window,
+                        "Are You Sure You Want To Delete The Selected Visit(s)?",
+                        "Confirm Deletion",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (choice != JOptionPane.YES_OPTION) {
+                    return;
+                }
+                try{
+                    VisitDB.delete(id);
+                    JOptionPane.showMessageDialog(window, "Visit Deleted Successfully");
+                    disp.dispose();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(disp, ex.getMessage());
+                }});
+            JButton btnViewPatient = new JButton("View Patient");
+            btnViewPatient.addActionListener(e1 -> {commonUI.patientDetails(commonUI.getDBData(window, 1), window, v.getPatientId());});
+
+            buttonPanel.add(btnViewPatient);
+            buttonPanel.add(btnEdit);
+            buttonPanel.add(btnDel);
+            buttonPanel.add(btnClose);
+
+            //header
+            JPanel header = new JPanel();
+            header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+            header.setBackground(new Color(12, 38, 78));
+
+            JLabel head = new JLabel("Visit Data");
+            head.setForeground(Color.WHITE);
+            head.setFont(new Font("Segoe UI", Font.BOLD, 30));
+            header.add(head);
+
+            //panels
+            disp.setLayout(new BorderLayout());
+            disp.add(header, BorderLayout.NORTH);
+            disp.add(panel, BorderLayout.CENTER);
+            disp.add(buttonPanel, BorderLayout.SOUTH);
+            disp.setVisible(true);
+        }catch (SQLException sqle){
+            JOptionPane.showMessageDialog(window,  "Error Occured: " + sqle.getMessage());
+            return;
+        }
+    });
+        return btnVew;
+    }
+    private static JButton editButton2(int patientId, JFrame window, int id) {
+        JButton btn = new JButton("Edit Visit");
+
+        btn.addActionListener(e -> {
+            try {
+                commonForum(window, patientId, id);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(window, "Failed to load patient data");
+            }
+        });
         return btn;
     }
 }

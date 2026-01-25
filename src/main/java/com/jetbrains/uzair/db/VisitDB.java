@@ -127,4 +127,14 @@ public class VisitDB {
             throw new SQLException("Error retrieving patient (id: " + id + "): " + e.getMessage());
         }
     }
+    public static void delete(int id) throws SQLException{
+        String sql = "DELETE FROM visits WHERE id = ?";
+        try(Connection conn = Database.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error Deleting Visit id(" + id + "): " + e.getMessage());
+        }
+    }
 }
