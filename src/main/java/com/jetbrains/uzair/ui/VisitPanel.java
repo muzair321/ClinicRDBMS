@@ -1,9 +1,7 @@
 package com.jetbrains.uzair.ui;
 
-import com.jetbrains.uzair.db.Database;
 import com.jetbrains.uzair.db.PatientDB;
 import com.jetbrains.uzair.db.VisitDB;
-import com.jetbrains.uzair.model.Patient;
 import com.jetbrains.uzair.model.ValidationException;
 import com.jetbrains.uzair.model.Visit;
 
@@ -32,8 +30,10 @@ public class VisitPanel {
         JButton btnVisit = editButton1(table, window);
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(_ -> commonUI.search(table, searchField.getText(), 2));
-        JButton btnDelete = new JButton("Delete Visit");
+        JButton btnDelete = commonUI.deleteButton(table, window, 2);
         JButton btnView = viewVisit(table, window);
+        JButton btnRef = new JButton("Refresh");
+        btnRef.addActionListener(e -> commonUI.refresh(table, 2));
         //toolbar
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         toolbar.add(btnView);
@@ -41,6 +41,7 @@ public class VisitPanel {
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnDelete);
         toolbar.add(Box.createHorizontalStrut(20));
+        toolbar.add(btnRef);
         toolbar.add(searchField);
         toolbar.add(btnSearch);
         //main layout
@@ -50,7 +51,7 @@ public class VisitPanel {
 
         return panel;
     }
-    public static void commonForum( JFrame window, int patientId, int id) throws SQLException{
+    public static void commonForum( JFrame window, int patientId, int id, JTable table) throws SQLException{
         Visit v;
         String name = "Error";
         String treatS;
@@ -150,10 +151,9 @@ public class VisitPanel {
                 }else {
                     VisitDB.insert(Visit.check(Visit.convArrayToOb(raw)));
                 }
+                commonUI.refresh(table, 2);
                 forum.dispose();
-            } catch (ValidationException ve) {
-                JOptionPane.showMessageDialog(forum, ve.getMessage());
-            }catch (SQLException e){
+            } catch (ValidationException| SQLException e) {
                 JOptionPane.showMessageDialog(forum, e.getMessage());
             }
         });
@@ -181,9 +181,8 @@ public class VisitPanel {
             int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
             int patientId = Integer.parseInt(table.getModel().getValueAt(modelRow, 1).toString());
 
-            try {commonForum(window, patientId, id);} catch (SQLException ex) {
+            try {commonForum(window, patientId, id, table);} catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed To Load Visit Data");
-                return;
             }
         });
 
@@ -220,7 +219,6 @@ public class VisitPanel {
             gbc.insets = new Insets(8, 8, 8, 8);
             gbc.anchor = GridBagConstraints.WEST;
 
-            Font labelFont = new Font("Segoe UI", Font.BOLD, 13);
             Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
 
             int row = 0;
@@ -269,7 +267,7 @@ public class VisitPanel {
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
             buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 
-            JButton btnEdit = editButton2(v.getPatientId(), window, id);
+            JButton btnEdit = editButton2(v.getPatientId(), window, id, table);
             JButton btnClose = new JButton("Close");
             btnClose.addActionListener(e1 -> {disp.dispose();});
             JButton btnDel = new JButton("Delete");
@@ -281,7 +279,7 @@ public class VisitPanel {
                 }
                 int choice = JOptionPane.showConfirmDialog(
                         window,
-                        "Are You Sure You Want To Delete The Selected Visit(s)?",
+                        "Are You Sure You Want To Delete The Selected Visit?",
                         "Confirm Deletion",
                         JOptionPane.YES_NO_OPTION
                 );
@@ -292,12 +290,13 @@ public class VisitPanel {
                 try{
                     VisitDB.delete(id);
                     JOptionPane.showMessageDialog(window, "Visit Deleted Successfully");
+                    commonUI.refresh(table, 2);
                     disp.dispose();
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(disp, ex.getMessage());
                 }});
             JButton btnViewPatient = new JButton("View Patient");
-            btnViewPatient.addActionListener(e1 -> {commonUI.patientDetails(commonUI.getDBData(window, 1), window, v.getPatientId());});
+            btnViewPatient.addActionListener(e1 -> commonUI.patientDetails(commonUI.getDBData(window, 1), window, v.getPatientId()));
 
             buttonPanel.add(btnViewPatient);
             buttonPanel.add(btnEdit);
@@ -322,17 +321,16 @@ public class VisitPanel {
             disp.setVisible(true);
         }catch (SQLException sqle){
             JOptionPane.showMessageDialog(window,  "Error Occured: " + sqle.getMessage());
-            return;
         }
     });
         return btnVew;
     }
-    private static JButton editButton2(int patientId, JFrame window, int id) {
+    private static JButton editButton2(int patientId, JFrame window, int id, JTable table) {
         JButton btn = new JButton("Edit Visit");
 
         btn.addActionListener(e -> {
             try {
-                commonForum(window, patientId, id);
+                commonForum(window, patientId, id, table);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed to load patient data");
             }

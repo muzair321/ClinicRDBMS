@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class commonUI {
     public static JTable getDBData(JFrame window, int ui){
@@ -88,31 +89,34 @@ public class commonUI {
         worker.execute();
     }
     public static void refresh(JTable table, int ui) {
-        SwingWorker<String[][], Void> worker = new SwingWorker<>() {
-            @Override
-            protected String[][] doInBackground() throws SQLException {
-                if(ui == 1) {
-                    return PatientDB.returnUI();
-                } else if (ui == 2) {
-                    return VisitDB.returnUI();
-                }
-                return null; // Database call
-            }
-            @Override
-            protected void done() {
-                try {
-                    String[][] data = get();
-                    DefaultTableModel model = (DefaultTableModel) table.getModel();
-                    model.setRowCount(0);
-                    for (String[] row : data) {
-                        model.addRow(row);
+        if(table != null) {
+            SwingWorker<String[][], Void> worker = new SwingWorker<>() {
+                @Override
+                protected String[][] doInBackground() throws SQLException {
+                    if (ui == 1) {
+                        return PatientDB.returnUI();
+                    } else if (ui == 2) {
+                        return VisitDB.returnUI();
                     }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(table, "Failed To Refresh Data");
+                    return null; // Database call
                 }
-            }
-        };
-        worker.execute();
+
+                @Override
+                protected void done() {
+                    try {
+                        String[][] data = get();
+                        DefaultTableModel model = (DefaultTableModel) table.getModel();
+                        model.setRowCount(0);
+                        for (String[] row : data) {
+                            model.addRow(row);
+                        }
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(table, "Failed To Refresh Data");
+                    }
+                }
+            };
+            worker.execute();
+        }
     }
     public static JTextField createReadOnlyField(String text, Font font) {
         JTextField field = new JTextField(text);
@@ -211,7 +215,7 @@ public class commonUI {
                 try{
                     PatientDB.delete(id);
                     JOptionPane.showMessageDialog(window, "Patient Deleted Successfully");
-                    PatientPanel.refresh(table);
+                    commonUI.refresh(table, 1);
                     disp.dispose();
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(disp, ex.getMessage());
@@ -220,7 +224,7 @@ public class commonUI {
             JButton btnAddVisit = new JButton("Add Visit");
             btnAddVisit.addActionListener(e1 -> {
                 try {
-                    VisitPanel.commonForum(window, id, -1);
+                    VisitPanel.commonForum(window, id, -1, null);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(window, ex.getMessage());
                 }
@@ -251,5 +255,59 @@ public class commonUI {
             JOptionPane.showMessageDialog(window,  "Error Occured: " + sqle.getMessage());
             return;
         }
+    }
+    public static JButton deleteButton(JTable table, JFrame window, int ui){
+        JButton btnDel = new JButton("Delete");
+        btnDel.addActionListener(e -> {
+
+            int[] selectedRows = table.getSelectedRows();
+
+            if (selectedRows.length == 0) {
+                JOptionPane.showMessageDialog(window, "No Patient(s) Selected");
+                return;
+            }
+
+            List<Integer> patientIds = new ArrayList<>();
+
+            for (int viewRow : selectedRows) {
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
+                patientIds.add(id);
+            }
+            try {
+                SoundPlayer.play("popup.wav");
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(window, ex.getMessage());
+            }
+            String t;
+            if(ui == 1){
+                t = "Patient";
+            }else {
+                t = "Visit";
+            }
+            int choice = JOptionPane.showConfirmDialog(
+                    window,
+                    "Are You Sure You Want To Delete The Selected " + t + "(s)?",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (choice != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            try {
+                if(ui == 1) {
+                    PatientDB.deleteList(patientIds);
+                } else if (ui == 2) {
+                    VisitDB.deleteList(patientIds);
+                }
+                JOptionPane.showMessageDialog(window, "Deleted Successfully");
+                refresh(table, ui);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(window, "Delete Failed");
+            }
+        });
+        return btnDel;
     }
 }

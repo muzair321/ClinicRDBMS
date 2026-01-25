@@ -33,9 +33,9 @@ public class PatientPanel {
         JButton btnAdd = addButton(table, window);
         JButton btnEdit = editButton1(table, window);
         JButton btnView = viewPatient(table, window);
-        JButton btnDel = deleteButton(table, window);
+        JButton btnDel = commonUI.deleteButton(table, window, 1);
         JButton btnRef = new JButton("Refresh");
-        btnRef.addActionListener(e -> refresh(table));
+        btnRef.addActionListener(e -> commonUI.refresh(table, 1));
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(e -> commonUI.search(table, searchField.getText(), 1));
         btnEdit.setEnabled(false);
@@ -70,74 +70,29 @@ public class PatientPanel {
         return panel;
     }
     //refresh the table
-    public static void refresh(JTable table) {
-        SwingWorker<String[][], Void> worker = new SwingWorker<>() {
-            @Override
-            protected String[][] doInBackground() throws SQLException {
-                return PatientDB.returnUI(); // Database call
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    String[][] data = get();
-                    DefaultTableModel model = (DefaultTableModel) table.getModel();
-                    model.setRowCount(0);
-                    for (String[] row : data) {
-                        model.addRow(row);
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(table, "Failed To Refresh Data");
-                }
-            }
-        };
-        worker.execute();
-    }
-    // selected delete
-    private static JButton deleteButton(JTable table, JFrame window){
-        JButton btnDel = new JButton("Delete");
-        btnDel.addActionListener(e -> {
-
-            int[] selectedRows = table.getSelectedRows();
-
-            if (selectedRows.length == 0) {
-                JOptionPane.showMessageDialog(window, "No Patient(s) Selected");
-                return;
-            }
-
-            List<Integer> patientIds = new ArrayList<>();
-
-            for (int viewRow : selectedRows) {
-                int modelRow = table.convertRowIndexToModel(viewRow);
-                int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
-                patientIds.add(id);
-            }
-            try {
-                SoundPlayer.play("popup.wav");
-            } catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(window, ex.getMessage());
-            }
-            int choice = JOptionPane.showConfirmDialog(
-                    window,
-                    "Are You Sure You Want To Delete The Selected Patient(s)?",
-                    "Confirm Deletion",
-                    JOptionPane.YES_NO_OPTION
-            );
-
-            if (choice != JOptionPane.YES_OPTION) {
-                return;
-            }
-
-            try {
-                PatientDB.deleteList(patientIds);
-                JOptionPane.showMessageDialog(window, "Deleted Successfully");
-                refresh(table);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(window, "Delete Failed");
-            }
-        });
-        return btnDel;
-    }
+//    public static void refresh(JTable table) {
+//        SwingWorker<String[][], Void> worker = new SwingWorker<>() {
+//            @Override
+//            protected String[][] doInBackground() throws SQLException {
+//                return PatientDB.returnUI(); // Database call
+//            }
+//
+//            @Override
+//            protected void done() {
+//                try {
+//                    String[][] data = get();
+//                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+//                    model.setRowCount(0);
+//                    for (String[] row : data) {
+//                        model.addRow(row);
+//                    }
+//                } catch (Exception e) {
+//                    JOptionPane.showMessageDialog(table, "Failed To Refresh Data");
+//                }
+//            }
+//        };
+//        worker.execute();
+//    }
     //add new record forum
     private static JButton addButton(JTable table, JFrame window){
         JButton btnAdd = new JButton("Add New");
@@ -150,16 +105,6 @@ public class PatientPanel {
         });
         return btnAdd;
     }
-    //make text field read only
-//    public static JTextField createReadOnlyField(String text, Font font) {
-//        JTextField field = new JTextField(text);
-//        field.setEditable(false);
-//        field.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-//        field.setBackground(UIManager.getColor("Panel.background"));
-//        field.setFont(font);
-//        field.setColumns(15);
-//        return field;
-//    }
     //view selected patient
     private static JButton viewPatient(JTable table, JFrame window){
         JButton btnVew = new JButton("View Patient Data");
@@ -329,9 +274,9 @@ public class PatientPanel {
                     PatientDB.edit(newP);
                 }else{
                     Patient newP = Patient.check(Patient.convArrayToOb(raw), true);
-                    VisitPanel.commonForum(window, PatientDB.insert(newP), -1);
+                    VisitPanel.commonForum(window, PatientDB.insert(newP), -1, null);
                 }
-                refresh(table);
+                commonUI.refresh(table, 1);
                 forum.dispose();
 
             } catch (ValidationException ve) {

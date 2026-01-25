@@ -1,6 +1,5 @@
 package com.jetbrains.uzair.db;
 
-import com.jetbrains.uzair.model.Patient;
 import com.jetbrains.uzair.model.Visit;
 
 import java.sql.Connection;
@@ -134,6 +133,18 @@ public class VisitDB {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException("Error Deleting Visit id(" + id + "): " + e.getMessage());
+        }
+    }
+    public static void deleteList(List<Integer> list) throws SQLException{
+        String sql = "DELETE FROM visits WHERE id = ?";
+        try(Connection conn = Database.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            for(int id: list){
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error Deleting Visit List: " + e.getMessage());
         }
     }
 }
