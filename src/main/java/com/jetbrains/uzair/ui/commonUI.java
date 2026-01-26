@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class commonUI {
+    public static Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
+    //get data from database
     public static JTable getDBData(JFrame window, int ui){
         var headers = getStrings(ui);
         String[] header = headers.toArray(new String[0]);
@@ -37,7 +39,7 @@ public class commonUI {
         };
         return new JTable(model);
     }
-
+    //get header for table creation
     private static ArrayList<String> getStrings(int ui) {
         var headers = new ArrayList<String>();
         if(ui == 1) {
@@ -59,7 +61,7 @@ public class commonUI {
         }
         return headers;
     }
-
+    //search for visit or patient
     public static void search(JTable table, String search, int ui) {
         SwingWorker<String[][], Void> worker = new SwingWorker<>() {
             @Override
@@ -88,6 +90,7 @@ public class commonUI {
         };
         worker.execute();
     }
+    //refresh the current table
     public static void refresh(JTable table, int ui) {
         if(table != null) {
             SwingWorker<String[][], Void> worker = new SwingWorker<>() {
@@ -118,6 +121,7 @@ public class commonUI {
             worker.execute();
         }
     }
+    //make a read only text field
     public static JTextField createReadOnlyField(String text, Font font) {
         JTextField field = new JTextField(text);
         field.setEditable(false);
@@ -127,24 +131,16 @@ public class commonUI {
         field.setColumns(15);
         return field;
     }
+    //view details of patient
     public static void patientDetails(JTable table, JFrame window, int id){
         try {
             Patient p = PatientDB.returnUISingle(id);
-            JDialog disp = new JDialog(window, "Patient Details", true);
-            disp.setSize(500, 700);
-            disp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            disp.setLocationRelativeTo(null); // center on screen
-
-            JPanel panel = new JPanel();
-            panel.setLayout(new GridBagLayout());
-            panel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+            JDialog disp = commonDialog("Patient Details", window);
+            JPanel panel = commonPanel();
 
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(8, 8, 8, 8);
             gbc.anchor = GridBagConstraints.WEST;
-
-            Font labelFont = new Font("Segoe UI", Font.BOLD, 13);
-            Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
 
             int row = 0;
             gbc.gridx = 0; gbc.gridy = row;
@@ -194,9 +190,9 @@ public class commonUI {
 
             JButton btnEdit = PatientPanel.editButton2(table, window, id);
             JButton btnClose = new JButton("Close");
-            btnClose.addActionListener(e1 -> {disp.dispose();});
+            btnClose.addActionListener(_ -> disp.dispose());
             JButton btnDel = new JButton("Delete");
-            btnDel.addActionListener(e1 -> {
+            btnDel.addActionListener(_ -> {
                 try {
                     SoundPlayer.play("popup.wav");
                 } catch (RuntimeException ex) {
@@ -219,32 +215,18 @@ public class commonUI {
                     disp.dispose();
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(disp, ex.getMessage());
-                    return;
                 }});
             JButton btnAddVisit = new JButton("Add Visit");
-            btnAddVisit.addActionListener(e1 -> {
+            btnAddVisit.addActionListener(_ -> {
                 try {
                     VisitPanel.commonForum(window, id, -1, null);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(window, ex.getMessage());
                 }
             });
-
-            buttonPanel.add(btnAddVisit);
-            buttonPanel.add(btnEdit);
-            buttonPanel.add(btnDel);
-            buttonPanel.add(btnClose);
-
+            commonAddBtn(buttonPanel, btnAddVisit, btnDel, btnClose, btnEdit);
             //header
-            JPanel header = new JPanel();
-            header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-            header.setBackground(new Color(12, 38, 78));
-
-            JLabel head = new JLabel("Patient Data");
-            head.setForeground(Color.WHITE);
-            head.setFont(new Font("Segoe UI", Font.BOLD, 30));
-            header.add(head);
-
+            JPanel header = commonHeader("Patient Data");
             //panels
             disp.setLayout(new BorderLayout());
             disp.add(header, BorderLayout.NORTH);
@@ -253,12 +235,12 @@ public class commonUI {
             disp.setVisible(true);
         }catch (SQLException sqle){
             JOptionPane.showMessageDialog(window,  "Error Occured: " + sqle.getMessage());
-            return;
         }
     }
+    //delete selected
     public static JButton deleteButton(JTable table, JFrame window, int ui){
         JButton btnDel = new JButton("Delete");
-        btnDel.addActionListener(e -> {
+        btnDel.addActionListener(_ -> {
 
             int[] selectedRows = table.getSelectedRows();
 
@@ -309,5 +291,64 @@ public class commonUI {
             }
         });
         return btnDel;
+    }
+    //highlighting buttons
+    public static void buttonHighlight(JButton btnEdit, JButton btnView, JButton btnDel, JTable table) {
+        btnEdit.setEnabled(false);
+        btnView.setEnabled(false);
+        btnDel.setEnabled(false);
+
+        table.getSelectionModel().addListSelectionListener(_ -> {
+            boolean selected = table.getSelectedRowCount() > 0;
+            btnView.setEnabled(table.getSelectedRowCount() == 1);
+            btnEdit.setEnabled(table.getSelectedRowCount() == 1);
+            btnDel.setEnabled(selected);
+        });
+    }
+    public static JDialog commonDialog(String title, JFrame window){
+        JDialog disp = new JDialog(window,title, true);
+        disp.setSize(500, 700);
+        disp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        disp.setLocationRelativeTo(null); // center on screen
+        return disp;
+    }
+    public static JPanel commonPanel(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        return panel;
+    }
+    public static void commonAddBtn(JPanel buttonPanel, JButton... buttons){
+        for(JButton btn: buttons){
+            buttonPanel.add(btn);
+        }
+    }
+    public static JPanel commonHeader(String title){
+        JPanel header = new JPanel();
+        header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        header.setBackground(new Color(12, 38, 78));
+
+        JLabel head = new JLabel(title);
+        head.setForeground(Color.WHITE);
+        head.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        header.add(head);
+        return header;
+    }
+    public static JPanel commonForum(){
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
+        return formPanel;
+    }
+    public static GridBagConstraints commonFormGrid(JPanel formPanel, int row){
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+//name
+        gbc.gridx = 0; gbc.gridy = row;
+        formPanel.add(new JLabel("Name:"), gbc);
+        gbc.gridx = 1;
+        return gbc;
     }
 }

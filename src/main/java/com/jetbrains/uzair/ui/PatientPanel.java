@@ -38,16 +38,7 @@ public class PatientPanel {
         btnRef.addActionListener(e -> commonUI.refresh(table, 1));
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(e -> commonUI.search(table, searchField.getText(), 1));
-        btnEdit.setEnabled(false);
-        btnView.setEnabled(false);
-        btnDel.setEnabled(false);
-
-        table.getSelectionModel().addListSelectionListener(e -> {
-            boolean selected = table.getSelectedRowCount() > 0;
-            btnView.setEnabled(table.getSelectedRowCount() == 1);
-            btnEdit.setEnabled(table.getSelectedRowCount() == 1);
-            btnDel.setEnabled(selected);
-        });
+        commonUI.buttonHighlight(btnEdit, btnView, btnDel, table);
 
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -69,30 +60,6 @@ public class PatientPanel {
         panel.setVisible(true);
         return panel;
     }
-    //refresh the table
-//    public static void refresh(JTable table) {
-//        SwingWorker<String[][], Void> worker = new SwingWorker<>() {
-//            @Override
-//            protected String[][] doInBackground() throws SQLException {
-//                return PatientDB.returnUI(); // Database call
-//            }
-//
-//            @Override
-//            protected void done() {
-//                try {
-//                    String[][] data = get();
-//                    DefaultTableModel model = (DefaultTableModel) table.getModel();
-//                    model.setRowCount(0);
-//                    for (String[] row : data) {
-//                        model.addRow(row);
-//                    }
-//                } catch (Exception e) {
-//                    JOptionPane.showMessageDialog(table, "Failed To Refresh Data");
-//                }
-//            }
-//        };
-//        worker.execute();
-//    }
     //add new record forum
     private static JButton addButton(JTable table, JFrame window){
         JButton btnAdd = new JButton("Add New");
@@ -203,28 +170,13 @@ public class PatientPanel {
         forum.setLocationRelativeTo(null);
         forum.setLayout(new BorderLayout());
         //header
-        JPanel header = new JPanel();
-        header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-        header.setBackground(new Color(12, 38, 78));
-
-        JLabel head = new JLabel(t);
-        head.setForeground(Color.WHITE);
-        head.setFont(new Font("Segoe UI", Font.BOLD, 30));
-        header.add(head);
+        JPanel header = commonUI.commonHeader(t);
 //Form panel
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
+        JPanel formPanel = commonUI.commonForum();
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1;
         int row = 0;
-//name
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(new JLabel("Name:"), gbc);
-        gbc.gridx = 1;
+        GridBagConstraints gbc = commonUI.commonFormGrid(formPanel, row);
+
         JTextField name = new JTextField(nameS, 15);
         formPanel.add(name, gbc);
         row++;

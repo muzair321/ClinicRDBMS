@@ -33,7 +33,8 @@ public class VisitPanel {
         JButton btnDelete = commonUI.deleteButton(table, window, 2);
         JButton btnView = viewVisit(table, window);
         JButton btnRef = new JButton("Refresh");
-        btnRef.addActionListener(e -> commonUI.refresh(table, 2));
+        btnRef.addActionListener(_ -> commonUI.refresh(table, 2));
+        commonUI.buttonHighlight(btnVisit, btnView, btnDelete, table);
         //toolbar
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         toolbar.add(btnView);
@@ -83,29 +84,12 @@ public class VisitPanel {
             JOptionPane.showMessageDialog(window, e.getMessage());
         }
         //header
-        JPanel header = new JPanel();
-        header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-        header.setBackground(new Color(12, 38, 78));
-
-        JLabel head = new JLabel(t);
-        head.setForeground(Color.WHITE);
-        head.setFont(new Font("Segoe UI", Font.BOLD, 30));
-        header.add(head);
-
+        JPanel header = commonUI.commonHeader(t);
         //Form panel
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
+        JPanel formPanel = commonUI.commonForum();
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1;
         int row = 0;
-        //name
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(new JLabel("Name:"), gbc);
-        gbc.gridx = 1;
+        GridBagConstraints gbc = commonUI.commonFormGrid(formPanel, row);
         formPanel.add(commonUI.createReadOnlyField(name, valueFont), gbc);
         row++;
         //illness
@@ -137,7 +121,7 @@ public class VisitPanel {
 
         buttonPanel.add(btnCancel);
         buttonPanel.add(btnSave);
-        btnSave.addActionListener(ev -> {
+        btnSave.addActionListener(_ -> {
             try {
                 String[] raw = {
                         String.valueOf(v.getId()),
@@ -157,7 +141,7 @@ public class VisitPanel {
                 JOptionPane.showMessageDialog(forum, e.getMessage());
             }
         });
-        btnCancel.addActionListener(ev -> forum.dispose());
+        btnCancel.addActionListener(_ -> forum.dispose());
         forum.add(header, BorderLayout.NORTH);
         forum.add(formPanel, BorderLayout.CENTER);
         forum.add(buttonPanel, BorderLayout.SOUTH);
@@ -166,7 +150,7 @@ public class VisitPanel {
     private static JButton editButton1(JTable table, JFrame window) {
         JButton btn = new JButton("Edit");
 
-        btn.addActionListener(e -> {
+        btn.addActionListener(_ -> {
             int[] selectedRows = table.getSelectedRows();
 
             if (selectedRows.length == 0) {
@@ -190,7 +174,7 @@ public class VisitPanel {
     }
     private static JButton viewVisit(JTable table, JFrame window){
         JButton btnVew = new JButton("Details");
-        btnVew.addActionListener(e -> {
+        btnVew.addActionListener(_ -> {
         int[] selectedRows = table.getSelectedRows();
 
         if (selectedRows.length == 0) {
@@ -206,20 +190,15 @@ public class VisitPanel {
         int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
         try {
             com.jetbrains.uzair.model.Visit v = VisitDB.returnUISingle(id);
-            JDialog disp = new JDialog(window,"Visit Details", true);
-            disp.setSize(500, 700);
-            disp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            disp.setLocationRelativeTo(null); // center on screen
+            JDialog disp = commonUI.commonDialog("Visit Details", window);
 
-            JPanel panel = new JPanel();
-            panel.setLayout(new GridBagLayout());
-            panel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+            JPanel panel = commonUI.commonPanel();
 
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(8, 8, 8, 8);
             gbc.anchor = GridBagConstraints.WEST;
 
-            Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
+            Font valueFont = commonUI.valueFont;
 
             int row = 0;
             gbc.gridx = 0; gbc.gridy = row;
@@ -269,9 +248,9 @@ public class VisitPanel {
 
             JButton btnEdit = editButton2(v.getPatientId(), window, id, table);
             JButton btnClose = new JButton("Close");
-            btnClose.addActionListener(e1 -> {disp.dispose();});
+            btnClose.addActionListener(_ -> disp.dispose());
             JButton btnDel = new JButton("Delete");
-            btnDel.addActionListener(e1 -> {
+            btnDel.addActionListener(_ -> {
                 try {
                     SoundPlayer.play("popup.wav");
                 } catch (RuntimeException ex) {
@@ -296,22 +275,11 @@ public class VisitPanel {
                     JOptionPane.showMessageDialog(disp, ex.getMessage());
                 }});
             JButton btnViewPatient = new JButton("View Patient");
-            btnViewPatient.addActionListener(e1 -> commonUI.patientDetails(commonUI.getDBData(window, 1), window, v.getPatientId()));
+            btnViewPatient.addActionListener(_ -> commonUI.patientDetails(commonUI.getDBData(window, 1), window, v.getPatientId()));
 
-            buttonPanel.add(btnViewPatient);
-            buttonPanel.add(btnEdit);
-            buttonPanel.add(btnDel);
-            buttonPanel.add(btnClose);
-
+            commonUI.commonAddBtn(buttonPanel, btnDel, btnEdit, btnViewPatient, btnClose);
             //header
-            JPanel header = new JPanel();
-            header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-            header.setBackground(new Color(12, 38, 78));
-
-            JLabel head = new JLabel("Visit Data");
-            head.setForeground(Color.WHITE);
-            head.setFont(new Font("Segoe UI", Font.BOLD, 30));
-            header.add(head);
+            JPanel header = commonUI.commonHeader("Visit Data");
 
             //panels
             disp.setLayout(new BorderLayout());
@@ -328,7 +296,7 @@ public class VisitPanel {
     private static JButton editButton2(int patientId, JFrame window, int id, JTable table) {
         JButton btn = new JButton("Edit Visit");
 
-        btn.addActionListener(e -> {
+        btn.addActionListener(_ -> {
             try {
                 commonForum(window, patientId, id, table);
             } catch (SQLException ex) {
