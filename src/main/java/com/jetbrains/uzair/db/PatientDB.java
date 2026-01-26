@@ -2,13 +2,17 @@ package com.jetbrains.uzair.db;
 
 import com.jetbrains.uzair.model.Patient;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.ArrayList;
 
 public class PatientDB {
     //Create
-    public static int insert(Patient p) throws SQLException{
+    public static int insert(Patient p) throws SQLException {
         String sql = "INSERT INTO patients(name, age, gender, phone) VALUES( ?, ?, ?, ?)";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);

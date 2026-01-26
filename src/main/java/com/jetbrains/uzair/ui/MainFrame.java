@@ -1,7 +1,22 @@
 package com.jetbrains.uzair.ui;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+import javax.swing.Box;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.BoxLayout;
+import javax.swing.JTabbedPane;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Font;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
 
 public class MainFrame {
 

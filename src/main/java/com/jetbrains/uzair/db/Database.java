@@ -1,6 +1,9 @@
 package com.jetbrains.uzair.db;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.DriverManager;
 
 public class Database {
 
@@ -54,16 +57,4 @@ public class Database {
             System.err.println("Error Creating Tables: " + e.getMessage());
         }
     }
-//    public static void newColumn(){
-//        String sql = """
-//                ALTER TABLE patients
-//                ADD COLUMN created_at TEXT DEFAULT (datetime('now'));
-//                """;
-//        try(Connection conn = getConnection()){
-//            Statement stmt = conn.createStatement();
-//            stmt.execute(sql);
-//        } catch (SQLException e) {
-//            System.err.println("Error Altering Database: " + e.getMessage());
-//        }
-//    }
 }
