@@ -147,4 +147,24 @@ public class VisitDB {
             throw new SQLException("Error Deleting Visit List: " + e.getMessage());
         }
     }
+    public static List<Visit> returnVisits(int patientId) throws SQLException {
+        List<Visit> visits = new ArrayList<>();
+        String sql = "SELECT * FROM visits WHERE patient_id = ? ORDER BY date DESC";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, patientId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Visit v = new Visit();
+                v.setId(rs.getInt("id"));
+                v.setPatientId(rs.getInt("patient_id"));
+                v.setIll(rs.getString("illness"));
+                v.setTreatment(rs.getString("treatment"));
+                v.setPaid(rs.getInt("paid"));
+                v.setDate(rs.getString("date"));
+                visits.add(v);
+            }
+        }
+        return visits;
+    }
 }

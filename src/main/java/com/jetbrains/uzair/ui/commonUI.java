@@ -3,13 +3,16 @@ package com.jetbrains.uzair.ui;
 import com.jetbrains.uzair.db.PatientDB;
 import com.jetbrains.uzair.db.VisitDB;
 import com.jetbrains.uzair.model.Patient;
+import com.jetbrains.uzair.model.Visit;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.TableCellRenderer;
 
 public class commonUI {
     public static Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
@@ -138,6 +141,7 @@ public class commonUI {
             JDialog disp = commonDialog("Patient Details", window);
             JPanel panel = commonPanel();
 
+            disp.setSize(770, 810);
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(8, 8, 8, 8);
             gbc.anchor = GridBagConstraints.WEST;
@@ -228,9 +232,14 @@ public class commonUI {
             //header
             JPanel header = commonHeader("Patient Data");
             //panels
+            JPanel centerPanel = new JPanel();
+            JScrollPane bottom = getVisitTables(id);
+            centerPanel.setLayout(new BorderLayout());
+            centerPanel.add(panel, BorderLayout.NORTH);
+            centerPanel.add(bottom, BorderLayout.CENTER);
             disp.setLayout(new BorderLayout());
             disp.add(header, BorderLayout.NORTH);
-            disp.add(panel, BorderLayout.CENTER);
+            disp.add(centerPanel, BorderLayout.CENTER);
             disp.add(buttonPanel, BorderLayout.SOUTH);
             disp.setVisible(true);
         }catch (SQLException sqle){
@@ -350,5 +359,87 @@ public class commonUI {
         formPanel.add(new JLabel("Name:"), gbc);
         gbc.gridx = 1;
         return gbc;
+    }
+    private static JScrollPane getVisitTables(int patientId) throws SQLException {
+
+        String[] headers = { "Visit ID", "Illness", "Treatment", "Date" };
+        DefaultTableModel model = new DefaultTableModel(headers, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        List<Visit> visits = VisitDB.returnVisits(patientId);
+
+        for (Visit v : visits) {
+            model.addRow(new Object[]{
+                    v.getId(),
+                    v.getIll(),
+                    v.getTreatment(),
+                    v.getDate()
+            });
+        }
+
+        JTable table = new JTable(model);
+        table.setRowHeight(24);
+        table.getTableHeader().setReorderingAllowed(false);
+
+        table.getColumnModel().getColumn(2).setCellRenderer(new TextAreaRenderer());
+
+        table.getColumnModel().getColumn(2).setPreferredWidth(350);
+
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(
+                    JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+
+                Component c = super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+
+                if (!isSelected) {
+                    c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(245, 245, 245));
+                }
+                return c;
+            }
+        });
+
+        return new JScrollPane(table);
+    }
+}
+class TextAreaRenderer extends JTextArea implements TableCellRenderer {
+
+    public TextAreaRenderer() {
+        setLineWrap(true);
+        setWrapStyleWord(true);
+        setOpaque(true);
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected,
+            boolean hasFocus, int row, int column) {
+
+        setText(value == null ? "" : value.toString());
+
+        if (isSelected) {
+            setBackground(table.getSelectionBackground());
+            setForeground(table.getSelectionForeground());
+        } else {
+            setBackground(table.getBackground());
+            setForeground(table.getForeground());
+        }
+
+        // Auto-adjust row height
+        setSize(table.getColumnModel().getColumn(column).getWidth(), Short.MAX_VALUE);
+        int preferredHeight = getPreferredSize().height;
+
+        if (table.getRowHeight(row) != preferredHeight) {
+            table.setRowHeight(row, preferredHeight);
+        }
+
+        return this;
     }
 }

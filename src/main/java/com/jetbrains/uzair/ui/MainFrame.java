@@ -17,6 +17,7 @@ import java.awt.Image;
 import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.util.Objects;
 
 public class MainFrame {
 
@@ -37,7 +38,7 @@ public class MainFrame {
         header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
         header.setBackground(new Color(12, 38, 78));
 
-        ImageIcon logo = new ImageIcon(MainFrame.class.getResource("/img/Clinic-Uncolored.png"));
+        ImageIcon logo = new ImageIcon(Objects.requireNonNull(MainFrame.class.getResource("/img/Clinic-Uncolored.png")));
         Image scaled = logo.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         JLabel logoLabel = new JLabel(new ImageIcon(scaled));
 
