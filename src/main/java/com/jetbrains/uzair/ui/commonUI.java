@@ -407,6 +407,23 @@ public class commonUI {
 
         return new JScrollPane(table);
     }
+    public static JComponent createReadOnlyArea(String text, Font font) {
+        JTextArea area = new JTextArea(text);
+        area.setFont(font);
+        area.setEditable(false);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setOpaque(false); // blends with panel
+        area.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        area.setCaretPosition(0);
+
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        scroll.setPreferredSize(new Dimension(300, 100));
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        return scroll;
+    }
 }
 class TextAreaRenderer extends JTextArea implements TableCellRenderer {
 

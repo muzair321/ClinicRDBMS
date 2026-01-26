@@ -233,7 +233,7 @@ public class VisitPanel {
             panel.add(new JLabel("Treatement:"), gbc);
 
             gbc.gridx = 1;
-            panel.add(commonUI.createReadOnlyField(v.getTreatment(), valueFont), gbc);
+            panel.add(commonUI.createReadOnlyArea(v.getTreatment(), valueFont), gbc);
             row++;
 
             gbc.gridx = 0; gbc.gridy = row;
