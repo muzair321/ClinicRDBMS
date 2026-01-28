@@ -131,7 +131,7 @@ public class commonUI {
         field.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         field.setBackground(UIManager.getColor("Panel.background"));
         field.setFont(font);
-        field.setColumns(15);
+        field.setColumns(40);
         return field;
     }
     //view details of patient
@@ -228,7 +228,7 @@ public class commonUI {
                     JOptionPane.showMessageDialog(window, ex.getMessage());
                 }
             });
-            commonAddBtn(buttonPanel, btnAddVisit, btnDel, btnClose, btnEdit);
+            commonAddBtn(buttonPanel, btnDel, btnAddVisit, btnEdit, btnClose);
             //header
             JPanel header = commonHeader("Patient Data");
             //panels
@@ -316,7 +316,7 @@ public class commonUI {
     }
     public static JDialog commonDialog(String title, JFrame window){
         JDialog disp = new JDialog(window,title, true);
-        disp.setSize(500, 700);
+        disp.setSize(700, 810);
         disp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         disp.setLocationRelativeTo(null); // center on screen
         return disp;
@@ -419,7 +419,7 @@ public class commonUI {
 
         JScrollPane scroll = new JScrollPane(area);
         scroll.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        scroll.setPreferredSize(new Dimension(300, 100));
+        scroll.setPreferredSize(new Dimension(480, 300));
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         return scroll;

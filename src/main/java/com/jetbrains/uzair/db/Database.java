@@ -47,6 +47,11 @@ public class Database {
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
                 );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS inventory(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                
                 """};
         try(Connection conn = getConnection()){
             Statement stmt = conn.createStatement();
@@ -56,5 +61,7 @@ public class Database {
         } catch (SQLException e) {
             System.err.println("Error Creating Tables: " + e.getMessage());
         }
+    }
+    public static void backup(String location){
     }
 }

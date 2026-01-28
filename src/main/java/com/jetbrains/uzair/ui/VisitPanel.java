@@ -75,7 +75,7 @@ public class VisitPanel {
 
         Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
         JDialog forum = new JDialog(window,t, true);
-        forum.setSize(500, 600);
+        forum.setSize(700, 810);
         forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         forum.setLocationRelativeTo(null);
         forum.setLayout(new BorderLayout());
@@ -96,14 +96,15 @@ public class VisitPanel {
         gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(new JLabel("Illness:"), gbc);
         gbc.gridx = 1;
-        JTextField ill = new JTextField(illS, 15);
+        JTextField ill = new JTextField(illS, 40);
         formPanel.add(ill, gbc);
         row++;
 //treatment
         gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(new JLabel("Treatment:"), gbc);
         gbc.gridx = 1;
-        JTextField treat = new JTextField(treatS, 15);
+        JTextArea treatArea = new JTextArea(treatS, 20, 40);
+        JScrollPane treat = new JScrollPane(treatArea);
         formPanel.add(treat, gbc);
         row++;
 //payment
@@ -111,7 +112,7 @@ public class VisitPanel {
         formPanel.add(new JLabel("Payment:"), gbc);
 
         gbc.gridx = 1;
-        JTextField pay = new JTextField(payS, 15);
+        JTextField pay = new JTextField(payS, 40);
         formPanel.add(pay, gbc);
 //button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
@@ -119,15 +120,15 @@ public class VisitPanel {
         JButton btnSave = new JButton("Save");
         JButton btnCancel = new JButton("Cancel");
 
-        buttonPanel.add(btnCancel);
         buttonPanel.add(btnSave);
+        buttonPanel.add(btnCancel);
         btnSave.addActionListener(_ -> {
             try {
                 String[] raw = {
                         String.valueOf(v.getId()),
                         Integer.toString(patientId),
                         ill.getText(),
-                        treat.getText(),
+                        treatArea.getText(),
                         pay.getText()
                 };
                 if(id != -1){

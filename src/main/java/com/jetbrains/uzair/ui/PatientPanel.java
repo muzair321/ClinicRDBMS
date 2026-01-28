@@ -209,8 +209,8 @@ public class PatientPanel {
         JButton btnSave = new JButton("Save");
         JButton btnCancel = new JButton("Cancel");
 
-        buttonPanel.add(btnCancel);
         buttonPanel.add(btnSave);
+        buttonPanel.add(btnCancel);
         btnSave.addActionListener(ev -> {
             try {
                 String[] raw = {
