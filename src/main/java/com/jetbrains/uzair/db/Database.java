@@ -51,8 +51,8 @@ public class Database {
                 """
                 CREATE TABLE IF NOT EXISTS inventory(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                storage TEXT NOT NULL CHECK (storage IN ('Bottles', 'Strips', 'Tablets', 'Tubes', 'Powder Pack'),
+                name TEXT UNIQUE NOT NULL,
+                storage TEXT NOT NULL CHECK (storage IN ('Bottles', 'Strips', 'Tablets', 'Tubes', 'Powder Pack')),
                 amount INTEGER NOT NULL CHECK (amount >= 0),
                 date TEXT NOT NULL DEFAULT (datetime('now'))
                 );
@@ -69,7 +69,22 @@ public class Database {
                 );
                 """,
                 """
-                CREATE 
+                CREATE TABLE IF NOT EXISTS users(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                admin INTEGER NOT NULL CHECK (admin IN (1, 0))
+                );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS user_logs(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                date TEXT NOT NULL DEFAULT (datetime ('now')),
+                FOREIGN KEY (user_id)
+                    REFERENCES users(id)
+                    ON DELETE CASCADE
+                );
                 """
                 };
         try(Connection conn = getConnection()){
