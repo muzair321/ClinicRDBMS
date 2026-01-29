@@ -51,8 +51,27 @@ public class Database {
                 """
                 CREATE TABLE IF NOT EXISTS inventory(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                
-                """};
+                name TEXT NOT NULL,
+                storage TEXT NOT NULL CHECK (storage IN ('Bottles', 'Strips', 'Tablets', 'Tubes', 'Powder Pack'),
+                amount INTEGER NOT NULL CHECK (amount >= 0),
+                date TEXT NOT NULL DEFAULT (datetime('now'))
+                );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS inventory_logs(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                inventory_id INTEGER NOT NULL,
+                date TEXT NOT NULL DEFAULT (datetime('now')),
+                FOREIGN KEY (inventory_id)
+                    REFERENCES inventory(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                );
+                """,
+                """
+                CREATE 
+                """
+                };
         try(Connection conn = getConnection()){
             Statement stmt = conn.createStatement();
             for(String sql: sqls) {
