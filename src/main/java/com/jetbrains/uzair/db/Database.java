@@ -54,7 +54,7 @@ public class Database {
                 name TEXT UNIQUE NOT NULL,
                 storage TEXT NOT NULL CHECK (storage IN ('Bottles', 'Strips', 'Tablets', 'Tubes', 'Powder Pack')),
                 amount INTEGER NOT NULL CHECK (amount >= 0),
-                date TEXT NOT NULL DEFAULT (datetime('now'))
+                updated_at TEXT NOT NULL DEFAULT (datetime('now'))
                 );
                 """,
                 """
@@ -96,6 +96,26 @@ public class Database {
             System.err.println("Error Creating Tables: " + e.getMessage());
         }
     }
+    public static void addTriggers() throws SQLException {
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            stmt.execute("""
+            CREATE TRIGGER IF NOT EXISTS inventory_log_updates_inventory
+            AFTER INSERT ON inventory_logs
+            FOR EACH ROW
+            BEGIN
+                UPDATE inventory
+                SET updated_at = datetime('now')
+                WHERE id = NEW.inventory_id;
+            END;
+        """);
+
+        } catch (SQLException e) {
+            throw new SQLException("Error adding inventory triggers", e);
+        }
+    }
+
     public static void backup(String location){
     }
 }
