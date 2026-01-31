@@ -97,7 +97,7 @@ public class Database {
         }
     }
     public static void addIndexes() throws SQLException{
-        String[] sql = {
+        String[] sqls = {
                 """
                 
                 """,
@@ -113,7 +113,9 @@ public class Database {
             };
         try(Connection conn = getConnection();
         Statement stmt = conn.createStatement()){
-            stmt.execute();
+            for(String sql: sqls) {
+                stmt.execute(sql);
+            }
         } catch (SQLException e) {
             throw new SQLException("Error Creating Triggers");
         }
