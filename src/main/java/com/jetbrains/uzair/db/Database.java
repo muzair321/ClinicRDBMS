@@ -102,16 +102,13 @@ public class Database {
                 CREATE INDEX idx_patients_name ON patients(name);
                 """,
                 """
-                CREATE INDEX idx_patients_age ON patients(age);
+                CREATE INDEX idx_patients_created_at ON patients(created_at);
                 """,
                 """
-                CREATE INDEX idx_patients_gender ON patients(gender);
+                CREATE INDEX idx_visits_illness ON visits(illness);
                 """,
                 """
-                CREATE INDEX idx_patients_phone ON patients(phone);
-                """,
-                """
-                CREATE INDEX idx_patients_date ON patients(date);
+                CREATE INDEX idx_visits_date ON visits(date);
                 """
             };
         try(Connection conn = getConnection();
