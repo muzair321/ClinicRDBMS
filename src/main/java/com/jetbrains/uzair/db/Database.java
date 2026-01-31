@@ -99,16 +99,19 @@ public class Database {
     public static void addIndexes() throws SQLException{
         String[] sqls = {
                 """
-                
+                CREATE INDEX idx_patients_name ON patients(name);
                 """,
                 """
-                
+                CREATE INDEX idx_patients_age ON patients(age);
                 """,
                 """
-                
+                CREATE INDEX idx_patients_gender ON patients(gender);
                 """,
                 """
-                
+                CREATE INDEX idx_patients_phone ON patients(phone);
+                """,
+                """
+                CREATE INDEX idx_patients_date ON patients(date);
                 """
             };
         try(Connection conn = getConnection();
