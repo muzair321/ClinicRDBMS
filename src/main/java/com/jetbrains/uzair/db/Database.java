@@ -96,6 +96,28 @@ public class Database {
             System.err.println("Error Creating Tables: " + e.getMessage());
         }
     }
+    public static void addIndexes() throws SQLException{
+        String[] sql = {
+                """
+                
+                """,
+                """
+                
+                """,
+                """
+                
+                """,
+                """
+                
+                """
+            };
+        try(Connection conn = getConnection();
+        Statement stmt = conn.createStatement()){
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new SQLException("Error Creating Triggers");
+        }
+    }
     public static void addTriggers() throws SQLException {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
