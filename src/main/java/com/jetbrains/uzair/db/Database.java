@@ -61,6 +61,7 @@ public class Database {
                 CREATE TABLE IF NOT EXISTS inventory_logs(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 inventory_id INTEGER NOT NULL,
+                amount INTEGER NOT NULL,
                 date TEXT NOT NULL DEFAULT (datetime('now')),
                 FOREIGN KEY (inventory_id)
                     REFERENCES inventory(id)
@@ -109,7 +110,16 @@ public class Database {
                 """,
                 """
                 CREATE INDEX idx_visits_date ON visits(date);
+                """,
                 """
+                CREATE INDEX idx_inventory_name ON inventory(name);
+                """,
+                """
+                CREATE INDEX idx_inventory_updated_at ON inventory(updated_at);
+                """,
+                """
+                CREATE INDEX idx_inventory_logs_date ON inventory_logs(date);
+                """,
             };
         try(Connection conn = getConnection();
         Statement stmt = conn.createStatement()){

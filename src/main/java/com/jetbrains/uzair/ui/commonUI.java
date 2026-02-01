@@ -250,9 +250,7 @@ public class commonUI {
     public static JButton deleteButton(JTable table, JFrame window, int ui){
         JButton btnDel = new JButton("Delete");
         btnDel.addActionListener(_ -> {
-
             int[] selectedRows = table.getSelectedRows();
-
             if (selectedRows.length == 0) {
                 JOptionPane.showMessageDialog(window, "No Patient(s) Selected");
                 return;
