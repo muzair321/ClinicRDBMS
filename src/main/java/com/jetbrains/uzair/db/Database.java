@@ -120,6 +120,12 @@ public class Database {
                 """
                 CREATE INDEX idx_inventory_logs_date ON inventory_logs(date);
                 """,
+                """
+                CREATE INDEX idx_users_username ON users(username);
+                """,
+                """
+                CREATE INDEX idx_user_logs_date ON user_logs(date);
+                """
             };
         try(Connection conn = getConnection();
         Statement stmt = conn.createStatement()){
