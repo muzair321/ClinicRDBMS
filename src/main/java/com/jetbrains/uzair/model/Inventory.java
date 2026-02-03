@@ -25,5 +25,10 @@ public void setName(String name){this.name = name;}
 public void setStorage(String storage){this.storage = storage;}
 public void setAmount(int amount){this.amount = amount;}
 public void setUpdatedAt(String updatedAt){this.updatedAt = updatedAt;}
-
+//getters
+public int getId(){return id;}
+public String getName(){return name;}
+public String getStorage(){return storage;}
+public int getAmount(){return amount;}
+public String getUpdatedAt(){return updatedAt;}
 }
