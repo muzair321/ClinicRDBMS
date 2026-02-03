@@ -32,5 +32,5 @@ public String getStorage(){return storage;}
 public int getAmount(){return amount;}
 public String getUpdatedAt(){return updatedAt;}
 //convert array into object 
-public static Inventory convArray
+public static Inventory convArrayToOb(String
 }
