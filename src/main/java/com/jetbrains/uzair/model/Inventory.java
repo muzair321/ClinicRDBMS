@@ -32,5 +32,11 @@ public String getStorage(){return storage;}
 public int getAmount(){return amount;}
 public String getUpdatedAt(){return updatedAt;}
 //convert array into object 
-public static Inventory convArrayToOb(String
+public static Inventory convArrayToOb(String[] raw){
+Inventory i = new Inventory();
+int x = Integer.parseInt(raw[0]);
+if(x >= 0){
+i.setId(x);
+}
+}
 }
