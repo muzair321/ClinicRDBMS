@@ -22,7 +22,7 @@ public class Database {
         }
         return  conn;
     }
-    //initial tables
+    //Initial Tables
     public static void createTables(){
         String[] sqls = {"""
                 CREATE TABLE IF NOT EXISTS patients(
@@ -97,6 +97,7 @@ public class Database {
             System.err.println("Error Creating Tables: " + e.getMessage());
         }
     }
+//Creating Indexes
     public static void addIndexes() throws SQLException{
         String[] sqls = {
                 """
@@ -136,6 +137,7 @@ public class Database {
             throw new SQLException("Error Creating Indexes");
         }
     }
+//Adding Triggers 
     public static void addTriggers() throws SQLException {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
