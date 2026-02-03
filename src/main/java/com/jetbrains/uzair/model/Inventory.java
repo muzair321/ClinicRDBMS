@@ -19,4 +19,11 @@ public class Inventory {
     public Inventory(String name, String storage, int amount, String updatedAt){
         this(-1, name, storage, amount, updatedAt);
     }
+//setters
+public void setId(int id){this.id = id;}
+public void setName(String name){this.name = name;}
+public void setStorage(String storage){this.storage = storage;}
+public void setAmount(int amount){this.amount = amount;}
+public void setUpdatedAt(String updatedAt){this.updatedAt = updatedAt;}
+
 }
