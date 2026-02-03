@@ -133,7 +133,7 @@ public class Database {
                 stmt.execute(sql);
             }
         } catch (SQLException e) {
-            throw new SQLException("Error Creating Triggers");
+            throw new SQLException("Error Creating Indexes");
         }
     }
     public static void addTriggers() throws SQLException {
@@ -152,7 +152,7 @@ public class Database {
         """);
 
         } catch (SQLException e) {
-            throw new SQLException("Error adding inventory triggers", e);
+            throw new SQLException("Error Adding Triggers");
         }
     }
 
