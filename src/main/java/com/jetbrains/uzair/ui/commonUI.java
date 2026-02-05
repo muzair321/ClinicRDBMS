@@ -27,7 +27,9 @@ public class commonUI {
                 data = PatientDB.returnUI();
             } else if (ui == 2) {
                 data = VisitDB.returnUI();
-            }else{
+            } else if (ui == 3) {
+                data = InventoryDB.returnUI();
+            } else{
                 throw new SQLException("Error Reading");
             }
         } catch (SQLException e) {
@@ -60,7 +62,13 @@ public class commonUI {
             headers.add("Patient Name");
             headers.add("Illness");
             headers.add("Date Of Visit");
-        }else{
+        }else if(ui == 3){
+            headers.add("Item ID");
+            headers.add("Name");
+            headers.add("Storage Type");
+            headers.add("Amount");
+            headers.add("Last Updated");
+        }else {
             headers.add("Error");
         }
         return headers;
@@ -74,7 +82,9 @@ public class commonUI {
                     return PatientDB.returnUI(search);
                 } else if (ui == 2) {
                     return VisitDB.returnUI(search);
-                } else {
+                } else if(ui == 3){
+                    return InventoryDB.returnUI(search);
+                }else {
                     return null;
                 }
             }

@@ -96,7 +96,6 @@ public class PatientPanel {
     //edit button for patient info frame
     public static JButton editButton2(JTable table, JFrame window, int id) {
         JButton btn = new JButton("Edit Patient");
-
         btn.addActionListener(e -> {
             try {
                 commonForum(table, id, window);
@@ -105,7 +104,6 @@ public class PatientPanel {
                 return;
             }
         });
-
         return btn;
     }
     //  edit button for main frame
