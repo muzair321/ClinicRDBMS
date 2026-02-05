@@ -38,5 +38,6 @@ public class Inventory {
         if(x >= 0){
             i.setId(x);
         }
+        return i;
     }
 }
