@@ -36,7 +36,7 @@ public class Inventory {
     public int getAmount(){return amount;}
     public String getUpdatedAt(){return updatedAt;}
     //convert array into object with checks
-    public static Inventory convArrayToOb(String[] raw) throws SQLException {
+    public static Inventory convArrayToOb(String[] raw, boolean b) throws SQLException {
         Inventory i = new Inventory();
         int x = Integer.parseInt(raw[0]);
         if(x >= 0){
@@ -45,7 +45,7 @@ public class Inventory {
         if(raw[1].contains(" ")){
             throw new ValidationException("Validation  Error: No Spaces In Name");
         }
-        if(InventoryDB.checkName(raw[1])){
+        if(InventoryDB.checkName(raw[1]) && b){
             throw new ValidationException("Name Already Exists");
         }
         i.setName(raw[1]);

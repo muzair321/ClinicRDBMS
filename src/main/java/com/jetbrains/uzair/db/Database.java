@@ -60,7 +60,7 @@ public class Database {
                 CREATE TABLE IF NOT EXISTS inventory(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT UNIQUE NOT NULL,
-                storage TEXT NOT NULL CHECK (storage IN ('Bottles', 'Strips', 'Tablets', 'Tubes', 'Powder Pack')),
+                storage TEXT NOT NULL CHECK (storage IN ('Bottles', 'Strips', 'Tablets', 'Tubes', 'Powder Packs')),
                 amount INTEGER NOT NULL CHECK (amount >= 0),
                 updated_at TEXT NOT NULL DEFAULT (datetime('now'))
                 );

@@ -1,8 +1,17 @@
 package com.jetbrains.uzair.ui;
 
+import com.jetbrains.uzair.db.InventoryDB;
+import com.jetbrains.uzair.db.PatientDB;
+import com.jetbrains.uzair.model.Inventory;
+import com.jetbrains.uzair.model.Patient;
+import com.jetbrains.uzair.model.ValidationException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class InventoryPanel {
     public static JPanel mainWindow(JFrame window){
@@ -63,13 +72,92 @@ public class InventoryPanel {
         });
         return btnAdd;
     }
-    private static JDialog commonForum(JTable table, int id, JFrame window){
-        JDialog form;
+    private static void commonForum(JTable table, int id, JFrame window) throws SQLException{
+        JDialog forum;
+        Inventory i;
+        String t;
+        String nameS = null;
+        String storageS = "Bottles";
+        String amountS = null;
         if(id == -1){
-            form = new JDialog(window, "Add To Inventory", true);
+            t = "Add To Inventory";
+            i = new Inventory();
         }else{
-            form = new JDialog(window, "Edit Inventory Item", true);
+            try {
+                SoundPlayer.play("popup.wav");
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+            i = InventoryDB.returnUISingle(id);
+            t = "Edit Inventory Item";
+            nameS = i.getName();
+            storageS = i.getStorage();
+            amountS = String.valueOf(i.getAmount());
         }
-        return form;
+        forum = new JDialog(window, t, true);
+        forum.setSize(500, 600);
+        forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        forum.setLocationRelativeTo(null);
+        forum.setLayout(new BorderLayout());
+        //header
+        JPanel header = commonUI.commonHeader(t);
+//Form panel
+        JPanel formPanel = commonUI.commonForum();
+
+        int row = 0;
+        GridBagConstraints gbc = commonUI.commonFormGrid(formPanel, row);
+        //name
+        JTextField name = new JTextField(nameS, 15);
+        formPanel.add(name, gbc);
+        row++;
+        //storage
+        gbc.gridx = 0; gbc.gridy = row;
+        formPanel.add(new JLabel("Storage:"), gbc);
+
+        gbc.gridx = 1;
+        JComboBox<String> storage =
+                new JComboBox<>(new String[]{"Bottles", "Strips", "Tablets","Tubes", "Powder Packs"});
+        storage.setSelectedItem(storageS);
+        formPanel.add(storage, gbc);
+        row++;
+        //amount
+        row++;gbc.gridx = 0; gbc.gridy = row;
+        formPanel.add(new JLabel("Amount:"), gbc);
+        gbc.gridx = 1;
+        JTextField amount = new JTextField(amountS, 15);
+        formPanel.add(amount, gbc);
+        //button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        JButton btnSave = new JButton("Save");
+        JButton btnCancel = new JButton("Cancel");
+
+        buttonPanel.add(btnSave);
+        buttonPanel.add(btnCancel);
+        btnSave.addActionListener(ev -> {
+            try {
+                String[] raw = {
+                        String.valueOf(i.getId()),
+                        name.getText(),
+                        Objects.requireNonNull(storage.getSelectedItem()).toString(),
+                        amount.getText(),
+                        String.valueOf(LocalDateTime.now())
+                };
+                if(id != -1) {
+                    Inventory newI = Inventory.convArrayToOb(raw, false);
+                    InventoryDB.edit(newI);
+                }else{
+                    Inventory newI = Inventory.convArrayToOb(raw, true);
+                    InventoryDB.insert(newI);
+                }
+                commonUI.refresh(table, 3);
+                forum.dispose();
+            } catch (ValidationException ve) {
+                JOptionPane.showMessageDialog(forum, ve.getMessage());
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(forum, "Modification Failed:" + ex.getMessage());
+            }
+        });
+
     }
 }
