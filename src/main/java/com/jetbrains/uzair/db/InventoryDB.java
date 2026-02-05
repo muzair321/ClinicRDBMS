@@ -119,4 +119,15 @@ public class InventoryDB{
             throw new SQLException("Error Updating Inventory Stock");
         }
     }
+    public static String getName(int id) throws SQLException{
+        String sql = "SELECT name FROM inventory WHERE id = ?";
+        try(Connection conn = Database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            return rs.getString("name");
+        } catch (SQLException e) {
+            throw new SQLException("Error Retrieving Name From 'inventory'");
+        }
+    }
 }
