@@ -3,6 +3,8 @@ package com.jetbrains.uzair.db;
 import com.jetbrains.uzair.model.Inventory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventoryDB{
     public static void insert(Inventory i) throws SQLException {
@@ -130,4 +132,36 @@ public class InventoryDB{
             throw new SQLException("Error Retrieving Name From 'inventory'");
         }
     }
+    public static String[][] returnUI(String searchTerm) throws SQLException {
+        List<String[]> rows = new ArrayList<>();
+        String sql = """
+        SELECT id,
+               name,
+               storage,
+               amount,
+               updated_at,
+        WHERE name LIKE ?
+            OR storage LIKE ?
+        """;
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String searchPattern = "%" + searchTerm + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    rows.add(new String[]{
+                            String.valueOf(rs.getInt("id")),
+                            rs.getString("name"),
+                            rs.getString("storage"),
+                            String.valueOf(rs.getInt("amount")),
+                            rs.getString("updated_at")
+                    });
+                }
+            }
+        }
+        // Convert List to array
+        return rows.toArray(new String[0][]);
+    }
+
 }
