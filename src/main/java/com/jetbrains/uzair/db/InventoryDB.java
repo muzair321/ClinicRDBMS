@@ -50,7 +50,7 @@ public class InventoryDB{
                     returnSet[i][1] = rs.getString("name");
                     returnSet[i][2] = rs.getString("storage");
                     returnSet[i][3] = rs.getString("amount");
-                    returnSet[i][4] = rs.getString("upated_at");
+                    returnSet[i][4] = rs.getString("updated_at");
                 }
                 return returnSet;
             } catch (SQLException e) {
