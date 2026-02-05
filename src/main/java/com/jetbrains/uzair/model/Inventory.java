@@ -1,5 +1,9 @@
 package com.jetbrains.uzair.model;
 
+import com.jetbrains.uzair.db.InventoryDB;
+
+import java.sql.SQLException;
+
 public class Inventory {
     //object parameters
     private int id;
@@ -31,8 +35,8 @@ public class Inventory {
     public String getStorage(){return storage;}
     public int getAmount(){return amount;}
     public String getUpdatedAt(){return updatedAt;}
-    //convert array into object 
-    public static Inventory convArrayToOb(String[] raw){
+    //convert array into object with checks
+    public static Inventory convArrayToOb(String[] raw) throws SQLException {
         Inventory i = new Inventory();
         int x = Integer.parseInt(raw[0]);
         if(x >= 0){
@@ -40,6 +44,9 @@ public class Inventory {
         }
         if(raw[1].contains(" ")){
             throw new ValidationException("Validation  Error: No Spaces In Name");
+        }
+        if(InventoryDB.checkName(raw[1])){
+            throw new ValidationException("Name Already Exists");
         }
         i.setName(raw[1]);
         if(raw[2].equals("Bottles") || raw[2].equals("Strips") || raw[2].equals("Tablets") || raw[2].equals("Tubes") || raw[2].equals("Powder Pack")) {
