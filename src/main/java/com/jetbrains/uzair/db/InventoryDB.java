@@ -163,5 +163,14 @@ public class InventoryDB{
         // Convert List to array
         return rows.toArray(new String[0][]);
     }
-
+    public static void delete(int id) throws SQLException{
+        String sql = "DELETE FROM inventory WHERE id = ?";
+        try(Connection conn = Database.getConnection()){
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error Deleting Inventory id(" + id + "): " + e.getMessage());
+        }
+    }
 }
