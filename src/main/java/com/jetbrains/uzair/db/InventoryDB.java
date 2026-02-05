@@ -60,5 +60,23 @@ public class InventoryDB{
             throw new SQLException("Error Retrieving Data From 'inventory'");
         }
     }
-
+    public static Inventory returnUISingle(int id) throws SQLException{
+        Inventory i = new Inventory();
+        String sql = "SELECT id, name, storage, amount, updated_at FROM inventory WHERE id = ?";
+        try(Connection conn = Database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                i.setId(rs.getInt(1));
+                i.setName(rs.getString(2));
+                i.setStorage(rs.getString(3));
+                i.setAmount(rs.getInt(4));
+                i.setUpdatedAt(rs.getString(5));
+            }
+            return i;
+        } catch (SQLException e) {
+            throw new SQLException("Error Getting Item Data From 'inventory");
+        }
+    }
 }
