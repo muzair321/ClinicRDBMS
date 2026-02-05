@@ -38,6 +38,21 @@ public class Inventory {
         if(x >= 0){
             i.setId(x);
         }
+        if(raw[1].contains(" ")){
+            throw new ValidationException("Validation  Error: No Spaces In Name");
+        }
+        i.setName(raw[1]);
+        if(raw[2].equals("Bottles") || raw[2].equals("Strips") || raw[2].equals("Tablets") || raw[2].equals("Tubes") || raw[2].equals("Powder Pack")) {
+            i.setStorage(raw[2]);
+        }else{
+            throw new ValidationException("Validation Error: Contact Developer (Error 101)");
+        }
+        int y = Integer.parseInt(raw[3]);
+        if(y < 0){
+            throw new ValidationException("Amount Can Not Be Less Than '0'");
+        }
+        i.setAmount(y);
+        i.setUpdatedAt(raw[4]);
         return i;
     }
 }
