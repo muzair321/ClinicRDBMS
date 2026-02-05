@@ -35,6 +35,14 @@ public class Database {
                 );
                 """,
                 """
+                CREATE TABLE IF NOT EXISTS users(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                admin INTEGER NOT NULL DEFAULT 0 CHECK (admin IN (0,1))
+                );
+                """,
+                """
                 CREATE TABLE IF NOT EXISTS visits(
                 id INTEGER  PRIMARY KEY AUTOINCREMENT,
                 patient_id INTEGER NOT NULL,
@@ -61,20 +69,17 @@ public class Database {
                 CREATE TABLE IF NOT EXISTS inventory_logs(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 inventory_id INTEGER NOT NULL,
-                amount INTEGER NOT NULL,
+                user_id INTEGER NOT NULL,
+                amount INTEGER NOT NULL CHECK(amount != 0),
                 date TEXT NOT NULL DEFAULT (datetime('now')),
                 FOREIGN KEY (inventory_id)
                     REFERENCES inventory(id)
                     ON DELETE CASCADE
+                    ON UPDATE CASCADE,
+                FOREIGN KEY (user_id)
+                    REFERENCES users(id)
+                    ON DELETE CASCADE
                     ON UPDATE CASCADE
-                );
-                """,
-                """
-                CREATE TABLE IF NOT EXISTS users(
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL,
-                admin INTEGER NOT NULL CHECK (admin IN (1, 0))
                 );
                 """,
                 """
@@ -101,31 +106,37 @@ public class Database {
     public static void addIndexes() throws SQLException{
         String[] sqls = {
                 """
-                CREATE INDEX idx_patients_name ON patients(name);
+                CREATE INDEX IF NOT EXISTS idx_patients_name ON patients(name);
                 """,
                 """
-                CREATE INDEX idx_patients_created_at ON patients(created_at);
+                CREATE INDEX IF NOT EXISTS idx_patients_created_at ON patients(created_at);
                 """,
                 """
-                CREATE INDEX idx_visits_illness ON visits(illness);
+                CREATE INDEX IF NOT EXISTS idx_visits_illness ON visits(illness);
                 """,
                 """
-                CREATE INDEX idx_visits_date ON visits(date);
+                CREATE INDEX IF NOT EXISTS idx_visits_date ON visits(date);
                 """,
                 """
-                CREATE INDEX idx_inventory_name ON inventory(name);
+                CREATE INDEX IF NOT EXISTS idx_inventory_name ON inventory(name);
                 """,
                 """
-                CREATE INDEX idx_inventory_updated_at ON inventory(updated_at);
+                CREATE INDEX IF NOT EXISTS idx_inventory_updated_at ON inventory(updated_at);
                 """,
                 """
-                CREATE INDEX idx_inventory_logs_date ON inventory_logs(date);
+                CREATE INDEX IF NOT EXISTS idx_inventory_logs_inventory_id ON inventory_logs(inventory_id);
                 """,
                 """
-                CREATE INDEX idx_users_username ON users(username);
+                CREATE INDEX IF NOT EXISTS idx_inventory_logs_user_id ON inventory_logs(user_id);
                 """,
                 """
-                CREATE INDEX idx_user_logs_date ON user_logs(date);
+                CREATE INDEX IF NOT EXISTS idx_inventory_logs_date ON inventory_logs(date);
+                """,
+                """
+                CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+                """,
+                """
+                CREATE INDEX IF NOT EXISTS idx_user_logs_date ON user_logs(date);
                 """
             };
         try(Connection conn = getConnection();
