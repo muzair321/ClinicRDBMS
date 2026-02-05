@@ -159,7 +159,6 @@ public class PatientDB {
         String sql = "SELECT 1 FROM patients WHERE id = ? LIMIT 1";
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setInt(1, patientId);
             ResultSet rs = stmt.executeQuery();
             return rs.next();
@@ -171,7 +170,6 @@ public class PatientDB {
     //search
     public static String[][] returnUI(String searchTerm) throws SQLException {
         List<String[]> rows = new ArrayList<>();
-
         String sql = """
         SELECT id, name, age, 
                 gender,phone, created_at
@@ -180,7 +178,6 @@ public class PatientDB {
            OR id LIKE ? 
            OR phone LIKE ?
         """;
-
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -188,11 +185,9 @@ public class PatientDB {
             stmt.setString(1, searchPattern);
             stmt.setString(2, searchPattern);
             stmt.setString(3, searchPattern);
-
             try (ResultSet rs = stmt.executeQuery()) {
                 java.sql.ResultSetMetaData metaData = rs.getMetaData();
                 int columnCount = metaData.getColumnCount();
-
                 while (rs.next()) {
                     String[] row = new String[columnCount];
                     for (int i = 0; i < columnCount; i++) {
@@ -202,7 +197,6 @@ public class PatientDB {
                 }
             }
         }
-
         // Convert List to array
         return rows.toArray(new String[0][]);
     }

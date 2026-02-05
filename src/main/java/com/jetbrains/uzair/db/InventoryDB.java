@@ -79,4 +79,44 @@ public class InventoryDB{
             throw new SQLException("Error Getting Item Data From 'inventory");
         }
     }
+    public static void edit(Inventory i) throws SQLException{
+        String sql = "UPDATE inventory SET name =  ?, storage = ?, amount = ?, updated_at = datetime('now') WHERE id = ?";
+        try (Connection conn = Database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setInt(4, i.getId());
+            stmt.setString(1, i.getName());
+            stmt.setString(2, i.getStorage());
+            stmt.setInt(3, i.getAmount());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error Editing Inventory Item");
+        }
+    }
+    public static int getStock(int id) throws SQLException{
+        String sql = "SELECT amount FROM inventory WHERE id = ?";
+        try(Connection conn = Database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            return rs.getInt("amount");
+        } catch (SQLException e) {
+            throw new SQLException("Error Getting Stock Of Item");
+        }
+    }
+    public static void setStock(int inventoryId, int amount) throws SQLException{
+        int stock = getStock(inventoryId);
+        if(amount < 0){
+            if(stock + amount < 0){
+                throw new SQLException("Amount Cannot Decrease Stock Beyond Zero");
+            }
+        }
+        String sql = "UPDATE inventory SET amount = ? WHERE id = ?";
+        try(Connection conn = Database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setInt(2, inventoryId);
+            stmt.setInt(1, (stock - amount));
+        } catch (SQLException e) {
+            throw new SQLException("Error Updating Inventory Stock");
+        }
+    }
 }
