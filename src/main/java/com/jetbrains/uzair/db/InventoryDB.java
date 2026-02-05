@@ -2,10 +2,7 @@ package com.jetbrains.uzair.db;
 
 import com.jetbrains.uzair.model.Inventory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class InventoryDB{
     public static void insert(Inventory i) throws SQLException {
@@ -35,4 +32,33 @@ public class InventoryDB{
         }
         return false;
     }
+    public static String[][] returnUI() throws SQLException{
+        String[][] returnSet;
+        int count = 0;
+        String sql = "SELECT * FROM inventory";
+        try(Connection conn = Database.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            while(rs.next()){
+                count++;
+            }
+            returnSet = new String[count][];
+            try {
+                ResultSet rs1 = stmt.executeQuery(sql);
+                for (int i = 0; rs.next() && i < returnSet.length; i++){
+                    returnSet[i][0] = rs.getString("id");
+                    returnSet[i][1] = rs.getString("name");
+                    returnSet[i][2] = rs.getString("storage");
+                    returnSet[i][3] = rs.getString("amount");
+                    returnSet[i][4] = rs.getString("upated_at");
+                }
+                return returnSet;
+            } catch (SQLException e) {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error Retrieving Data From 'inventory'");
+        }
+    }
+
 }
