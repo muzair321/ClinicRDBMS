@@ -1,5 +1,6 @@
 package com.jetbrains.uzair.ui;
 
+import com.jetbrains.uzair.db.InventoryDB;
 import com.jetbrains.uzair.db.PatientDB;
 import com.jetbrains.uzair.db.VisitDB;
 import com.jetbrains.uzair.model.Patient;
@@ -103,6 +104,8 @@ public class commonUI {
                         return PatientDB.returnUI();
                     } else if (ui == 2) {
                         return VisitDB.returnUI();
+                    } else if(ui == 3){
+                        return InventoryDB.returnUI();
                     }
                     return null; // Database call
                 }
@@ -251,11 +254,18 @@ public class commonUI {
         JButton btnDel = new JButton("Delete");
         btnDel.addActionListener(_ -> {
             int[] selectedRows = table.getSelectedRows();
+            String t = null;
+            if(ui == 1){
+                t = "Patient";
+            } else if (ui == 2) {
+                t = "Visit";
+            }else if (ui == 3){
+                t = "Inventory Item";
+            }
             if (selectedRows.length == 0) {
-                JOptionPane.showMessageDialog(window, "No Patient(s) Selected");
+                JOptionPane.showMessageDialog(window, "No " + t + "(s) Selected");
                 return;
             }
-
             List<Integer> patientIds = new ArrayList<>();
 
             for (int viewRow : selectedRows) {
@@ -267,12 +277,6 @@ public class commonUI {
                 SoundPlayer.play("popup.wav");
             } catch (RuntimeException ex) {
                 JOptionPane.showMessageDialog(window, ex.getMessage());
-            }
-            String t;
-            if(ui == 1){
-                t = "Patient";
-            }else {
-                t = "Visit";
             }
             int choice = JOptionPane.showConfirmDialog(
                     window,
@@ -290,6 +294,8 @@ public class commonUI {
                     PatientDB.deleteList(patientIds);
                 } else if (ui == 2) {
                     VisitDB.deleteList(patientIds);
+                }else if(ui == 3){
+                    InventoryDB.deleteList(patientIds);
                 }
                 JOptionPane.showMessageDialog(window, "Deleted Successfully");
                 refresh(table, ui);

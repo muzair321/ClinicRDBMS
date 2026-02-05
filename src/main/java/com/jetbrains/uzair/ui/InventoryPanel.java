@@ -2,6 +2,7 @@ package com.jetbrains.uzair.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class InventoryPanel {
     public static JPanel mainWindow(JFrame window){
@@ -21,12 +22,12 @@ public class InventoryPanel {
 
         JScrollPane scroll = new JScrollPane(table);
 //buttons
-        JButton btnAdd =
+        JButton btnAdd = addButton(table, window);
         JButton btnEdit =
         JButton btnView =
-        JButton btnDel =
+        JButton btnDel = commonUI.deleteButton(table, window, 3);
         JButton btnRef = new JButton("Refresh");
-        btnRef.addActionListener(e -> );
+        btnRef.addActionListener(e -> commonUI.refresh(table, 3));
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(e -> );
         commonUI.buttonHighlight();
@@ -34,6 +35,15 @@ public class InventoryPanel {
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
+        toolbar.add(btnAdd);
+        toolbar.add(Box.createHorizontalStrut(20));
+        toolbar.add(btnEdit);
+        toolbar.add(btnView);
+        toolbar.add(Box.createHorizontalStrut(20));
+        toolbar.add(btnDel);
+        toolbar.add(btnRef);
+        toolbar.add(searchField);
+        toolbar.add(btnSearch);
 //main layout
         panel.setLayout(new BorderLayout());
         panel.add(toolbar, BorderLayout.NORTH);
@@ -41,5 +51,25 @@ public class InventoryPanel {
 
         panel.setVisible(true);
         return panel;
+    }
+    private static JButton addButton(JTable table, JFrame window){
+        JButton btnAdd = new JButton("Add New");
+        btnAdd.addActionListener(e -> {
+            try{
+                commonForum(table, -1, window);
+            }catch (SQLException sqle){
+                JOptionPane.showMessageDialog(null, "Error Adding Patient: " + sqle.getMessage());
+            }
+        });
+        return btnAdd;
+    }
+    private static JDialog commonForum(JTable table, int id, JFrame window){
+        JDialog form;
+        if(id == -1){
+            form = new JDialog(window, "Add To Inventory", true);
+        }else{
+            form = new JDialog(window, "Edit Inventory Item", true);
+        }
+        return form;
     }
 }
