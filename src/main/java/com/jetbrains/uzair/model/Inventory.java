@@ -49,7 +49,7 @@ public class Inventory {
             throw new ValidationException("Name Already Exists");
         }
         i.setName(raw[1]);
-        if(raw[2].equals("Bottles") || raw[2].equals("Strips") || raw[2].equals("Tablets") || raw[2].equals("Tubes") || raw[2].equals("Powder Pack")) {
+        if(raw[2].equals("Bottles") || raw[2].equals("Strips") || raw[2].equals("Tablets") || raw[2].equals("Tubes") || raw[2].equals("Powder Packs")) {
             i.setStorage(raw[2]);
         }else{
             throw new ValidationException("Validation Error: Contact Developer (Error 101)");
