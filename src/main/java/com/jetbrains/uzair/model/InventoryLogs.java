@@ -8,7 +8,7 @@ public class InventoryLogs {
     private int userId;
     private int amount;
     private String date;
-
+    //constructors
     public InventoryLogs(){}
     public InventoryLogs(int id, int inventoryId, int userId, int amount, String date){
         this.id = id;
@@ -20,4 +20,17 @@ public class InventoryLogs {
     public InventoryLogs(int inventoryId, int userId, int amount, String date){
         this(-1, inventoryId, userId, amount, date);
     }
+    //setters
+    public void setId(int id){this.id = id;}
+    public void setInventoryId(int inventoryId){this.inventoryId = inventoryId;}
+    public void setUserId(int userId){this.userId = userId;}
+    public void setAmount(int amount){this.amount = amount;}
+    public void setDate(String date){this.date = date;}
+    //getters
+    public int getId(){return id;}
+    public int getInventoryId(){return inventoryId;}
+    public int getUserId(){return userId;}
+    public int getAmount(){return amount;}
+    public String getDate(){return date;}
+
 }
