@@ -79,5 +79,10 @@ public class FirstUser {
                 System.exit(0);
             }
         });
+
+        forum.add(header, BorderLayout.NORTH);
+        forum.add(forum, BorderLayout.CENTER);
+        forum.add(buttonPanel, BorderLayout.SOUTH);
+        forum.setVisible(true);
     }
 }
