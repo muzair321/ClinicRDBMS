@@ -1,6 +1,9 @@
 package com.jetbrains.uzair.model;
 
 import com.jetbrains.uzair.db.InventoryLogsDB;
+import com.jetbrains.uzair.db.UsersDB;
+
+import java.sql.SQLException;
 
 public class InventoryLogs {
     private int id;
@@ -33,4 +36,7 @@ public class InventoryLogs {
     public int getAmount(){return amount;}
     public String getDate(){return date;}
 
+    public String getUserName() throws SQLException {
+        return UsersDB.getName(this.userId);
+    }
 }

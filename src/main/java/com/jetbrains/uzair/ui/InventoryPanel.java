@@ -4,10 +4,7 @@ import com.jetbrains.uzair.db.InventoryDB;
 import com.jetbrains.uzair.db.InventoryLogsDB;
 import com.jetbrains.uzair.db.PatientDB;
 import com.jetbrains.uzair.db.VisitDB;
-import com.jetbrains.uzair.model.Inventory;
-import com.jetbrains.uzair.model.Patient;
-import com.jetbrains.uzair.model.ValidationException;
-import com.jetbrains.uzair.model.Visit;
+import com.jetbrains.uzair.model.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -324,7 +321,7 @@ public class InventoryPanel {
             }
         };
 
-        List<Visit> logs = InventoryLogsDB.returnVisits(Id);
+        List<InventoryLogs> logs = InventoryLogsDB.returnLogs(Id);
 
         for (InventoryLogs l : logs) {
             model.addRow(new Object[]{

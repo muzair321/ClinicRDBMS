@@ -44,22 +44,23 @@ public class InventoryDB{
             while(rs.next()){
                 count++;
             }
-            returnSet = new String[count][];
-            try {
-                ResultSet rs1 = stmt.executeQuery(sql);
-                for (int i = 0; rs.next() && i < returnSet.length; i++){
-                    returnSet[i][0] = rs.getString("id");
-                    returnSet[i][1] = rs.getString("name");
-                    returnSet[i][2] = rs.getString("storage");
-                    returnSet[i][3] = rs.getString("amount");
-                    returnSet[i][4] = rs.getString("updated_at");
-                }
-                return returnSet;
-            } catch (SQLException e) {
-                throw new SQLException();
-            }
         } catch (SQLException e) {
             throw new SQLException("Error Retrieving Data From 'inventory'");
+        }
+        returnSet = new String[count][5];
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)){
+            for (int i = 0; rs.next() && i < returnSet.length; i++){
+                returnSet[i][0] = rs.getString("id");
+                returnSet[i][1] = rs.getString("name");
+                returnSet[i][2] = rs.getString("storage");
+                returnSet[i][3] = rs.getString("amount");
+                returnSet[i][4] = rs.getString("updated_at");
+            }
+            return returnSet;
+        } catch (SQLException e) {
+            throw new SQLException();
         }
     }
     public static Inventory returnUISingle(int id) throws SQLException{
@@ -139,7 +140,8 @@ public class InventoryDB{
                name,
                storage,
                amount,
-               updated_at,
+               updated_at
+        FROM inventory
         WHERE name LIKE ?
             OR storage LIKE ?
         """;
