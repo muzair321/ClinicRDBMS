@@ -10,7 +10,7 @@ import java.util.Objects;
 public class FirstUser {
     public static void frame(){
         JFrame frame =  new JFrame("Add Admin User");
-        frame.setSize(1200, 900);
+        frame.setSize(400, 300);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
@@ -70,7 +70,7 @@ public class FirstUser {
         buttonPanel.add(btnCancel);
 
         btnCancel.addActionListener(e -> System.exit(0));
-        btnSave.addActionListener(e ->
+        btnSave.addActionListener(_ ->
         {
             try {
                 UsersDB.insert(name.getText(), pass.getText(), 1);

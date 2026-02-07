@@ -85,9 +85,9 @@ public class LoginFrame extends JFrame {
         }
 
         User user = null;
-        String hash = PasswordUtil.hash(password);
+
         try {
-            user = UsersDB.authenticate(username, hash);
+            user = UsersDB.authenticate(username, password);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
