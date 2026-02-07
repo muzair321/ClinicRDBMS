@@ -12,17 +12,15 @@ import java.util.List;
 
 public class InventoryLogsDB {
     public static void insert(InventoryLogs il) throws SQLException {
-        String sql = "INSERT INTO inventory_logs( id, inventory_id, user_id, amount, date) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO inventory_logs(inventory_id, user_id, amount) VALUES( ?, ?, ?)";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, il.getId());
-            stmt.setInt(2, il.getInventoryId());
-            stmt.setInt(3, il.getUserId());
-            stmt.setInt(4, il.getAmount());
-            stmt.setString(5, il.getDate());
-
+            stmt.setInt(1, il.getInventoryId());
+            stmt.setInt(2, il.getUserId());
+            stmt.setInt(3, il.getAmount());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new SQLException("Error Inserting Into Inventory Logs");
+            throw new SQLException("Error Inserting Into Inventory Logs: " +  e.getMessage());
         }
     }
     public static List<InventoryLogs> returnLogs(int inventoryId) throws SQLException{

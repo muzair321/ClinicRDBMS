@@ -287,11 +287,7 @@ public class InventoryPanel {
                 }});
             JButton btnAddLog = new JButton("Update Stock");
             btnAddLog.addActionListener(_ -> {
-                try {
-                    commonForum(table, -1, window);
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(window, ex.getMessage());
-                }
+                updateStock(i.getId(), window);
             });
             commonUI.commonAddBtn(buttonPanel, btnDel, btnAddLog, btnEdit, btnClose);
             //header
@@ -312,7 +308,6 @@ public class InventoryPanel {
         }
     }
     private static JScrollPane getLogTables(int Id) throws SQLException {
-//todo: modify according to users table
         String[] headers = { "Log ID", "User", "Amount", "Date" };
         DefaultTableModel model = new DefaultTableModel(headers, 0) {
             @Override
@@ -349,4 +344,117 @@ public class InventoryPanel {
         });
         return btn;
     }
+    private static JDialog updateStock(int inventoryId, JFrame window) {
+
+        JDialog dialog = new JDialog(window, "Update Item Stock", true);
+        dialog.setSize(450, 300);
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        dialog.setLocationRelativeTo(window);
+        dialog.setLayout(new BorderLayout());
+
+        // Header
+        JPanel header = commonUI.commonHeader("Update Item Stock");
+        dialog.add(header, BorderLayout.NORTH);
+
+        // Form panel
+        JPanel formPanel = commonUI.commonForum();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 1;
+
+        int row = 0;
+
+        // Amount label
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        formPanel.add(new JLabel("Stock Change:"), gbc);
+
+        // Amount field
+        JTextField amountField = new JTextField();
+        amountField.setToolTipText("Use positive to add, negative to remove stock");
+
+        gbc.gridx = 1;
+        formPanel.add(amountField, gbc);
+
+        // Hint
+        row++;
+        gbc.gridx = 1;
+        gbc.gridy = row;
+        JLabel hint = new JLabel("Example: +10 to add, -5 to remove");
+        hint.setFont(hint.getFont().deriveFont(Font.ITALIC, 11f));
+        hint.setForeground(Color.GRAY);
+        formPanel.add(hint, gbc);
+
+        dialog.add(formPanel, BorderLayout.CENTER);
+
+        // Buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        JButton updateBtn = new JButton("Update");
+        JButton cancelBtn = new JButton("Cancel");
+
+        buttonPanel.add(cancelBtn);
+        buttonPanel.add(updateBtn);
+
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Actions
+        cancelBtn.addActionListener(e -> dialog.dispose());
+
+        updateBtn.addActionListener(e -> {
+            String text = amountField.getText().trim();
+
+            if (text.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "Please enter an amount.",
+                        "Invalid Input",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            int amount;
+            try {
+                amount = Integer.parseInt(text);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "Amount must be a number.",
+                        "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
+            if (amount == 0) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "Amount cannot be zero.",
+                        "Invalid Input",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            // 🔗 DB call (example)
+            try {
+                InventoryLogsDB.insert(new InventoryLogs(inventoryId, 12 , amount, null));
+                dialog.dispose();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "Failed to update stock." + ex.getMessage(),
+                        "Database Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+        dialog.setVisible(true);
+        return dialog;
+    }
+
 }
