@@ -68,4 +68,47 @@ public class InventoryLogsDB {
             throw new SQLException();
         }
     }
+    public static String[][] returnUI(String searchTerm) throws SQLException {
+        List<String[]> rows = new ArrayList<>();
+        String sql = """
+        SELECT l.id,
+               l.inventory_id,
+               i.name AS item_name,
+               l.user_id,
+               u.username AS user_name,
+               l.amount,
+               l.date
+        FROM inventory_logs l
+        JOIN users u ON u.id = l.user_id
+        JOIN inventory i ON i.id = l.inventory_id
+        WHERE u.username LIKE ?
+            OR i.name LIKE ?
+            OR l.date LIKE ?
+        ORDER BY l.date DESC
+        """;
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            String searchPattern = "%" + searchTerm + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setString(3, searchPattern);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    rows.add(new String[]{
+                            String.valueOf(rs.getInt("id")),
+                            String.valueOf(rs.getInt("inventory_id")),
+                            rs.getString("item_name"),
+                            String.valueOf(rs.getInt("user_id")),
+                            rs.getString("user_name"),
+                            String.valueOf(rs.getInt("amount")),
+                            rs.getString("date")
+                    });
+                }
+            }
+        }
+        // Convert List to array
+        return rows.toArray(new String[0][]);
+    }
 }
