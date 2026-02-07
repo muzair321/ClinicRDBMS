@@ -1,7 +1,6 @@
 package com.jetbrains.uzair.db;
 
 import com.jetbrains.uzair.model.InventoryLogs;
-import com.jetbrains.uzair.model.Visit;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -353,6 +353,17 @@ public class InventoryPanel {
         dialog.setLocationRelativeTo(window);
         dialog.setLayout(new BorderLayout());
 
+        if (!UserSession.isLoggedIn()) {
+            JOptionPane.showMessageDialog(
+                    dialog,
+                    "Session expired. Please log in again.",
+                    "Session Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            dialog.dispose();
+            return null;
+        }
+
         // Header
         JPanel header = commonUI.commonHeader("Update Item Stock");
         dialog.add(header, BorderLayout.NORTH);
@@ -442,6 +453,7 @@ public class InventoryPanel {
 
             // 🔗 DB call (example)
             try {
+                updateBtn.setEnabled(false);
                 InventoryLogsDB.insert(new InventoryLogs(inventoryId, UserSession.getUserId(), amount, null));
                 dialog.dispose();
             } catch (SQLException ex) {
