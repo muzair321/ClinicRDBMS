@@ -6,9 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FirstUser {
-    public static void frame(){
+    public static int frame(){
         JFrame frame =  new JFrame("Add Admin User");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -21,18 +22,18 @@ public class FirstUser {
         header.setBackground(new Color(12, 38, 78));
 
         ImageIcon logo = new ImageIcon(Objects.requireNonNull(MainFrame.class.getResource("/img/Clinic-Uncolored.png")));
-        Image scaled = logo.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        Image scaled = logo.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         JLabel logoLabel = new JLabel(new ImageIcon(scaled));
 
         JLabel title = new JLabel("Changez Clinic - Chak Beli Khan");
         title.setForeground(Color.WHITE);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        title.setFont(new Font("Segoe UI", Font.BOLD, 15));
 
         JPanel leftHeader = new JPanel();
         leftHeader.setLayout(new BoxLayout(leftHeader, BoxLayout.X_AXIS));
         leftHeader.setOpaque(false); // keep header background visible
         leftHeader.add(logoLabel);
-        leftHeader.add(Box.createHorizontalStrut(10));
+        leftHeader.add(Box.createHorizontalStrut(30));
 
         header.add(leftHeader, BorderLayout.WEST);
         header.add(title, BorderLayout.CENTER);
@@ -69,11 +70,15 @@ public class FirstUser {
         buttonPanel.add(btnSave);
         buttonPanel.add(btnCancel);
 
-        btnCancel.addActionListener(e -> System.exit(0));
-        btnSave.addActionListener(_ ->
+        btnCancel.addActionListener(e -> {
+            System.exit(0);
+        });
+        btnSave.addActionListener(e ->
         {
             try {
                 UsersDB.insert(name.getText(), pass.getText(), 1);
+                frame.dispose();
+                return;
             } catch (SQLException sqle) {
                 JOptionPane.showMessageDialog(frame, "Error Inserting User Data" + sqle.getMessage());
                 System.exit(0);
@@ -84,5 +89,6 @@ public class FirstUser {
         frame.add(forum, BorderLayout.CENTER);
         frame.add(buttonPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
+        return ;
     }
 }

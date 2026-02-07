@@ -3,12 +3,16 @@ package com.jetbrains.uzair.ui;
 import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.db.InventoryDB;
 import com.jetbrains.uzair.db.InventoryLogsDB;
+import com.jetbrains.uzair.db.PatientDB;
+import com.jetbrains.uzair.db.VisitDB;
 import com.jetbrains.uzair.model.*;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -60,17 +64,17 @@ public class InventoryPanel {
     }
     private static JButton addButton(JTable table, JFrame window){
         JButton btnAdd = new JButton("Add New");
-        btnAdd.addActionListener(_ -> {
+        btnAdd.addActionListener(e -> {
             try{
                 commonForum(table, -1, window);
             }catch (SQLException sqle){
-                JOptionPane.showMessageDialog(window, "Error Adding Patient: " + sqle.getMessage());
+                JOptionPane.showMessageDialog(null, "Error Adding Patient: " + sqle.getMessage());
             }
         });
         return btnAdd;
     }
     private static void commonForum(JTable table, int id, JFrame window) throws SQLException{
-        JDialog form;
+        JDialog forum;
         Inventory i;
         String t;
         String nameS = null;
@@ -91,11 +95,11 @@ public class InventoryPanel {
             storageS = i.getStorage();
             amountS = String.valueOf(i.getAmount());
         }
-        form = new JDialog(window, t, true);
-        form.setSize(500, 600);
-        form.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        form.setLocationRelativeTo(null);
-        form.setLayout(new BorderLayout());
+        forum = new JDialog(window, t, true);
+        forum.setSize(500, 600);
+        forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        forum.setLocationRelativeTo(null);
+        forum.setLayout(new BorderLayout());
         //header
         JPanel header = commonUI.commonHeader(t);
 //Form panel
@@ -148,14 +152,18 @@ public class InventoryPanel {
                     InventoryDB.insert(newI);
                 }
                 commonUI.refresh(table, 3);
-                form.dispose();
+                forum.dispose();
             } catch (ValidationException ve) {
-                JOptionPane.showMessageDialog(form, ve.getMessage());
+                JOptionPane.showMessageDialog(forum, ve.getMessage());
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(form, "Modification Failed:" + ex.getMessage());
+                JOptionPane.showMessageDialog(forum, "Modification Failed:" + ex.getMessage());
             }
         });
-        btnCancel.addActionListener(ev -> form.dispose());
+        btnCancel.addActionListener(ev -> forum.dispose());
+        forum.add(header, BorderLayout.NORTH);
+        forum.add(formPanel, BorderLayout.CENTER);
+        forum.add(buttonPanel, BorderLayout.SOUTH);
+        forum.setVisible(true);
     }
     private static JButton editButton1(JTable table, JFrame window) {
         JButton btn = new JButton("Edit Item");
@@ -337,7 +345,7 @@ public class InventoryPanel {
         });
         return btn;
     }
-    private static void updateStock(int inventoryId, JFrame window) {
+    private static JDialog updateStock(int inventoryId, JFrame window) {
 
         JDialog dialog = new JDialog(window, "Update Item Stock", true);
         dialog.setSize(450, 300);
@@ -353,7 +361,7 @@ public class InventoryPanel {
                     JOptionPane.ERROR_MESSAGE
             );
             dialog.dispose();
-            return;
+            return null;
         }
 
         // Header
@@ -459,6 +467,7 @@ public class InventoryPanel {
         });
 
         dialog.setVisible(true);
+        return dialog;
     }
 
 }
