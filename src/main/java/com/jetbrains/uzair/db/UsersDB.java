@@ -56,6 +56,9 @@ public class UsersDB {
         if (username == null || username.isBlank()) {
             throw new SQLException("Error: Username cannot be empty");
         }
+        if (password == null || password.isBlank()) {
+            throw new SQLException("Error: Password cannot be empty");
+        }
 
         String hash = PasswordUtil.hash(password);
         String sql = "INSERT INTO users( username, password, admin) VALUES( ?, ?, ?)";

@@ -122,7 +122,7 @@ public class InventoryPanel {
         formPanel.add(storage, gbc);
         row++;
         //amount
-        row++;gbc.gridx = 0; gbc.gridy = row;
+        gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(new JLabel("Amount:"), gbc);
         gbc.gridx = 1;
         JTextField amount = new JTextField(amountS, 15);
