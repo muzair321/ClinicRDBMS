@@ -1,6 +1,7 @@
 package com.jetbrains.uzair.db;
 
 import com.jetbrains.uzair.model.User;
+import com.jetbrains.uzair.security.PasswordUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,24 +24,26 @@ public class UsersDB {
         }
     }
     public static User authenticate(String username, String password) throws SQLException{
-        String sql = "SELECT id, username, admin FROM users WHERE username=? AND password=?";
+        String sql = "SELECT id, username, password, admin FROM users WHERE username=?";
 
         try (Connection conn = Database.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
-            ps.setString(2, password); // later: hashed
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
+                String storedHash = rs.getString("password");
+                if (!PasswordUtil.verify(password, storedHash)) {
+                    return null;
+                }
                 return new User(
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getInt("admin") == 1
                 );
             }
-
         } catch (SQLException e) {
             throw new SQLException("Error Logging In: " + e.getMessage());
         }

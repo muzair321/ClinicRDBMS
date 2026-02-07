@@ -3,6 +3,7 @@ package com.jetbrains.uzair.ui;
 import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.db.UsersDB;
 import com.jetbrains.uzair.model.User;
+import com.jetbrains.uzair.security.PasswordUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,12 +85,13 @@ public class LoginFrame extends JFrame {
         }
 
         User user = null;
+        String hash = PasswordUtil.hash(password);
         try {
-            user = UsersDB.authenticate(username, password);
+            user = UsersDB.authenticate(username, hash);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
-        if (user == null) {
+        if (user != null) {
             UserSession.login(user);
             MainFrame.window();
             dispose();
