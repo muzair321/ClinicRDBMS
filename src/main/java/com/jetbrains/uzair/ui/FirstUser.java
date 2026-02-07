@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FirstUser {
-    public static int frame(){
+    public static void frame(){
         JFrame frame =  new JFrame("Add Admin User");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -78,7 +78,7 @@ public class FirstUser {
             try {
                 UsersDB.insert(name.getText(), pass.getText(), 1);
                 frame.dispose();
-                return;
+                new LoginFrame();
             } catch (SQLException sqle) {
                 JOptionPane.showMessageDialog(frame, "Error Inserting User Data" + sqle.getMessage());
                 System.exit(0);
@@ -89,6 +89,5 @@ public class FirstUser {
         frame.add(forum, BorderLayout.CENTER);
         frame.add(buttonPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
-        return ;
     }
 }

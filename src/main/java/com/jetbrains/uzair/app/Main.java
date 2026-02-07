@@ -18,7 +18,8 @@ public class Main {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        }else {
+            new LoginFrame();
         }
-        SwingUtilities.invokeLater(LoginFrame::new);
     }
 }

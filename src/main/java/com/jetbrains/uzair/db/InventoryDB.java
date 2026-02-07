@@ -117,7 +117,8 @@ public class InventoryDB{
         try(Connection conn = Database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)){
             stmt.setInt(2, inventoryId);
-            stmt.setInt(1, (stock - amount));
+            stmt.setInt(1, (stock + amount));
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException("Error Updating Inventory Stock");
         }

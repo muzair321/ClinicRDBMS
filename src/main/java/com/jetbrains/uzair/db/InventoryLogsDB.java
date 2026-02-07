@@ -8,6 +8,7 @@ import java.util.List;
 
 public class InventoryLogsDB {
     public static void insert(InventoryLogs il) throws SQLException {
+        InventoryDB.setStock(il.getInventoryId(), il.getAmount());
         String sql = "INSERT INTO inventory_logs(inventory_id, user_id, amount) VALUES( ?, ?, ?)";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
