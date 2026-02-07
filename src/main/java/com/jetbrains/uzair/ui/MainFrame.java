@@ -1,6 +1,7 @@
 package com.jetbrains.uzair.ui;
 
 import com.jetbrains.uzair.db.InventoryDB;
+import com.jetbrains.uzair.model.InventoryLogs;
 
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -65,7 +66,7 @@ public class MainFrame {
         tabs.addTab("Patients", PatientPanel.mainWindow(frame));
         tabs.addTab("Visits", VisitPanel.mainWindow(frame));
         tabs.addTab("Inventory", InventoryPanel.mainWindow(frame));
-        tabs.addTab("Reports", createPlaceholderPanel("Reports Panel"));
+        tabs.addTab("Inventory Logs", InventoryLogsPanel.mainWindow(frame));
 
         // ================= FOOTER =================
         JPanel footer = new JPanel(new BorderLayout());

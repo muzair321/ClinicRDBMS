@@ -41,7 +41,16 @@ public class InventoryLogsDB {
     public static String[][] returnUI() throws SQLException{
         String[][] returnSet;
         int count = 0;
-        String sql = "SELECT * FROM inventory_logs";
+        String sql = """
+        SELECT l.id,
+               i.name AS item_name,
+               u.username AS user_name,
+               l.amount,
+               l.date
+        FROM inventory_logs l
+        JOIN users u ON u.id = l.user_id
+        JOIN inventory i ON i.id = l.inventory_id
+        """;
         try(Connection conn = Database.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql)){
@@ -57,8 +66,8 @@ public class InventoryLogsDB {
              ResultSet rs = stmt.executeQuery(sql)){
             for (int i = 0; rs.next() && i < returnSet.length; i++){
                 returnSet[i][0] = rs.getString("id");
-                returnSet[i][1] = rs.getString("inventory_id");
-                returnSet[i][2] = rs.getString("user_id");
+                returnSet[i][1] = rs.getString("item_name");
+                returnSet[i][2] = rs.getString("user_name");
                 returnSet[i][3] = rs.getString("amount");
                 returnSet[i][4] = rs.getString("date");
             }

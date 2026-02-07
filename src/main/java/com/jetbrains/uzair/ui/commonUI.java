@@ -1,8 +1,10 @@
 package com.jetbrains.uzair.ui;
 
 import com.jetbrains.uzair.db.InventoryDB;
+import com.jetbrains.uzair.db.InventoryLogsDB;
 import com.jetbrains.uzair.db.PatientDB;
 import com.jetbrains.uzair.db.VisitDB;
+import com.jetbrains.uzair.model.InventoryLogs;
 import com.jetbrains.uzair.model.Patient;
 import com.jetbrains.uzair.model.Visit;
 
@@ -29,6 +31,8 @@ public class commonUI {
                 data = VisitDB.returnUI();
             } else if (ui == 3) {
                 data = InventoryDB.returnUI();
+            } else if (ui == 4) {
+                data = InventoryLogsDB.returnUI();
             } else{
                 throw new SQLException("Error Reading");
             }
@@ -68,6 +72,12 @@ public class commonUI {
             headers.add("Storage Type");
             headers.add("Amount");
             headers.add("Last Updated");
+        }else if (ui == 4){
+            headers.add("Log ID");
+            headers.add("Item Name");
+            headers.add("User Name");
+            headers.add("Amount");
+            headers.add("Date");
         }else {
             headers.add("Error");
         }
@@ -84,7 +94,9 @@ public class commonUI {
                     return VisitDB.returnUI(search);
                 } else if(ui == 3){
                     return InventoryDB.returnUI(search);
-                }else {
+                } else if (ui == 4) {
+                    return InventoryLogsDB.returnUI(search);
+                } else {
                     return null;
                 }
             }
@@ -116,6 +128,8 @@ public class commonUI {
                         return VisitDB.returnUI();
                     } else if(ui == 3){
                         return InventoryDB.returnUI();
+                    } else if (ui == 4) {
+                        return InventoryLogsDB.returnUI();
                     }
                     return null; // Database call
                 }
