@@ -80,9 +80,9 @@ public class FirstUser {
             }
         });
 
-        forum.add(header, BorderLayout.NORTH);
-        forum.add(forum, BorderLayout.CENTER);
-        forum.add(buttonPanel, BorderLayout.SOUTH);
-        forum.setVisible(true);
+        frame.add(header, BorderLayout.NORTH);
+        frame.add(forum, BorderLayout.CENTER);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+        frame.setVisible(true);
     }
 }

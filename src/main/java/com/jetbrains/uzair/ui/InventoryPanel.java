@@ -160,10 +160,6 @@ public class InventoryPanel {
             }
         });
         btnCancel.addActionListener(ev -> forum.dispose());
-        forum.add(header, BorderLayout.NORTH);
-        forum.add(formPanel, BorderLayout.CENTER);
-        forum.add(buttonPanel, BorderLayout.SOUTH);
-        forum.setVisible(true);
     }
     private static JButton editButton1(JTable table, JFrame window) {
         JButton btn = new JButton("Edit Item");
