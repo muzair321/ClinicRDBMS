@@ -1,6 +1,7 @@
 package com.jetbrains.uzair.ui;
 
 import com.jetbrains.uzair.db.InventoryDB;
+import com.jetbrains.uzair.db.InventoryLogsDB;
 import com.jetbrains.uzair.db.PatientDB;
 import com.jetbrains.uzair.db.VisitDB;
 import com.jetbrains.uzair.model.Inventory;
