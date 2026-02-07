@@ -3,10 +3,7 @@ package com.jetbrains.uzair.db;
 import com.jetbrains.uzair.model.InventoryLogs;
 import com.jetbrains.uzair.model.Visit;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,5 +38,34 @@ public class InventoryLogsDB {
             }
         }
         return list;
+    }
+    public static String[][] returnUI() throws SQLException{
+        String[][] returnSet;
+        int count = 0;
+        String sql = "SELECT * FROM inventory_logs";
+        try(Connection conn = Database.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            while(rs.next()){
+                count++;
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error Retrieving Data From 'inventory_logs'");
+        }
+        returnSet = new String[count][5];
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)){
+            for (int i = 0; rs.next() && i < returnSet.length; i++){
+                returnSet[i][0] = rs.getString("id");
+                returnSet[i][1] = rs.getString("inventory_id");
+                returnSet[i][2] = rs.getString("user_id");
+                returnSet[i][3] = rs.getString("amount");
+                returnSet[i][4] = rs.getString("date");
+            }
+            return returnSet;
+        } catch (SQLException e) {
+            throw new SQLException();
+        }
     }
 }

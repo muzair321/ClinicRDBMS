@@ -1,5 +1,6 @@
 package com.jetbrains.uzair.ui;
 
+import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.db.InventoryDB;
 import com.jetbrains.uzair.db.InventoryLogsDB;
 import com.jetbrains.uzair.db.PatientDB;
@@ -441,7 +442,7 @@ public class InventoryPanel {
 
             // 🔗 DB call (example)
             try {
-                InventoryLogsDB.insert(new InventoryLogs(inventoryId, 12 , amount, null));
+                InventoryLogsDB.insert(new InventoryLogs(inventoryId, UserSession.getUserId(), amount, null));
                 dialog.dispose();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(

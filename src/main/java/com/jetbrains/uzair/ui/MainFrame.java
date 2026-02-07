@@ -23,7 +23,7 @@ import java.util.Objects;
 
 public class MainFrame {
 
-    public static void main(String[] args) {
+    public static void window() {
         SwingUtilities.invokeLater(MainFrame::createUI);
     }
 
