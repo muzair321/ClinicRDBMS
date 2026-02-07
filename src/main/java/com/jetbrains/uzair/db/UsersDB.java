@@ -49,4 +49,22 @@ public class UsersDB {
         }
         return null;
     }
+    public static void insert(String username, String password, int admin) throws SQLException{
+        if(admin != 1 && admin != 0){
+            throw new SQLException("Error: Admin State Non-Binary");
+        }
+        if (username == null || username.isBlank()) {
+            throw new SQLException("Error: Username cannot be empty");
+        }
+
+        String hash = PasswordUtil.hash(password);
+        String sql = "INSERT INTO users( username, password, admin) VALUES( ?, ?, ?)";
+        try (Connection conn = Database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setString(1, username);
+            stmt.setString(2, hash);
+            stmt.setInt(3, admin);
+            stmt.executeUpdate();
+        }
+    }
 }
