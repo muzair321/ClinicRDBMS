@@ -33,15 +33,17 @@ public class PatientPanel {
         JButton btnAdd = addButton(table, window);
         JButton btnEdit = editButton1(table, window);
         JButton btnView = viewPatient(table, window);
+        JButton btnVisit = addVisit(table, window);
         JButton btnDel = commonUI.deleteButton(table, window, 1);
         JButton btnRef = new JButton("Refresh");
         btnRef.addActionListener(e -> commonUI.refresh(table, 1));
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(e -> commonUI.search(table, searchField.getText(), 1));
         searchField.addActionListener(_ -> btnSearch.doClick());
-        commonUI.buttonHighlight(btnEdit, btnView, btnDel, table);
+        commonUI.buttonHighlight(btnEdit, btnVisit, btnView, btnDel, table);
 
-        btnAdd.setMnemonic('Z');
+        btnAdd.setMnemonic('A');
+        btnVisit.setMnemonic('S');
         btnRef.setMnemonic('R');
         btnDel.setMnemonic('D');
 //toolbar panel
@@ -50,6 +52,7 @@ public class PatientPanel {
         toolbar.add(btnAdd);
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnEdit);
+        toolbar.add(btnVisit);
         toolbar.add(btnView);
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnDel);
@@ -75,6 +78,32 @@ public class PatientPanel {
             }
         });
         return btnAdd;
+    }
+    private static JButton addVisit(JTable table, JFrame window) {
+        JButton btn = new JButton("Add Visit");
+
+        btn.addActionListener(e -> {
+            int[] selectedRows = table.getSelectedRows();
+
+            if (selectedRows.length == 0) {
+                JOptionPane.showMessageDialog(window, "No Patient(s) Selected");
+                return;
+            }
+            if (selectedRows.length > 1){
+                JOptionPane.showMessageDialog(window, "Select Only 1 Patient");
+                return;
+            }
+            int modelRow = table.convertRowIndexToModel(selectedRows[0]);
+            int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
+
+            try {
+                VisitPanel.commonForum(window, id, -1, table);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(window, ex.getMessage());
+            }
+        });
+
+        return btn;
     }
     //view selected patient
     private static JButton viewPatient(JTable table, JFrame window){

@@ -139,7 +139,7 @@ public class VisitPanel {
                 }else {
                     VisitDB.insert(Visit.check(Visit.convArrayToOb(raw)));
                 }
-                commonUI.refresh(table, 2);
+                commonUI.refresh(table, 1);
                 forum.dispose();
             } catch (ValidationException| SQLException e) {
                 JOptionPane.showMessageDialog(forum, e.getMessage());
