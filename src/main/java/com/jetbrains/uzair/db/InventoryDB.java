@@ -34,7 +34,7 @@ public class InventoryDB{
             }
             conn.commit();
         } catch (SQLException e) {
-            throw new SQLException("Failed to insert inventory + log", e);
+            throw new SQLException("Failed to insert inventory + log" + e);
         }
     }
     public static boolean checkName(String name) throws SQLException{

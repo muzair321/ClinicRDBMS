@@ -34,6 +34,9 @@ public class MainFrame {
         JLabel title = new JLabel("Changez Clinic - Chak Beli Khan");
         title.setForeground(Color.WHITE);
         title.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        JLabel user = new JLabel("Logged In As " + UserSession.getUser().getUsername());
+        user.setForeground(Color.WHITE);
+        user.setFont(new Font("Segoe UI", Font.BOLD, 20));
 
         JPanel leftHeader = new JPanel();
         leftHeader.setLayout(new BoxLayout(leftHeader, BoxLayout.X_AXIS));
@@ -41,8 +44,10 @@ public class MainFrame {
         leftHeader.add(logoLabel);
         leftHeader.add(Box.createHorizontalStrut(15));
 
+
         header.add(leftHeader, BorderLayout.WEST);
         header.add(title, BorderLayout.CENTER);
+        header.add(user, BorderLayout.EAST);
 
         // ================= TABS =================
         JTabbedPane tabs = new JTabbedPane();
