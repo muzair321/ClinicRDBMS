@@ -332,6 +332,14 @@ public class InventoryPanel {
         table.setRowHeight(24);
         table.getTableHeader().setReorderingAllowed(false);
 
+        int amountColumnIndex = 2; // "Amount" column
+
+        AmountRowRenderer renderer = new AmountRowRenderer(amountColumnIndex);
+
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
+
         return new JScrollPane(table);
     }
     private static JButton editButton2(JTable table, int id, JFrame window){
