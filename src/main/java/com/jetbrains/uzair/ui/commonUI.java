@@ -341,6 +341,20 @@ public class commonUI {
             btnDel.setEnabled(selected);
         });
     }
+    public static void buttonHighlight(JButton btnEdit, JButton btnUpdate, JButton btnView, JButton btnDel, JTable table) {
+        btnEdit.setEnabled(false);
+        btnView.setEnabled(false);
+        btnDel.setEnabled(false);
+        btnUpdate.setEnabled(false);
+
+        table.getSelectionModel().addListSelectionListener(_ -> {
+            boolean selected = table.getSelectedRowCount() > 0;
+            btnView.setEnabled(table.getSelectedRowCount() == 1);
+            btnUpdate.setEnabled(table.getSelectedRowCount() == 1);
+            btnEdit.setEnabled(table.getSelectedRowCount() == 1);
+            btnDel.setEnabled(selected);
+        });
+    }
     public static JDialog commonDialog(String title, JFrame window){
         JDialog disp = new JDialog(window,title, true);
         disp.setSize(700, 810);

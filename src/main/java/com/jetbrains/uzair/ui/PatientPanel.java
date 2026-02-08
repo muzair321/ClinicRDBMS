@@ -38,8 +38,12 @@ public class PatientPanel {
         btnRef.addActionListener(e -> commonUI.refresh(table, 1));
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(e -> commonUI.search(table, searchField.getText(), 1));
+        searchField.addActionListener(_ -> btnSearch.doClick());
         commonUI.buttonHighlight(btnEdit, btnView, btnDel, table);
 
+        btnAdd.setMnemonic('Z');
+        btnRef.setMnemonic('R');
+        btnDel.setMnemonic('D');
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 

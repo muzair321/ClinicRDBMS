@@ -33,18 +33,25 @@ public class InventoryPanel {
 //buttons
         JButton btnAdd = addButton(table, window);
         JButton btnEdit = editButton1(table, window);
+        JButton btnUpdate = update(table, window);
         JButton btnView = viewItem(table, window);
         JButton btnDel = commonUI.deleteButton(table, window, 3);
         JButton btnRef = new JButton("Refresh");
         btnRef.addActionListener(_ -> commonUI.refresh(table, 3));
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(_ -> commonUI.search(table, searchField.getText(), 3));
-        commonUI.buttonHighlight(btnEdit, btnView, btnDel, table);
+        searchField.addActionListener(_ -> btnSearch.doClick());
+        commonUI.buttonHighlight(btnEdit, btnUpdate, btnView, btnDel, table);
+        btnAdd.setMnemonic('A');
+        btnRef.setMnemonic('R');
+        btnDel.setMnemonic('D');
+        btnUpdate.setMnemonic('S');
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         toolbar.add(btnAdd);
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnEdit);
+        toolbar.add(btnUpdate);
         toolbar.add(btnView);
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnDel);
@@ -155,12 +162,35 @@ public class InventoryPanel {
                 JOptionPane.showMessageDialog(forum, "Modification Failed:" + ex.getMessage());
             }
         });
-        FocusUtils.enableArrowNavigation(name, storage, amount);
+        forum.getRootPane().setDefaultButton(btnSave);
+        FocusUtils.enableArrowNavigation(name, amount);
         btnCancel.addActionListener(_ -> forum.dispose());
         forum.add(header, BorderLayout.NORTH);
         forum.add(formPanel, BorderLayout.CENTER);
         forum.add(buttonPanel, BorderLayout.SOUTH);
         forum.setVisible(true);
+    }
+    private static JButton update(JTable table, JFrame window){
+        JButton btn = new JButton("Update Stock");
+
+        btn.addActionListener(_ -> {
+            int[] selectedRows = table.getSelectedRows();
+
+            if (selectedRows.length == 0) {
+                JOptionPane.showMessageDialog(window, "No Item(s) Selected");
+                return;
+            }
+            if (selectedRows.length > 1){
+                JOptionPane.showMessageDialog(window, "Select Only 1 Item");
+                return;
+            }
+            int modelRow = table.convertRowIndexToModel(selectedRows[0]);
+            int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
+
+            updateStock(id, window);
+            commonUI.refresh(table, 3);
+        });
+        return btn;
     }
     private static JButton editButton1(JTable table, JFrame window) {
         JButton btn = new JButton("Edit Item");
@@ -280,11 +310,14 @@ public class InventoryPanel {
                     JOptionPane.showMessageDialog(window, "Item Deleted Successfully");
                     commonUI.refresh(table, 3);
                     disp.dispose();
+                    commonUI.refresh(table, 3);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(disp, ex.getMessage());
                 }});
             JButton btnAddLog = new JButton("Update Stock");
-            btnAddLog.addActionListener(_ ->updateStock(i.getId(), window));
+            btnAddLog.addActionListener(_ ->{updateStock(i.getId(), window); commonUI.refresh(table, 3);});
+            disp.getRootPane().setDefaultButton(btnAddLog);
+            disp.getRootPane().setCancelButton(btnClose);
             commonUI.commonAddBtn(buttonPanel, btnDel, btnAddLog, btnEdit, btnClose);
             //header
             JPanel header = commonUI.commonHeader("Item Data");
@@ -345,6 +378,7 @@ public class InventoryPanel {
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed To Load Item Data");
             }
+            commonUI.refresh(table, 3);
         });
         return btn;
     }
@@ -467,8 +501,10 @@ public class InventoryPanel {
                         "Database Error",
                         JOptionPane.ERROR_MESSAGE
                 );
+                updateBtn.setEnabled(true);
             }
         });
+        dialog.getRootPane().setDefaultButton(updateBtn);
 
         dialog.setVisible(true);
     }

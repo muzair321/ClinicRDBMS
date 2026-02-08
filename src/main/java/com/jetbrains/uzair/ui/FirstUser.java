@@ -7,8 +7,6 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.Objects;
 
-import static javax.swing.SwingUtilities.getRootPane;
-
 public class FirstUser {
     public static void frame(){
         JFrame frame =  new JFrame("Add Admin User");

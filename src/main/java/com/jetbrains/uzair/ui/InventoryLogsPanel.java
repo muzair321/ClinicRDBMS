@@ -23,8 +23,10 @@ public class InventoryLogsPanel {
 //buttons
         JButton btnRef = new JButton("Refresh");
         btnRef.addActionListener(_ -> commonUI.refresh(table, 4));
+        btnRef.setMnemonic('R');
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(_ -> commonUI.search(table, searchField.getText(), 4));
+        searchField.addActionListener(_ -> btnSearch.doClick());
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         toolbar.add(btnRef);

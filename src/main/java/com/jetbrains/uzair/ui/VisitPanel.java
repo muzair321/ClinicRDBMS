@@ -30,11 +30,14 @@ public class VisitPanel {
         JButton btnVisit = editButton1(table, window);
         JButton btnSearch = new JButton("Search");
         btnSearch.addActionListener(_ -> commonUI.search(table, searchField.getText(), 2));
+        searchField.addActionListener(_ -> btnSearch.doClick());
         JButton btnDelete = commonUI.deleteButton(table, window, 2);
         JButton btnView = viewVisit(table, window);
         JButton btnRef = new JButton("Refresh");
         btnRef.addActionListener(_ -> commonUI.refresh(table, 2));
         commonUI.buttonHighlight(btnVisit, btnView, btnDelete, table);
+        btnRef.setMnemonic('R');
+        btnDelete.setMnemonic('D');
         //toolbar
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         toolbar.add(btnView);

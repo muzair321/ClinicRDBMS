@@ -1,5 +1,6 @@
 package com.jetbrains.uzair.db;
 
+import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.model.Inventory;
 
 import java.sql.*;
@@ -8,16 +9,32 @@ import java.util.List;
 
 public class InventoryDB{
     public static void insert(Inventory i) throws SQLException {
-        String sql = "INSERT INTO inventory(name, storage, amount) VALUES(?, ?, ?)";
-        try(Connection conn = Database.getConnection()){
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, i.getName());
-            stmt.setString(2, i.getStorage());
-            stmt.setInt(3, i.getAmount());
-            stmt.executeUpdate();
-        }
-        catch(SQLException e){
-            throw new SQLException("Error Inserting Data Into 'inventory': " + e.getMessage());
+        String inventorySql = "INSERT INTO inventory(name, storage, amount) VALUES (?, ?, ?)";
+        String logSql = "INSERT INTO inventory_logs(inventory_id, user_id, amount) VALUES (?, ?, ?)";
+        try (Connection conn = Database.getConnection()) {
+            conn.setAutoCommit(false);
+
+            int inventoryId;
+            try (PreparedStatement ps = conn.prepareStatement(inventorySql, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, i.getName());
+                ps.setString(2, i.getStorage());
+                ps.setInt(3, i.getAmount());
+                ps.executeUpdate();
+                ResultSet keys = ps.getGeneratedKeys();
+                if (!keys.next()) {
+                    throw new SQLException("Failed to get inventory ID");
+                }
+                inventoryId = keys.getInt(1);
+            }
+            try (PreparedStatement ps = conn.prepareStatement(logSql)) {
+                ps.setInt(1, inventoryId);
+                ps.setInt(2, UserSession.getUserId());
+                ps.setInt(3, i.getAmount());
+                ps.executeUpdate();
+            }
+            conn.commit();
+        } catch (SQLException e) {
+            throw new SQLException("Failed to insert inventory + log", e);
         }
     }
     public static boolean checkName(String name) throws SQLException{
