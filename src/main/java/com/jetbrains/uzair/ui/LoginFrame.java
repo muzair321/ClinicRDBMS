@@ -16,7 +16,7 @@ public class LoginFrame extends JFrame {
 
     public LoginFrame() {
         setTitle("Clinic Login");
-        setSize(350, 400);
+        setSize(450, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -70,14 +70,53 @@ public class LoginFrame extends JFrame {
         usernameField.requestFocusInWindow();
         panel.add(usernameField, gbc);
 
-        // Password
+        // Password row
         gbc.gridx = 0;
         gbc.gridy = 1;
         panel.add(new JLabel("Password:"), gbc);
 
         gbc.gridx = 1;
+
+// Container for password + eye button
+        JPanel passwordPanel = new JPanel(new BorderLayout(5, 0));
+        passwordPanel.setOpaque(false);
+
         passwordField = new JPasswordField(15);
-        panel.add(passwordField, gbc);
+
+// Eye button
+        JButton toggleBtn = new JButton();
+        toggleBtn.setFocusPainted(false);
+        toggleBtn.setBorderPainted(false);
+        toggleBtn.setContentAreaFilled(false);
+        toggleBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        ImageIcon showRawIcon = new ImageIcon(
+                Objects.requireNonNull(MainFrame.class.getResource("/img/showIcon.png"))
+        );
+        final ImageIcon showIcon =new ImageIcon(showRawIcon.getImage().getScaledInstance(20, 10, Image.SCALE_SMOOTH));
+        ImageIcon hideRawIcon = new ImageIcon(
+                Objects.requireNonNull(MainFrame.class.getResource("/img/hideIcon.png"))
+        );
+        final ImageIcon hideIcon = new ImageIcon(hideRawIcon.getImage().getScaledInstance(22, 11, Image.SCALE_SMOOTH));
+
+
+        toggleBtn.setIcon(showIcon);
+        final char defaultEcho = passwordField.getEchoChar();
+
+        toggleBtn.addActionListener(e -> {
+            if (passwordField.getEchoChar() != 0) {
+                passwordField.setEchoChar((char) 0); // show
+                toggleBtn.setIcon(hideIcon);
+            } else {
+                passwordField.setEchoChar(defaultEcho); // hide
+                toggleBtn.setIcon(showIcon);
+            }
+        });
+
+        passwordPanel.add(passwordField, BorderLayout.CENTER);
+        passwordPanel.add(toggleBtn, BorderLayout.EAST);
+
+        panel.add(passwordPanel, gbc);
 
         return panel;
     }
