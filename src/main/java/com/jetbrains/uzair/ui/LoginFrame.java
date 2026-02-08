@@ -69,16 +69,6 @@ public class LoginFrame extends JFrame {
         gbc.gridx = 1;
         usernameField = new JTextField(15);
         usernameField.requestFocusInWindow();
-        usernameField.getInputMap().put(
-                KeyStroke.getKeyStroke("DOWN"),
-                "focusPassword"
-        );
-        usernameField.getActionMap().put("focusPassword",
-                new AbstractAction() {
-                    public void actionPerformed(ActionEvent e) {
-                        passwordField.requestFocusInWindow();
-                    }
-                });
 
         panel.add(usernameField, gbc);
 
@@ -94,19 +84,11 @@ public class LoginFrame extends JFrame {
         passwordPanel.setOpaque(false);
 
         passwordField = new JPasswordField(15);
-        passwordField.getInputMap().put(
-                KeyStroke.getKeyStroke("UP"),
-                "focusUsername"
-        );
-        passwordField.getActionMap().put("focusUsername",
-                new AbstractAction() {
-                    public void actionPerformed(ActionEvent e) {
-                        usernameField.requestFocusInWindow();
-                    }
-                });
 
+        FocusUtils.enableArrowNavigation(usernameField, passwordField);
 // Eye button
         JButton toggleBtn = new JButton();
+        toggleBtn.setToolTipText("Show / hide password");
         toggleBtn.setFocusPainted(false);
         toggleBtn.setBorderPainted(false);
         toggleBtn.setContentAreaFilled(false);
@@ -125,6 +107,7 @@ public class LoginFrame extends JFrame {
                 passwordField.setEchoChar((char) 0); // show
                 toggleBtn.setIcon(hideIcon);
             } else {
+                passwordField.setTransferHandler(null);
                 passwordField.setEchoChar(defaultEcho); // hide
                 toggleBtn.setIcon(showIcon);
             }

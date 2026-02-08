@@ -155,6 +155,7 @@ public class InventoryPanel {
                 JOptionPane.showMessageDialog(forum, "Modification Failed:" + ex.getMessage());
             }
         });
+        FocusUtils.enableArrowNavigation(name, storage, amount);
         btnCancel.addActionListener(_ -> forum.dispose());
         forum.add(header, BorderLayout.NORTH);
         forum.add(formPanel, BorderLayout.CENTER);
@@ -389,6 +390,7 @@ public class InventoryPanel {
         JTextField amountField = new JTextField();
         amountField.setToolTipText("Use positive to add, negative to remove stock");
 
+        amountField.requestFocus();
         gbc.gridx = 1;
         formPanel.add(amountField, gbc);
 
