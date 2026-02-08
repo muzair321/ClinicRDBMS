@@ -6,6 +6,7 @@ import com.jetbrains.uzair.model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.Objects;
 
@@ -68,6 +69,17 @@ public class LoginFrame extends JFrame {
         gbc.gridx = 1;
         usernameField = new JTextField(15);
         usernameField.requestFocusInWindow();
+        usernameField.getInputMap().put(
+                KeyStroke.getKeyStroke("DOWN"),
+                "focusPassword"
+        );
+        usernameField.getActionMap().put("focusPassword",
+                new AbstractAction() {
+                    public void actionPerformed(ActionEvent e) {
+                        passwordField.requestFocusInWindow();
+                    }
+                });
+
         panel.add(usernameField, gbc);
 
         // Password row
@@ -82,6 +94,16 @@ public class LoginFrame extends JFrame {
         passwordPanel.setOpaque(false);
 
         passwordField = new JPasswordField(15);
+        passwordField.getInputMap().put(
+                KeyStroke.getKeyStroke("UP"),
+                "focusUsername"
+        );
+        passwordField.getActionMap().put("focusUsername",
+                new AbstractAction() {
+                    public void actionPerformed(ActionEvent e) {
+                        usernameField.requestFocusInWindow();
+                    }
+                });
 
 // Eye button
         JButton toggleBtn = new JButton();
@@ -90,15 +112,10 @@ public class LoginFrame extends JFrame {
         toggleBtn.setContentAreaFilled(false);
         toggleBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        ImageIcon showRawIcon = new ImageIcon(
-                Objects.requireNonNull(MainFrame.class.getResource("/img/showIcon.png"))
-        );
+        ImageIcon showRawIcon = new ImageIcon(Objects.requireNonNull(MainFrame.class.getResource("/img/showIcon.png")));
         final ImageIcon showIcon =new ImageIcon(showRawIcon.getImage().getScaledInstance(20, 10, Image.SCALE_SMOOTH));
-        ImageIcon hideRawIcon = new ImageIcon(
-                Objects.requireNonNull(MainFrame.class.getResource("/img/hideIcon.png"))
-        );
+        ImageIcon hideRawIcon = new ImageIcon(Objects.requireNonNull(MainFrame.class.getResource("/img/hideIcon.png")));
         final ImageIcon hideIcon = new ImageIcon(hideRawIcon.getImage().getScaledInstance(22, 11, Image.SCALE_SMOOTH));
-
 
         toggleBtn.setIcon(showIcon);
         final char defaultEcho = passwordField.getEchoChar();
