@@ -7,6 +7,8 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.Objects;
 
+import static javax.swing.SwingUtilities.getRootPane;
+
 public class FirstUser {
     public static void frame(){
         JFrame frame =  new JFrame("Add Admin User");
@@ -14,6 +16,7 @@ public class FirstUser {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
+        frame.setResizable(false);
 
         //header
         JPanel header = new JPanel(new BorderLayout());
@@ -59,6 +62,7 @@ public class FirstUser {
         gbc.gridx = 1;
         JTextField pass = new JTextField();
         forum.add(pass, gbc);
+        FocusUtils.enableArrowNavigation(name, pass);
 
         //buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
@@ -72,15 +76,21 @@ public class FirstUser {
         btnCancel.addActionListener(_ ->System.exit(0));
         btnSave.addActionListener(_ ->
         {
-            try {
-                UsersDB.insert(name.getText(), pass.getText(), 1);
-                frame.dispose();
-                new LoginFrame();
-            } catch (SQLException sqle) {
-                JOptionPane.showMessageDialog(frame, "Error Inserting User Data" + sqle.getMessage());
-                System.exit(0);
+            if(name.getText().isEmpty() || pass.getText().isEmpty()){
+                JOptionPane.showMessageDialog(frame, "Username and Password Cannot Be Empty");
+            }
+            else{
+                try {
+                    UsersDB.insert(name.getText(), pass.getText(), 1);
+                    frame.dispose();
+                    new LoginFrame();
+                } catch (SQLException sqle) {
+                    JOptionPane.showMessageDialog(frame, "Error Inserting User Data" + sqle.getMessage());
+                    System.exit(0);
+                }
             }
         });
+        frame.getRootPane().setDefaultButton(btnSave);
 
         frame.add(header, BorderLayout.NORTH);
         frame.add(forum, BorderLayout.CENTER);

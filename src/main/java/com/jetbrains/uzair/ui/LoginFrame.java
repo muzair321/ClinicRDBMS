@@ -6,7 +6,6 @@ import com.jetbrains.uzair.model.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.Objects;
 
