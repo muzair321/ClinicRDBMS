@@ -48,15 +48,26 @@ public class UsersDB {
         }
         return null;
     }
+    public static void exists(String user) throws SQLException{
+        String sql = "SELECT id FROM users WHERE username = ?";
+        try(Connection conn = Database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setString(1, user);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                throw new SQLException("Username Already Exists");
+            }
+        }
+    }
     public static void insert(String username, String password, int admin) throws SQLException{
         if(admin != 1 && admin != 0){
-            throw new SQLException("Error: Admin State Non-Binary");
+            throw new SQLException("Admin State Non-Binary");
         }
         if (username == null || username.isBlank()) {
-            throw new SQLException("Error: Username cannot be empty");
+            throw new SQLException("Username cannot be empty");
         }
         if (password == null || password.isBlank()) {
-            throw new SQLException("Error: Password cannot be empty");
+            throw new SQLException("Password cannot be empty");
         }
 
         String hash = PasswordUtil.hash(password);
@@ -87,7 +98,7 @@ public class UsersDB {
     public static void changeAdminPassword(String pass) throws SQLException{
         String sql = "UPDATE users SET password = ? WHERE id = 1";
         if (pass == null || pass.isBlank()) {
-            throw new SQLException("Error: Password cannot be empty");
+            throw new SQLException("Password cannot be empty");
         }
         String hash = PasswordUtil.hash(pass);
         try (Connection conn = Database.getConnection();

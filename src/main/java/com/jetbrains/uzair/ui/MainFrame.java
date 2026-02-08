@@ -53,6 +53,9 @@ public class MainFrame {
         tabs.addTab("Visits", VisitPanel.mainWindow(frame));
         tabs.addTab("Inventory", InventoryPanel.mainWindow(frame));
         tabs.addTab("Inventory Logs", InventoryLogsPanel.mainWindow(frame));
+        if(UserSession.isAdmin()) {
+            tabs.addTab("Manage Users", UsersPanel.mainWindow(frame));
+        }
 
         // ================= FOOTER =================
         JPanel footer = getJPanel();

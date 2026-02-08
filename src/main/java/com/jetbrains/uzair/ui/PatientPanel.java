@@ -1,5 +1,6 @@
 package com.jetbrains.uzair.ui;
 
+import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.db.PatientDB;
 import com.jetbrains.uzair.model.Patient;
 import com.jetbrains.uzair.model.ValidationException;
@@ -55,7 +56,7 @@ public class PatientPanel {
         toolbar.add(btnVisit);
         toolbar.add(btnView);
         toolbar.add(Box.createHorizontalStrut(20));
-        toolbar.add(btnDel);
+        if(UserSession.isAdmin())toolbar.add(btnDel);
         toolbar.add(btnRef);
         toolbar.add(searchField);
         toolbar.add(btnSearch);

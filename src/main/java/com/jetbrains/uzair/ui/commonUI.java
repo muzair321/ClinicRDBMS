@@ -1,9 +1,7 @@
 package com.jetbrains.uzair.ui;
 
-import com.jetbrains.uzair.db.InventoryDB;
-import com.jetbrains.uzair.db.InventoryLogsDB;
-import com.jetbrains.uzair.db.PatientDB;
-import com.jetbrains.uzair.db.VisitDB;
+import com.jetbrains.uzair.app.UserSession;
+import com.jetbrains.uzair.db.*;
 import com.jetbrains.uzair.model.Patient;
 import com.jetbrains.uzair.model.Visit;
 
@@ -32,6 +30,8 @@ public class commonUI {
                 data = InventoryDB.returnUI();
             } else if (ui == 4) {
                 data = InventoryLogsDB.returnUI();
+            } else if (ui == 5) {
+                data = UsersDB.returnUI();
             } else{
                 throw new SQLException("Error Reading");
             }
@@ -77,7 +77,11 @@ public class commonUI {
             headers.add("User Name");
             headers.add("Amount");
             headers.add("Date");
-        }else {
+        } else if (ui == 5) {
+            headers.add("User ID");
+            headers.add("Username");
+            headers.add("Admin Access");
+        } else {
             headers.add("Error");
         }
         return headers;
@@ -129,6 +133,8 @@ public class commonUI {
                         return InventoryDB.returnUI();
                     } else if (ui == 4) {
                         return InventoryLogsDB.returnUI();
+                    } else if (ui == 5) {
+                        return UsersDB.returnUI();
                     }
                     return null; // Database call
                 }
@@ -255,7 +261,8 @@ public class commonUI {
                 }
             });
             disp.getRootPane().setDefaultButton(btnAddVisit);
-            FocusUtils.enableArrowNavigation(btnDel, btnAddVisit, btnEdit, btnClose);
+            if (UserSession.isAdmin()) commonUI.commonAddBtn(buttonPanel,btnClose, btnDel, btnEdit,  btnAddVisit);
+            else commonUI.commonAddBtn(buttonPanel,btnClose, btnAddVisit);
             //header
             JPanel header = commonHeader("Patient Data");
             //panels
@@ -285,6 +292,8 @@ public class commonUI {
                 t = "Visit";
             }else if (ui == 3){
                 t = "Inventory Item";
+            } else if (ui == 5) {
+                t = "User";
             }
             if (selectedRows.length == 0) {
                 JOptionPane.showMessageDialog(window, "No " + t + "(s) Selected");
@@ -320,6 +329,8 @@ public class commonUI {
                     VisitDB.deleteList(patientIds);
                 }else if(ui == 3){
                     InventoryDB.deleteList(patientIds);
+                } else if (ui ==  5) {
+                    UsersDB.delete(patientIds);
                 }
                 JOptionPane.showMessageDialog(window, "Deleted Successfully");
                 refresh(table, ui);
@@ -353,6 +364,14 @@ public class commonUI {
             btnView.setEnabled(table.getSelectedRowCount() == 1);
             btnUpdate.setEnabled(table.getSelectedRowCount() == 1);
             btnEdit.setEnabled(table.getSelectedRowCount() == 1);
+            btnDel.setEnabled(selected);
+        });
+    }
+    public static void buttonHighlight(JButton btnDel, JTable table) {
+        btnDel.setEnabled(false);
+
+        table.getSelectionModel().addListSelectionListener(_ -> {
+            boolean selected = table.getSelectedRowCount() > 0;
             btnDel.setEnabled(selected);
         });
     }

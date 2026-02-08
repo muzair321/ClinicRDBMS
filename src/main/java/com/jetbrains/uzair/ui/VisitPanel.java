@@ -1,5 +1,6 @@
 package com.jetbrains.uzair.ui;
 
+import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.db.PatientDB;
 import com.jetbrains.uzair.db.VisitDB;
 import com.jetbrains.uzair.model.ValidationException;
@@ -41,9 +42,9 @@ public class VisitPanel {
         //toolbar
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         toolbar.add(btnView);
-        toolbar.add(btnVisit);
+        if (UserSession.isAdmin()){toolbar.add(btnVisit);}
         toolbar.add(Box.createHorizontalStrut(20));
-        toolbar.add(btnDelete);
+        if (UserSession.isAdmin()){toolbar.add(btnDelete);}
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnRef);
         toolbar.add(searchField);
@@ -287,7 +288,11 @@ public class VisitPanel {
             btnViewPatient.addActionListener(_ -> commonUI.patientDetails(commonUI.getDBData(window, 1), window, v.getPatientId()));
 
             disp.getRootPane().setDefaultButton(btnViewPatient);
-            commonUI.commonAddBtn(buttonPanel, btnDel, btnEdit, btnViewPatient, btnClose);
+            if (UserSession.isAdmin()) {
+                commonUI.commonAddBtn(buttonPanel, btnDel, btnEdit, btnViewPatient, btnClose);
+            }else {
+                commonUI.commonAddBtn(buttonPanel, btnViewPatient, btnClose);
+            }
             //header
             JPanel header = commonUI.commonHeader("Visit Data");
 

@@ -1,6 +1,7 @@
 package com.jetbrains.uzair.ui;
 
 import com.jetbrains.uzair.db.UsersDB;
+import com.jetbrains.uzair.model.ValidationException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -74,6 +75,9 @@ public class FirstUser {
         btnCancel.addActionListener(_ ->System.exit(0));
         btnSave.addActionListener(_ ->
         {
+            if(name.getText().contains(" ")){
+                throw new ValidationException("No Spaces In Username Allowed");
+            }
             if(name.getText().isEmpty() || pass.getText().isEmpty()){
                 JOptionPane.showMessageDialog(frame, "Username and Password Cannot Be Empty");
             }

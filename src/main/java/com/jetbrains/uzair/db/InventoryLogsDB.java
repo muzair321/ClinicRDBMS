@@ -81,9 +81,7 @@ public class InventoryLogsDB {
         List<String[]> rows = new ArrayList<>();
         String sql = """
         SELECT l.id,
-               l.inventory_id,
                i.name AS item_name,
-               l.user_id,
                u.username AS user_name,
                l.amount,
                l.date
@@ -93,7 +91,6 @@ public class InventoryLogsDB {
         WHERE u.username LIKE ?
             OR i.name LIKE ?
             OR l.date LIKE ?
-        ORDER BY l.date DESC
         """;
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -107,9 +104,7 @@ public class InventoryLogsDB {
                 while (rs.next()) {
                     rows.add(new String[]{
                             String.valueOf(rs.getInt("id")),
-                            String.valueOf(rs.getInt("inventory_id")),
                             rs.getString("item_name"),
-                            String.valueOf(rs.getInt("user_id")),
                             rs.getString("user_name"),
                             String.valueOf(rs.getInt("amount")),
                             rs.getString("date")

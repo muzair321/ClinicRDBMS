@@ -50,11 +50,11 @@ public class InventoryPanel {
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         toolbar.add(btnAdd);
         toolbar.add(Box.createHorizontalStrut(20));
-        toolbar.add(btnEdit);
+        if(UserSession.isAdmin()){toolbar.add(btnEdit);}
         toolbar.add(btnUpdate);
         toolbar.add(btnView);
         toolbar.add(Box.createHorizontalStrut(20));
-        toolbar.add(btnDel);
+        if(UserSession.isAdmin()){toolbar.add(btnDel);}
         toolbar.add(btnRef);
         toolbar.add(searchField);
         toolbar.add(btnSearch);
@@ -315,7 +315,11 @@ public class InventoryPanel {
             JButton btnAddLog = new JButton("Update Stock");
             btnAddLog.addActionListener(_ ->{updateStock(i.getId(), window); commonUI.refresh(table, 3);});
             disp.getRootPane().setDefaultButton(btnAddLog);
-            commonUI.commonAddBtn(buttonPanel, btnDel, btnAddLog, btnEdit, btnClose);
+            if(UserSession.isAdmin()) {
+                commonUI.commonAddBtn(buttonPanel, btnDel, btnAddLog, btnEdit, btnClose);
+            }else {
+                commonUI.commonAddBtn(buttonPanel, btnAddLog, btnClose);
+            }
             //header
             JPanel header = commonUI.commonHeader("Item Data");
             //panels

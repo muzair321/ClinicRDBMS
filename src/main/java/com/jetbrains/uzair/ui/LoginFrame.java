@@ -94,9 +94,9 @@ public class LoginFrame extends JFrame {
         toggleBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         ImageIcon showRawIcon = new ImageIcon(Objects.requireNonNull(MainFrame.class.getResource("/img/showIcon.png")));
-        final ImageIcon showIcon =new ImageIcon(showRawIcon.getImage().getScaledInstance(20, 10, Image.SCALE_SMOOTH));
+        final ImageIcon showIcon =new ImageIcon(showRawIcon.getImage().getScaledInstance(18, 10, Image.SCALE_SMOOTH));
         ImageIcon hideRawIcon = new ImageIcon(Objects.requireNonNull(MainFrame.class.getResource("/img/hideIcon.png")));
-        final ImageIcon hideIcon = new ImageIcon(hideRawIcon.getImage().getScaledInstance(22, 11, Image.SCALE_SMOOTH));
+        final ImageIcon hideIcon = new ImageIcon(hideRawIcon.getImage().getScaledInstance(20, 11, Image.SCALE_SMOOTH));
 
         toggleBtn.setIcon(showIcon);
         final char defaultEcho = passwordField.getEchoChar();
