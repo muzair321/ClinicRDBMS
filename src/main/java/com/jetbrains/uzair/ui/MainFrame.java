@@ -1,25 +1,13 @@
 package com.jetbrains.uzair.ui;
 
+import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.db.InventoryDB;
 import com.jetbrains.uzair.model.InventoryLogs;
 
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-import javax.swing.Box;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.BoxLayout;
-import javax.swing.JTabbedPane;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Image;
-import java.awt.Font;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Objects;
 
 public class MainFrame {
@@ -70,19 +58,47 @@ public class MainFrame {
 
         // ================= FOOTER =================
         JPanel footer = new JPanel(new BorderLayout());
-        footer.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        footer.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
         footer.setBackground(new Color(245, 245, 245));
 
+// Left
         JLabel copyright =
                 new JLabel("© 2026 Clinic Software by Muhammad Uzair");
         copyright.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        copyright.setForeground(Color.GRAY);
 
+// Center
+        String roleText = UserSession.isAdmin()
+                ? "Admin Interface"
+                : "Standard Interface";
+
+        JLabel roleLabel = new JLabel(roleText, SwingConstants.CENTER);
+        roleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        roleLabel.setForeground(new Color(90, 90, 90));
+        if (UserSession.isAdmin()) {
+            roleLabel.setForeground(new Color(0, 120, 0));
+        }
+
+// Right
         JButton helpButton = new JButton("?");
-        helpButton.setFocusPainted(false);
-        helpButton.setPreferredSize(new Dimension(45, 25));
+        helpButton.setToolTipText("Help");
+        helpButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                helpButton.setForeground(new Color(116, 117, 119));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                helpButton.setForeground(Color.DARK_GRAY);
+            }
+        });
 
+
+// Add
         footer.add(copyright, BorderLayout.WEST);
+        footer.add(roleLabel, BorderLayout.CENTER);
         footer.add(helpButton, BorderLayout.EAST);
+
 
         // ================= ADD TO FRAME =================
         frame.add(header, BorderLayout.NORTH);
