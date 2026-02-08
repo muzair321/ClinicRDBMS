@@ -317,7 +317,6 @@ public class InventoryPanel {
             JButton btnAddLog = new JButton("Update Stock");
             btnAddLog.addActionListener(_ ->{updateStock(i.getId(), window); commonUI.refresh(table, 3);});
             disp.getRootPane().setDefaultButton(btnAddLog);
-            disp.getRootPane().setCancelButton(btnClose);
             commonUI.commonAddBtn(buttonPanel, btnDel, btnAddLog, btnEdit, btnClose);
             //header
             JPanel header = commonUI.commonHeader("Item Data");
