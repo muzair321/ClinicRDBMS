@@ -156,10 +156,8 @@ public class InventoryPanel {
                 }
                 commonUI.refresh(table, 3);
                 forum.dispose();
-            } catch (ValidationException ve) {
+            } catch (ValidationException | SQLException ve) {
                 JOptionPane.showMessageDialog(forum, ve.getMessage());
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(forum, ex.getMessage());
             }
         });
         forum.getRootPane().setDefaultButton(btnSave);
