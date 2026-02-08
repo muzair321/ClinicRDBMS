@@ -254,7 +254,8 @@ public class commonUI {
                     JOptionPane.showMessageDialog(window, ex.getMessage());
                 }
             });
-            commonAddBtn(buttonPanel, btnDel, btnAddVisit, btnEdit, btnClose);
+            disp.getRootPane().setDefaultButton(btnAddVisit);
+            FocusUtils.enableArrowNavigation(btnDel, btnAddVisit, btnEdit, btnClose);
             //header
             JPanel header = commonHeader("Patient Data");
             //panels

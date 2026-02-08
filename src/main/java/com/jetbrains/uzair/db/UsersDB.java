@@ -3,10 +3,9 @@ package com.jetbrains.uzair.db;
 import com.jetbrains.uzair.model.User;
 import com.jetbrains.uzair.security.PasswordUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsersDB {
     public static String getName(int id) throws SQLException {
@@ -68,6 +67,67 @@ public class UsersDB {
             stmt.setString(2, hash);
             stmt.setInt(3, admin);
             stmt.executeUpdate();
+        }
+    }
+    public static void delete(List<Integer> list) throws SQLException {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            for (int id : list) {
+
+                if (id != 1) {
+                    stmt.setInt(1, id);
+                    stmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error Deleting User List: " + e.getMessage());
+        }
+    }
+    public static void changeAdminPassword(String pass) throws SQLException{
+        String sql = "UPDATE users SET password = ? WHERE id = 1";
+        if (pass == null || pass.isBlank()) {
+            throw new SQLException("Error: Password cannot be empty");
+        }
+        String hash = PasswordUtil.hash(pass);
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setString(1, hash);
+            stmt.executeUpdate();
+        }
+    }
+    public static String[][] returnUI() throws SQLException{
+        String[][] returnSet;
+        String state;
+        int count = 0;
+        String sql = """
+        SELECT id,
+               username,
+               admin
+        FROM users
+        """;
+        try(Connection conn = Database.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            while(rs.next()){
+                count++;
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error Retrieving Data From 'users'");
+        }
+        returnSet = new String[count][3];
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)){
+            for (int i = 0; rs.next() && i < returnSet.length; i++){
+                state = rs.getInt("admin") == 1 ? "YES" : "NO";
+                returnSet[i][0] = rs.getString("id");
+                returnSet[i][1] = rs.getString("username");
+                returnSet[i][2] = state;
+            }
+            return returnSet;
+        } catch (SQLException e) {
+            throw new SQLException();
         }
     }
 }
