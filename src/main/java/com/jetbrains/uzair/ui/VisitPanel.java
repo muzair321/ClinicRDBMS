@@ -93,7 +93,9 @@ public class VisitPanel {
 
         int row = 0;
         GridBagConstraints gbc = commonUI.commonFormGrid(formPanel, row);
-        formPanel.add(commonUI.createReadOnlyField(name, valueFont), gbc);
+        JTextField nameT = new JTextField(name);
+        nameT.setEditable(false);
+        formPanel.add(nameT, gbc);
         row++;
         //illness
         gbc.gridx = 0; gbc.gridy = row;
@@ -101,6 +103,7 @@ public class VisitPanel {
         gbc.gridx = 1;
         JTextField ill = new JTextField(illS, 40);
         formPanel.add(ill, gbc);
+        ill.requestFocus();
         row++;
 //treatment
         gbc.gridx = 0; gbc.gridy = row;
@@ -145,6 +148,8 @@ public class VisitPanel {
                 JOptionPane.showMessageDialog(forum, e.getMessage());
             }
         });
+        FocusUtils.enableArrowNavigation(nameT, ill, treat, pay);
+        forum.getRootPane().setDefaultButton(btnSave);
         btnCancel.addActionListener(_ -> forum.dispose());
         forum.add(header, BorderLayout.NORTH);
         forum.add(formPanel, BorderLayout.CENTER);
@@ -281,6 +286,7 @@ public class VisitPanel {
             JButton btnViewPatient = new JButton("View Patient");
             btnViewPatient.addActionListener(_ -> commonUI.patientDetails(commonUI.getDBData(window, 1), window, v.getPatientId()));
 
+            disp.getRootPane().setDefaultButton(btnViewPatient);
             commonUI.commonAddBtn(buttonPanel, btnDel, btnEdit, btnViewPatient, btnClose);
             //header
             JPanel header = commonUI.commonHeader("Visit Data");

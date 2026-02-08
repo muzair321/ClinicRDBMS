@@ -26,26 +26,33 @@ public class FocusUtils {
     }
 
     private static void bind(JComponent from, String key, JComponent to) {
-        from.getInputMap(JComponent.WHEN_FOCUSED).put(
-                KeyStroke.getKeyStroke(key),
-                "focusMove"
-        );
 
-        from.getActionMap().put("focusMove",
-                new AbstractAction() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+        String actionKey = "focusMove_" + key;
 
-                        // JComboBox special handling
-                        if (from instanceof JComboBox<?>) {
-                            JComboBox<?> combo = (JComboBox<?>) from;
-                            if (combo.isPopupVisible()) {
-                                return; // allow normal selection navigation
-                            }
-                        }
+        InputMap im = from.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am = from.getActionMap();
 
-                        to.requestFocusInWindow();
-                    }
-                });
+        // Use CTRL for JTextArea
+        KeyStroke ks;
+        if (from instanceof JTextArea) {
+            ks = KeyStroke.getKeyStroke("ctrl " + key);
+        } else {
+            ks = KeyStroke.getKeyStroke(key);
+        }
+
+        im.put(ks, actionKey);
+        am.put(actionKey, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                // JComboBox popup safety
+                if (from instanceof JComboBox<?> combo && combo.isPopupVisible()) {
+                    return;
+                }
+
+                to.requestFocusInWindow();
+            }
+        });
     }
+
 }

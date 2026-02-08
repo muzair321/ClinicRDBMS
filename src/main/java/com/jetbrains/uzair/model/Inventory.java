@@ -45,6 +45,9 @@ public class Inventory {
         if(raw[1].contains(" ")){
             throw new ValidationException("Validation  Error: No Spaces In Name");
         }
+        if(raw[1].isEmpty()){
+            throw new SQLException("Name Can Not Be Empty");
+        }
         if(InventoryDB.checkName(raw[1]) && b){
             throw new ValidationException("Name Already Exists");
         }
@@ -54,7 +57,15 @@ public class Inventory {
         }else{
             throw new ValidationException("Validation Error: Contact Developer (Error 101)");
         }
-        int y = Integer.parseInt(raw[3]);
+        if(raw[3].isEmpty()){
+            throw new SQLException("Amount Can Not Be Empty");
+        }
+        int y;
+        try {
+            y = Integer.parseInt(raw[3]);
+        } catch (NumberFormatException e) {
+            throw new SQLException("Amount Can Only Have Integer Numbers");
+        }
         if(y < 0){
             throw new ValidationException("Amount Can Not Be Less Than '0'");
         }

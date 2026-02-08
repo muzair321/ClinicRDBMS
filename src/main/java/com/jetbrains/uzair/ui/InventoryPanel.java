@@ -159,11 +159,11 @@ public class InventoryPanel {
             } catch (ValidationException ve) {
                 JOptionPane.showMessageDialog(forum, ve.getMessage());
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(forum, "Modification Failed:" + ex.getMessage());
+                JOptionPane.showMessageDialog(forum, ex.getMessage());
             }
         });
         forum.getRootPane().setDefaultButton(btnSave);
-        FocusUtils.enableArrowNavigation(name, amount);
+        FocusUtils.enableArrowNavigation(name, storage, amount);
         btnCancel.addActionListener(_ -> forum.dispose());
         forum.add(header, BorderLayout.NORTH);
         forum.add(formPanel, BorderLayout.CENTER);

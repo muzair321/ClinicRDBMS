@@ -268,6 +268,8 @@ public class PatientPanel {
                 JOptionPane.showMessageDialog(forum, "Modification Failed:" + ex.getMessage());
             }
         });
+        FocusUtils.enableArrowNavigation(name, age, gender, phone);
+        forum.getRootPane().setDefaultButton(btnSave);
         btnCancel.addActionListener(ev -> forum.dispose());
         forum.add(header, BorderLayout.NORTH);
         forum.add(formPanel, BorderLayout.CENTER);
