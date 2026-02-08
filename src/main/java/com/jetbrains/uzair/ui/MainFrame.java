@@ -71,43 +71,69 @@ public class MainFrame {
         footer.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
         footer.setBackground(new Color(245, 245, 245));
 
-// Left
+        // Left
         JLabel copyright =
                 new JLabel("© 2026 Clinic Software by Muhammad Uzair");
         copyright.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         copyright.setForeground(Color.GRAY);
 
-// Center
+        // Center
         String roleText = UserSession.isAdmin()
                 ? "Admin Interface"
                 : "Standard Interface";
 
         JLabel roleLabel = new JLabel(roleText, SwingConstants.CENTER);
         roleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        roleLabel.setForeground(new Color(90, 90, 90));
-        if (UserSession.isAdmin()) {
-            roleLabel.setForeground(new Color(0, 120, 0));
-        }
+        roleLabel.setForeground(UserSession.isAdmin()
+                ? new Color(0, 120, 0)
+                : new Color(90, 90, 90));
 
-// Right
-        JButton helpButton = new JButton("?");
-        helpButton.setToolTipText("Help");
-        helpButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                helpButton.setForeground(new Color(116, 117, 119));
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                helpButton.setForeground(Color.DARK_GRAY);
-            }
-        });
+        // Right buttons panel
+        JPanel rightPanel = getPanel(footer);
 
-
-// Add
+        // Add to footer
         footer.add(copyright, BorderLayout.WEST);
         footer.add(roleLabel, BorderLayout.CENTER);
-        footer.add(helpButton, BorderLayout.EAST);
+        footer.add(rightPanel, BorderLayout.EAST);
+
         return footer;
+    }
+
+    private static JPanel getPanel(JPanel footer) {
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        rightPanel.setOpaque(false);
+
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.setToolTipText("Log out");
+        logoutButton.setFocusPainted(false);
+
+        JButton helpButton = new JButton("?");
+        helpButton.setToolTipText("Help");
+        helpButton.setFocusPainted(false);
+
+        // Hover effect (shared)
+        MouseAdapter hover = new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                ((JButton) e.getSource()).setForeground(new Color(116, 117, 119));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                ((JButton) e.getSource()).setForeground(Color.DARK_GRAY);
+            }
+        };
+
+        logoutButton.addMouseListener(hover);
+        helpButton.addMouseListener(hover);
+        logoutButton.addActionListener(_ -> {
+            UserSession.logout();
+            new LoginFrame();
+            SwingUtilities.getWindowAncestor(footer).dispose();
+        });
+
+        rightPanel.add(logoutButton);
+        rightPanel.add(helpButton);
+        return rightPanel;
     }
 }
