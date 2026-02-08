@@ -3,7 +3,6 @@ package com.jetbrains.uzair.ui;
 import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.db.UsersDB;
 import com.jetbrains.uzair.model.User;
-import com.jetbrains.uzair.security.PasswordUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -61,9 +60,9 @@ public class LoginFrame extends JFrame {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton loginBtn = new JButton("Login");
 
-        loginBtn.addActionListener(e -> login());
+        loginBtn.addActionListener(_ -> login());
 
-        // Press ENTER to login
+        // Press ENTER to log in
         getRootPane().setDefaultButton(loginBtn);
 
         panel.add(loginBtn);

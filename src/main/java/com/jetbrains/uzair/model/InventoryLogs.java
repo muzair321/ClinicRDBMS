@@ -1,6 +1,5 @@
 package com.jetbrains.uzair.model;
 
-import com.jetbrains.uzair.db.InventoryLogsDB;
 import com.jetbrains.uzair.db.UsersDB;
 
 import java.sql.SQLException;

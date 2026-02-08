@@ -4,7 +4,6 @@ import com.jetbrains.uzair.db.InventoryDB;
 import com.jetbrains.uzair.db.InventoryLogsDB;
 import com.jetbrains.uzair.db.PatientDB;
 import com.jetbrains.uzair.db.VisitDB;
-import com.jetbrains.uzair.model.InventoryLogs;
 import com.jetbrains.uzair.model.Patient;
 import com.jetbrains.uzair.model.Visit;
 

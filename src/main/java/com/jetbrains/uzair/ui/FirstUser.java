@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FirstUser {
     public static void frame(){
@@ -70,10 +69,8 @@ public class FirstUser {
         buttonPanel.add(btnSave);
         buttonPanel.add(btnCancel);
 
-        btnCancel.addActionListener(e -> {
-            System.exit(0);
-        });
-        btnSave.addActionListener(e ->
+        btnCancel.addActionListener(_ ->System.exit(0));
+        btnSave.addActionListener(_ ->
         {
             try {
                 UsersDB.insert(name.getText(), pass.getText(), 1);

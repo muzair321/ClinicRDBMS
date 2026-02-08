@@ -3,16 +3,12 @@ package com.jetbrains.uzair.ui;
 import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.db.InventoryDB;
 import com.jetbrains.uzair.db.InventoryLogsDB;
-import com.jetbrains.uzair.db.PatientDB;
-import com.jetbrains.uzair.db.VisitDB;
 import com.jetbrains.uzair.model.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -40,9 +36,9 @@ public class InventoryPanel {
         JButton btnView = viewItem(table, window);
         JButton btnDel = commonUI.deleteButton(table, window, 3);
         JButton btnRef = new JButton("Refresh");
-        btnRef.addActionListener(e -> commonUI.refresh(table, 3));
+        btnRef.addActionListener(_ -> commonUI.refresh(table, 3));
         JButton btnSearch = new JButton("Search");
-        btnSearch.addActionListener(e -> commonUI.search(table, searchField.getText(), 3));
+        btnSearch.addActionListener(_ -> commonUI.search(table, searchField.getText(), 3));
         commonUI.buttonHighlight(btnEdit, btnView, btnDel, table);
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -64,7 +60,7 @@ public class InventoryPanel {
     }
     private static JButton addButton(JTable table, JFrame window){
         JButton btnAdd = new JButton("Add New");
-        btnAdd.addActionListener(e -> {
+        btnAdd.addActionListener(_ -> {
             try{
                 commonForum(table, -1, window);
             }catch (SQLException sqle){
@@ -135,7 +131,7 @@ public class InventoryPanel {
 
         buttonPanel.add(btnSave);
         buttonPanel.add(btnCancel);
-        btnSave.addActionListener(ev -> {
+        btnSave.addActionListener(_ -> {
             try {
                 String[] raw = {
                         String.valueOf(i.getId()),
@@ -159,7 +155,7 @@ public class InventoryPanel {
                 JOptionPane.showMessageDialog(forum, "Modification Failed:" + ex.getMessage());
             }
         });
-        btnCancel.addActionListener(ev -> forum.dispose());
+        btnCancel.addActionListener(_ -> forum.dispose());
         forum.add(header, BorderLayout.NORTH);
         forum.add(formPanel, BorderLayout.CENTER);
         forum.add(buttonPanel, BorderLayout.SOUTH);
@@ -168,7 +164,7 @@ public class InventoryPanel {
     private static JButton editButton1(JTable table, JFrame window) {
         JButton btn = new JButton("Edit Item");
 
-        btn.addActionListener(e -> {
+        btn.addActionListener(_ -> {
             int[] selectedRows = table.getSelectedRows();
 
             if (selectedRows.length == 0) {
@@ -190,7 +186,7 @@ public class InventoryPanel {
     }
     private static JButton viewItem(JTable table, JFrame window) {
         JButton btnVew = new JButton("View Item Data");
-        btnVew.addActionListener(e -> {
+        btnVew.addActionListener(_ -> {
             int[] selectedRows = table.getSelectedRows();
 
             if (selectedRows.length == 0) {
@@ -287,9 +283,7 @@ public class InventoryPanel {
                     JOptionPane.showMessageDialog(disp, ex.getMessage());
                 }});
             JButton btnAddLog = new JButton("Update Stock");
-            btnAddLog.addActionListener(_ -> {
-                updateStock(i.getId(), window);
-            });
+            btnAddLog.addActionListener(_ ->updateStock(i.getId(), window));
             commonUI.commonAddBtn(buttonPanel, btnDel, btnAddLog, btnEdit, btnClose);
             //header
             JPanel header = commonUI.commonHeader("Item Data");
@@ -344,7 +338,7 @@ public class InventoryPanel {
     }
     private static JButton editButton2(JTable table, int id, JFrame window){
         JButton btn = new JButton("Edit Item");
-        btn.addActionListener(e -> {
+        btn.addActionListener(_ -> {
             try {
                 commonForum(table, id, window);
             } catch (SQLException ex) {
@@ -353,7 +347,7 @@ public class InventoryPanel {
         });
         return btn;
     }
-    private static JDialog updateStock(int inventoryId, JFrame window) {
+    private static void updateStock(int inventoryId, JFrame window) {
 
         JDialog dialog = new JDialog(window, "Update Item Stock", true);
         dialog.setSize(450, 300);
@@ -369,7 +363,7 @@ public class InventoryPanel {
                     JOptionPane.ERROR_MESSAGE
             );
             dialog.dispose();
-            return null;
+            return;
         }
 
         // Header
@@ -421,9 +415,9 @@ public class InventoryPanel {
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
         // Actions
-        cancelBtn.addActionListener(e -> dialog.dispose());
+        cancelBtn.addActionListener(_ -> dialog.dispose());
 
-        updateBtn.addActionListener(e -> {
+        updateBtn.addActionListener(_ -> {
             String text = amountField.getText().trim();
 
             if (text.isEmpty()) {
@@ -475,7 +469,6 @@ public class InventoryPanel {
         });
 
         dialog.setVisible(true);
-        return dialog;
     }
 
 }

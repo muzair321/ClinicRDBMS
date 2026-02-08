@@ -1,8 +1,6 @@
 package com.jetbrains.uzair.ui;
 
 import com.jetbrains.uzair.app.UserSession;
-import com.jetbrains.uzair.db.InventoryDB;
-import com.jetbrains.uzair.model.InventoryLogs;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,6 +55,18 @@ public class MainFrame {
         tabs.addTab("Inventory Logs", InventoryLogsPanel.mainWindow(frame));
 
         // ================= FOOTER =================
+        JPanel footer = getJPanel();
+
+
+        // ================= ADD TO FRAME =================
+        frame.add(header, BorderLayout.NORTH);
+        frame.add(tabs, BorderLayout.CENTER);
+        frame.add(footer, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
+    }
+
+    private static JPanel getJPanel() {
         JPanel footer = new JPanel(new BorderLayout());
         footer.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
         footer.setBackground(new Color(245, 245, 245));
@@ -98,22 +108,6 @@ public class MainFrame {
         footer.add(copyright, BorderLayout.WEST);
         footer.add(roleLabel, BorderLayout.CENTER);
         footer.add(helpButton, BorderLayout.EAST);
-
-
-        // ================= ADD TO FRAME =================
-        frame.add(header, BorderLayout.NORTH);
-        frame.add(tabs, BorderLayout.CENTER);
-        frame.add(footer, BorderLayout.SOUTH);
-
-        frame.setVisible(true);
-    }
-
-    // Simple placeholder panel
-    private static JPanel createPlaceholderPanel(String text) {
-        JPanel panel = new JPanel(new GridBagLayout());
-        JLabel label = new JLabel(text);
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        panel.add(label);
-        return panel;
+        return footer;
     }
 }
