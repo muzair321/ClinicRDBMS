@@ -54,21 +54,21 @@ public class UserLogsDB {
                     OR ul.date LIKE ?
                 """;
         try(Connection conn = Database.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)){
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             String searchPattern = "%" + search + "%";
             stmt.setString(1, searchPattern);
             stmt.setString(2, searchPattern);
             stmt.setString(3, searchPattern);
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()){
-                list.add(new String[]{
-                        rs.getString("id"),
-                        rs.getString("user_id"),
-                        rs.getString("name"),
-                        rs.getString("date")
-                });
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new String[]{
+                            String.valueOf(rs.getInt("id")),
+                            rs.getString("user_id"),
+                            rs.getString("name"),
+                            rs.getString("date")
+                    });
+                }
             }
-
         }
         return list.toArray(new String[0][]);
     }

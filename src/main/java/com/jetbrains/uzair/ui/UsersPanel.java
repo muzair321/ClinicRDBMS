@@ -13,13 +13,6 @@ public class UsersPanel {
         JPanel panel = new JPanel();
 
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
-        //search
-        PlaceholderTextField searchField = new PlaceholderTextField("Search Inventory");
-
-        searchField.setPreferredSize(new Dimension(250, 30));
-        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        searchField.setBackground(new Color(255, 255, 255));
-        searchField.setOpaque(true);
 //table
         JTable table = commonUI.getDBData(window, 5);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -236,7 +229,7 @@ public class UsersPanel {
     }
     private static void userLogs(JFrame window){
         JDialog frame = new JDialog(window, "User Logs", true);
-        frame.setSize(400, 600);
+        frame.setSize(600, 700);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
