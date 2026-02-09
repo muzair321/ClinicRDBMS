@@ -1,6 +1,7 @@
 package com.jetbrains.uzair.ui;
 
 import com.jetbrains.uzair.app.UserSession;
+import com.jetbrains.uzair.db.UserLogsDB;
 import com.jetbrains.uzair.db.UsersDB;
 import com.jetbrains.uzair.model.User;
 
@@ -157,6 +158,11 @@ public class LoginFrame extends JFrame {
         }
         if (user != null) {
             UserSession.login(user);
+            try {
+                UserLogsDB.insert(UserSession.getUserId());
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
+            }
             MainFrame.window();
             dispose();
         } else {

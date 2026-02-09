@@ -43,6 +43,7 @@ public class UsersPanel {
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnDel);
         toolbar.add(btnRef);
+        toolbar.add(userLogsButton(window));
 //main layout
         panel.setLayout(new BorderLayout());
         panel.add(toolbar, BorderLayout.NORTH);
@@ -226,6 +227,68 @@ public class UsersPanel {
         frame.add(header, BorderLayout.NORTH);
         frame.add(forum, BorderLayout.CENTER);
         frame.add(buttonPanel, BorderLayout.SOUTH);
+        frame.setVisible(true);
+    }
+    private static JButton userLogsButton(JFrame window){
+        JButton btn = new JButton("User Logs");
+        btn.addActionListener(_ -> userLogs(window));
+        return btn;
+    }
+    private static void userLogs(JFrame window){
+        JDialog frame = new JDialog(window, "User Logs", true);
+        frame.setSize(400, 600);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setLayout(new BorderLayout());
+        frame.setResizable(false);
+        //search
+        PlaceholderTextField searchField = new PlaceholderTextField("Search Inventory");
+
+        searchField.setPreferredSize(new Dimension(250, 30));
+        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        searchField.setBackground(new Color(255, 255, 255));
+        searchField.setOpaque(true);
+
+        //header
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        header.setBackground(new Color(12, 38, 78));
+
+
+        JLabel title = new JLabel("User Logs");
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 15));
+
+        header.add(title, BorderLayout.CENTER);
+
+        //table
+        JTable t = commonUI.getDBData(window, 6);
+        t.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        JScrollPane scroll = new JScrollPane(t);
+        //buttons
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        toolbar.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+
+        JButton btnRef = new JButton("Refresh");
+        btnRef.addActionListener(_ -> commonUI.refresh(t, 6));
+        JButton btnSearch = new JButton("Search");
+        btnSearch.addActionListener(e -> commonUI.search(t, searchField.getText(), 6));
+        searchField.addActionListener(_ -> btnSearch.doClick());
+        btnRef.setMnemonic('R');
+
+        toolbar.add(btnRef);
+        toolbar.add(searchField);
+        toolbar.add(btnSearch);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(toolbar, BorderLayout.NORTH);
+        panel.add(scroll, BorderLayout.CENTER);
+        panel.setVisible(true);
+
+        frame.add(header, BorderLayout.NORTH);
+        frame.add(panel, BorderLayout.CENTER);
         frame.setVisible(true);
     }
 }

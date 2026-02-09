@@ -32,6 +32,8 @@ public class commonUI {
                 data = InventoryLogsDB.returnUI();
             } else if (ui == 5) {
                 data = UsersDB.returnUI();
+            } else if (ui == 6) {
+                data = UserLogsDB.returnUI();
             } else{
                 throw new SQLException("Error Reading");
             }
@@ -76,11 +78,16 @@ public class commonUI {
             headers.add("Item Name");
             headers.add("User Name");
             headers.add("Amount");
-            headers.add("Date");
+            headers.add("Datetime");
         } else if (ui == 5) {
             headers.add("User ID");
             headers.add("Username");
             headers.add("Admin Access");
+        } else if (ui == 6) {
+            headers.add("Log ID");
+            headers.add("User ID");
+            headers.add("Username");
+            headers.add("Datetime");
         } else {
             headers.add("Error");
         }
@@ -99,6 +106,8 @@ public class commonUI {
                     return InventoryDB.returnUI(search);
                 } else if (ui == 4) {
                     return InventoryLogsDB.returnUI(search);
+                } else if (ui == 6) {
+                    return UserLogsDB.returnUI(search);
                 } else {
                     return null;
                 }
@@ -135,6 +144,8 @@ public class commonUI {
                         return InventoryLogsDB.returnUI();
                     } else if (ui == 5) {
                         return UsersDB.returnUI();
+                    } else if (ui == 6) {
+                        return UserLogsDB.returnUI();
                     }
                     return null; // Database call
                 }
