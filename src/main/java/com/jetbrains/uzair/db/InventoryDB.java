@@ -205,15 +205,4 @@ public class InventoryDB{
             throw new SQLException("Error Deleting Inventory List: " + e.getMessage());
         }
     }
-    public static boolean exists(int id) throws SQLException{
-        String sql = "SELECT name FROM inventory WHERE id = ?";
-        try(Connection conn = Database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)){
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            return rs.next();
-        }catch (SQLException e){
-            throw new SQLException("Error Checking Inventory Existence");
-        }
-    }
 }

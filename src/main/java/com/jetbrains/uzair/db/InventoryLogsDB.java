@@ -94,12 +94,10 @@ public class InventoryLogsDB {
         """;
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             String searchPattern = "%" + searchTerm + "%";
             stmt.setString(1, searchPattern);
             stmt.setString(2, searchPattern);
             stmt.setString(3, searchPattern);
-
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     rows.add(new String[]{

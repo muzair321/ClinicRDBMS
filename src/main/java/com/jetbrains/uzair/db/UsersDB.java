@@ -4,7 +4,6 @@ import com.jetbrains.uzair.model.User;
 import com.jetbrains.uzair.security.PasswordUtil;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UsersDB {

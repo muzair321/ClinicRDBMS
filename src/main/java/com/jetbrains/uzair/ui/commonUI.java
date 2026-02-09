@@ -147,7 +147,7 @@ public class commonUI {
                     } else if (ui == 6) {
                         return UserLogsDB.returnUI();
                     }
-                    return null; // Database call
+                    return null;
                 }
 
                 @Override
@@ -183,68 +183,49 @@ public class commonUI {
             Patient p = PatientDB.returnUISingle(id);
             JDialog disp = commonDialog("Patient Details", window);
             JPanel panel = commonPanel();
-
             disp.setSize(770, 810);
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(8, 8, 8, 8);
             gbc.anchor = GridBagConstraints.WEST;
-
             int row = 0;
             gbc.gridx = 0; gbc.gridy = row;
             panel.add(new JLabel("ID:"), gbc);
-
             gbc.gridx = 1;
             panel.add(commonUI.createReadOnlyField(String.valueOf(p.getId()), valueFont), gbc);
             row++;
-
             gbc.gridx = 0; gbc.gridy = row;
             panel.add(new JLabel("Name:"), gbc);
-
             gbc.gridx = 1;
             panel.add(commonUI.createReadOnlyField(p.getName(), valueFont), gbc);
             row++;
-
             gbc.gridx = 0; gbc.gridy = row;
             panel.add(new JLabel("Age:"), gbc);
-
             gbc.gridx = 1;
             panel.add(commonUI.createReadOnlyField(String.valueOf(p.getAge()), valueFont), gbc);
             row++;
-
             gbc.gridx = 0; gbc.gridy = row;
             panel.add(new JLabel("Gender:"), gbc);
-
             gbc.gridx = 1;
             panel.add(commonUI.createReadOnlyField(p.getGender(), valueFont), gbc);
             row++;
-
             gbc.gridx = 0; gbc.gridy = row;
             panel.add(new JLabel("Phone Number:"), gbc);
-
             gbc.gridx = 1;
             panel.add(commonUI.createReadOnlyField(p.getPhone(), valueFont), gbc);
             row++;
-
             gbc.gridx = 0; gbc.gridy = row;
             panel.add(new JLabel("Date Of Creation:"), gbc);
-
             gbc.gridx = 1;
             panel.add(commonUI.createReadOnlyField(p.getCreatedAt(), valueFont), gbc);
-
             JPanel buttonPanel = new JPanel();
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
             buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-
             JButton btnEdit = PatientPanel.editButton2(table, window, id);
             JButton btnClose = new JButton("Close");
             btnClose.addActionListener(_ -> disp.dispose());
             JButton btnDel = new JButton("Delete");
             btnDel.addActionListener(_ -> {
-                try {
-                    SoundPlayer.play("popup.wav");
-                } catch (RuntimeException ex) {
-                    JOptionPane.showMessageDialog(window, ex.getMessage());
-                }
+                try {SoundPlayer.play("popup.wav");} catch (RuntimeException ex) {JOptionPane.showMessageDialog(window, ex.getMessage());}
                 int choice = JOptionPane.showConfirmDialog(
                         window,
                         "Are You Sure You Want To Delete The Selected Patient(s)?",
@@ -297,57 +278,33 @@ public class commonUI {
         btnDel.addActionListener(_ -> {
             int[] selectedRows = table.getSelectedRows();
             String t = null;
-            if(ui == 1){
-                t = "Patient";
-            } else if (ui == 2) {
-                t = "Visit";
-            }else if (ui == 3){
-                t = "Inventory Item";
-            } else if (ui == 5) {
-                t = "User";
-            }
-            if (selectedRows.length == 0) {
-                JOptionPane.showMessageDialog(window, "No " + t + "(s) Selected");
-                return;
-            }
+            if(ui == 1){t = "Patient";
+            } else if (ui == 2) {t = "Visit";
+            }else if (ui == 3){t = "Inventory Item";
+            } else if (ui == 5) {t = "User";}
+            if (selectedRows.length == 0) {JOptionPane.showMessageDialog(window, "No " + t + "(s) Selected");return;}
             List<Integer> patientIds = new ArrayList<>();
-
             for (int viewRow : selectedRows) {
                 int modelRow = table.convertRowIndexToModel(viewRow);
                 int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
                 patientIds.add(id);
             }
-            try {
-                SoundPlayer.play("popup.wav");
-            } catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(window, ex.getMessage());
-            }
+            try {SoundPlayer.play("popup.wav");} catch (RuntimeException ex) {JOptionPane.showMessageDialog(window, ex.getMessage());}
             int choice = JOptionPane.showConfirmDialog(
                     window,
                     "Are You Sure You Want To Delete The Selected " + t + "(s)?",
                     "Confirm Deletion",
                     JOptionPane.YES_NO_OPTION
             );
-
-            if (choice != JOptionPane.YES_OPTION) {
-                return;
-            }
-
+            if (choice != JOptionPane.YES_OPTION)return;
             try {
-                if(ui == 1) {
-                    PatientDB.deleteList(patientIds);
-                } else if (ui == 2) {
-                    VisitDB.deleteList(patientIds);
-                }else if(ui == 3){
-                    InventoryDB.deleteList(patientIds);
-                } else if (ui ==  5) {
-                    UsersDB.delete(patientIds);
-                }
+                if(ui == 1) {PatientDB.deleteList(patientIds);
+                } else if (ui == 2) {VisitDB.deleteList(patientIds);
+                }else if(ui == 3){InventoryDB.deleteList(patientIds);
+                } else if (ui ==  5) {UsersDB.delete(patientIds);}
                 JOptionPane.showMessageDialog(window, "Deleted Successfully");
                 refresh(table, ui);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(window, "Delete Failed");
-            }
+            } catch (SQLException ex) {JOptionPane.showMessageDialog(window, "Delete Failed");}
         });
         return btnDel;
     }
@@ -356,7 +313,6 @@ public class commonUI {
         btnEdit.setEnabled(false);
         btnView.setEnabled(false);
         btnDel.setEnabled(false);
-
         table.getSelectionModel().addListSelectionListener(_ -> {
             boolean selected = table.getSelectedRowCount() > 0;
             btnView.setEnabled(table.getSelectedRowCount() == 1);
@@ -369,7 +325,6 @@ public class commonUI {
         btnView.setEnabled(false);
         btnDel.setEnabled(false);
         btnUpdate.setEnabled(false);
-
         table.getSelectionModel().addListSelectionListener(_ -> {
             boolean selected = table.getSelectedRowCount() > 0;
             btnView.setEnabled(table.getSelectedRowCount() == 1);
@@ -380,12 +335,12 @@ public class commonUI {
     }
     public static void buttonHighlight(JButton btnDel, JTable table) {
         btnDel.setEnabled(false);
-
         table.getSelectionModel().addListSelectionListener(_ -> {
             boolean selected = table.getSelectedRowCount() > 0;
             btnDel.setEnabled(selected);
         });
     }
+    //misc methods
     public static JDialog commonDialog(String title, JFrame window){
         JDialog disp = new JDialog(window,title, true);
         disp.setSize(700, 810);
@@ -408,7 +363,6 @@ public class commonUI {
         JPanel header = new JPanel();
         header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
         header.setBackground(new Color(12, 38, 78));
-
         JLabel head = new JLabel(title);
         head.setForeground(Color.WHITE);
         head.setFont(new Font("Segoe UI", Font.BOLD, 30));
@@ -432,8 +386,8 @@ public class commonUI {
         gbc.gridx = 1;
         return gbc;
     }
+    //getting tables for view dialog
     private static JScrollPane getVisitTables(int patientId) throws SQLException {
-
         String[] headers = { "Visit ID", "Illness", "Treatment", "Date" };
         DefaultTableModel model = new DefaultTableModel(headers, 0) {
             @Override
@@ -441,9 +395,7 @@ public class commonUI {
                 return false;
             }
         };
-
         List<Visit> visits = VisitDB.returnVisits(patientId);
-
         for (Visit v : visits) {
             model.addRow(new Object[]{
                     v.getId(),
@@ -452,21 +404,16 @@ public class commonUI {
                     v.getDate()
             });
         }
-
         JTable table = new JTable(model);
         table.setRowHeight(24);
         table.getTableHeader().setReorderingAllowed(false);
-
         table.getColumnModel().getColumn(2).setCellRenderer(new TextAreaRenderer());
-
         table.getColumnModel().getColumn(2).setPreferredWidth(350);
-
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(
                     JTable table, Object value, boolean isSelected,
                     boolean hasFocus, int row, int column) {
-
                 Component c = super.getTableCellRendererComponent(
                         table, value, isSelected, hasFocus, row, column);
 
@@ -476,9 +423,9 @@ public class commonUI {
                 return c;
             }
         });
-
         return new JScrollPane(table);
     }
+    //for uneditable textfields
     public static JComponent createReadOnlyArea(String text, Font font) {
         JTextArea area = new JTextArea(text);
         area.setFont(font);
@@ -488,31 +435,26 @@ public class commonUI {
         area.setOpaque(false); // blends with panel
         area.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         area.setCaretPosition(0);
-
         JScrollPane scroll = new JScrollPane(area);
         scroll.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         scroll.setPreferredSize(new Dimension(480, 300));
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
         return scroll;
     }
 }
+//for expandable textarea
 class TextAreaRenderer extends JTextArea implements TableCellRenderer {
-
     public TextAreaRenderer() {
         setLineWrap(true);
         setWrapStyleWord(true);
         setOpaque(true);
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     }
-
     @Override
     public Component getTableCellRendererComponent(
             JTable table, Object value, boolean isSelected,
             boolean hasFocus, int row, int column) {
-
         setText(value == null ? "" : value.toString());
-
         if (isSelected) {
             setBackground(table.getSelectionBackground());
             setForeground(table.getSelectionForeground());
@@ -520,15 +462,12 @@ class TextAreaRenderer extends JTextArea implements TableCellRenderer {
             setBackground(table.getBackground());
             setForeground(table.getForeground());
         }
-
         // Auto-adjust row height
         setSize(table.getColumnModel().getColumn(column).getWidth(), Short.MAX_VALUE);
         int preferredHeight = getPreferredSize().height;
-
         if (table.getRowHeight(row) != preferredHeight) {
             table.setRowHeight(row, preferredHeight);
         }
-
         return this;
     }
 }
