@@ -84,7 +84,6 @@ public class UsersDB {
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             for (int id : list) {
-
                 if (id != 1) {
                     stmt.setInt(1, id);
                     stmt.executeUpdate();

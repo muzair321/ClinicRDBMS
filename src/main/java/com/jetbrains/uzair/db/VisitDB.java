@@ -102,7 +102,6 @@ public class VisitDB {
                 }
             }
         }
-        // Convert List to array
         return rows.toArray(new String[0][]);
     }
     public static Visit returnUISingle(int id) throws SQLException{

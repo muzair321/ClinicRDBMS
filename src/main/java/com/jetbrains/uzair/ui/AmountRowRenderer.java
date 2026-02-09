@@ -24,13 +24,10 @@ public class AmountRowRenderer extends DefaultTableCellRenderer {
         Component c = super.getTableCellRendererComponent(
                 table, value, isSelected, hasFocus, row, column
         );
-
-        // Default background
         if (!isSelected) {
             int amount = Integer.parseInt(
                     table.getModel().getValueAt(row, amountColumn).toString()
             );
-
             if (amount > 0) {
                 c.setBackground(new Color(220, 245, 220)); // light green
             } else if (amount < 0) {
@@ -42,7 +39,6 @@ public class AmountRowRenderer extends DefaultTableCellRenderer {
                 c.setFont(c.getFont().deriveFont(Font.BOLD));
             }
         }
-
         return c;
     }
 }
