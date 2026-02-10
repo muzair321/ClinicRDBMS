@@ -1,5 +1,8 @@
 package com.jetbrains.uzair.db;
 
+import com.jetbrains.uzair.app.FolderCreation;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,17 +11,22 @@ import java.sql.DriverManager;
 public class Database {
 
     // For Getting Connection, Initializing Database and Creating Tables
-    public static Connection getConnection(){
-        String userHome = System.getProperty("user.home");
-        String URL = "jdbc:sqlite:" + userHome + "/clinicData.db";
+    public static Connection getConnection() throws SQLException{
         Connection conn = null;
+        String userHome;
+        try {
+            userHome = FolderCreation.createDirectories();
+        } catch (IOException e) {
+            throw new SQLException("Error Creating Folder For Save " + e.getMessage());
+        }
+        String URL = "jdbc:sqlite:" + userHome + "/clinicData.db";
         try{
             conn = DriverManager.getConnection(URL);
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute("PRAGMA foreign_keys = ON");
             }
         } catch (SQLException e) {
-            System.err.println("Error Connecting To Database: " + e.getMessage());
+            throw new SQLException("Error Connecting To Database: " + e.getMessage());
         }
         return  conn;
     }

@@ -198,7 +198,7 @@ public class PatientPanel {
             phoneS = null;
         }
         JDialog forum = new JDialog(window, t, true);
-        forum.setSize(500, 600);
+        forum.setSize(500, 400);
         forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         forum.setLocationRelativeTo(null);
         forum.setLayout(new BorderLayout());

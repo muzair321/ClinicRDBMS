@@ -80,7 +80,7 @@ public class VisitPanel {
 
         Font valueFont = new Font("Segoe UI", Font.PLAIN, 13);
         JDialog forum = new JDialog(window,t, true);
-        forum.setSize(700, 810);
+        forum.setSize(700, 750);
         forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         forum.setLocationRelativeTo(null);
         forum.setLayout(new BorderLayout());

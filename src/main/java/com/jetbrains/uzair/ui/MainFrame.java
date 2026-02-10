@@ -127,21 +127,27 @@ public class MainFrame {
             public void mouseEntered(MouseEvent e) {
                 ((JButton) e.getSource()).setForeground(new Color(116, 117, 119));
             }
-
             @Override
             public void mouseExited(MouseEvent e) {
                 ((JButton) e.getSource()).setForeground(Color.DARK_GRAY);
             }
         };
-
         logoutButton.addMouseListener(hover);
         helpButton.addMouseListener(hover);
-        logoutButton.addActionListener(_ -> {
-            UserSession.logout();
-            new LoginFrame();
-            SwingUtilities.getWindowAncestor(footer).dispose();
+        logoutButton.addActionListener(e -> {
+            int choice = JOptionPane.showConfirmDialog(
+                    null,
+                    "Are You Sure You Want To Log Out?",
+                    "Confirm Logout",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+            if (choice == JOptionPane.YES_OPTION) {
+                UserSession.logout();
+                new LoginFrame();
+                SwingUtilities.getWindowAncestor(footer).dispose();
+            }
         });
-
         rightPanel.add(logoutButton);
         rightPanel.add(helpButton);
         return rightPanel;

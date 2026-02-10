@@ -20,7 +20,7 @@ public class LoginFrame extends JFrame {
         Image img = logo1.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         setIconImage(img);
         setTitle("Clinic Login");
-        setSize(450, 400);
+        setSize(450, 300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
