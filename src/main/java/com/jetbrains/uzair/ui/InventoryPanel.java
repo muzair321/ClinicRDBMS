@@ -6,7 +6,9 @@ import com.jetbrains.uzair.db.InventoryLogsDB;
 import com.jetbrains.uzair.model.*;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -363,6 +365,32 @@ public class InventoryPanel {
         JTable table = new JTable(model);
         table.setRowHeight(24);
         table.getTableHeader().setReorderingAllowed(false);
+        JTableHeader header1 = table.getTableHeader();
+
+        header1.setDefaultRenderer(new DefaultTableCellRenderer() {
+
+            @Override
+            public Component getTableCellRendererComponent(
+                    JTable table, Object value,
+                    boolean isSelected, boolean hasFocus,
+                    int row, int column) {
+
+                JLabel lbl = (JLabel) super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column
+                );
+
+                lbl.setBackground(new Color(22, 51, 83)); // dark blue
+                lbl.setForeground(Color.WHITE);
+                lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
+                lbl.setHorizontalAlignment(SwingConstants.CENTER);
+                lbl.setBorder(BorderFactory.createEmptyBorder(6, 4, 6, 4));
+                lbl.setOpaque(true);
+
+                return lbl;
+            }
+        });
+        header1.setReorderingAllowed(false);
+        header1.setResizingAllowed(true);
 
         int amountColumnIndex = 2; // "Amount" column
 
@@ -397,7 +425,7 @@ public class InventoryPanel {
         if (!UserSession.isLoggedIn()) {
             JOptionPane.showMessageDialog(
                     dialog,
-                    "Session expired. Please log in again.",
+                    "Session Expired, Please Log In Again.",
                     "Session Error",
                     JOptionPane.ERROR_MESSAGE
             );
