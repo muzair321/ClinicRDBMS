@@ -2,8 +2,6 @@ package com.jetbrains.uzair.ui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.net.URI;
 
 public class AboutDialog extends JDialog {
@@ -15,87 +13,80 @@ public class AboutDialog extends JDialog {
         setResizable(false);
 
         JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(Color.WHITE);
 
-        JLabel name = title("Muhammad Uzair");
-        JLabel role = subtitle("Software Developer");
+        JLabel title = new JLabel("Clinic Management System");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        panel.add(name);
-        panel.add(Box.createVerticalStrut(4));
-        panel.add(role);
-        panel.add(Box.createVerticalStrut(15));
+        panel.add(title);
+        panel.add(Box.createVerticalStrut(12));
 
-        panel.add(label("Email:"));
-        panel.add(link("uzair@example.com", "mailto:uzair@example.com"));
-        panel.add(Box.createVerticalStrut(10));
+        panel.add(info("Developer: ", "Muhammad Uzair"));
+        panel.add(info("Email: ", "muzairasim323@gmail.com"));
+        panel.add(link("GitHub: ", "https://github.com/muzair321"));
+        panel.add(link("LinkedIn: ", "https://www.linkedin.com/in/muhammad-uzair-80a27b384/"));
 
-        panel.add(label("GitHub:"));
-        panel.add(link("github.com/yourusername", "https://github.com/yourusername"));
-        panel.add(Box.createVerticalStrut(10));
+        panel.add(Box.createVerticalStrut(16));
+        panel.add(new JSeparator());
+        panel.add(Box.createVerticalStrut(12));
 
-        panel.add(label("LinkedIn:"));
-        panel.add(link("linkedin.com/in/yourprofile", "https://linkedin.com/in/yourprofile"));
-        panel.add(Box.createVerticalStrut(15));
-
-        panel.add(label("License:"));
         JTextArea license = new JTextArea(
-                "This software is licensed for use by the client.\n" +
-                        "Unauthorized distribution or modification is prohibited."
+                "© 2026 Muhammad Uzair\n" +
+                        "Licensed for internal clinical use under Changez Clinic.\n" +
+                        "Unauthorized distribution or any other form of copyright infringement is prohibited."
         );
+        license.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         license.setEditable(false);
-        license.setWrapStyleWord(true);
-        license.setLineWrap(true);
         license.setOpaque(false);
-        license.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        license.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+        license.setFocusable(false);
+        license.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         panel.add(license);
-        panel.add(Box.createVerticalGlue());
-
-        JButton close = new JButton("Close");
-        close.addActionListener(e -> dispose());
-        close.setAlignmentX(Component.RIGHT_ALIGNMENT);
-
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(close);
 
         add(panel);
     }
 
-    private JLabel title(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        return lbl;
+    private JPanel info(String label, String value) {
+        JPanel p = new JPanel(new BorderLayout());
+        p.setOpaque(false);
+        p.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel l = new JLabel(label);
+        l.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        JLabel v = new JLabel(value);
+        v.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+
+        p.add(l, BorderLayout.WEST);
+        p.add(v, BorderLayout.CENTER);
+        return p;
     }
 
-    private JLabel subtitle(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        lbl.setForeground(Color.GRAY);
-        return lbl;
-    }
+    private JPanel link(String label, String url) {
+        JPanel p = new JPanel(new BorderLayout());
+        p.setOpaque(false);
+        p.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    private JLabel label(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        return lbl;
-    }
+        JLabel l = new JLabel(label);
+        l.setFont(new Font("Segoe UI", Font.BOLD, 12));
 
-    private JLabel link(String text, String url) {
-        JLabel lbl = new JLabel("<html><a href=''>" + text + "</a></html>");
-        lbl.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        JLabel link = new JLabel("<html><a href=''>" + url + "</a></html>");
+        link.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        link.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-        lbl.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
+        link.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent e) {
                 try {
                     Desktop.getDesktop().browse(new URI(url));
                 } catch (Exception ignored) {}
             }
         });
 
-        return lbl;
+        p.add(l, BorderLayout.WEST);
+        p.add(link, BorderLayout.CENTER);
+        return p;
     }
 }

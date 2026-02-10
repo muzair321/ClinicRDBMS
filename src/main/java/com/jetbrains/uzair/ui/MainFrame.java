@@ -85,7 +85,7 @@ public class MainFrame {
 
         // Left
         JLabel copyright =
-                new JLabel("© 2026 Clinic Software by Muhammad Uzair");
+                new JLabel("© 2026 Clinic RDBMS by Muhammad Uzair");
         copyright.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         copyright.setForeground(Color.WHITE);
 
