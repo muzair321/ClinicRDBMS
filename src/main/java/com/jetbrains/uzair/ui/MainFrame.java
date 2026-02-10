@@ -66,7 +66,7 @@ public class MainFrame {
         }
 
         // FOOTER
-        JPanel footer = getJPanel();
+        JPanel footer = getJPanel(frame);
         footer.setBackground(new Color(12, 38, 78));
 
 
@@ -78,7 +78,7 @@ public class MainFrame {
         frame.setVisible(true);
     }
 
-    private static JPanel getJPanel() {
+    private static JPanel getJPanel(JFrame window) {
         JPanel footer = new JPanel(new BorderLayout());
         footer.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
         footer.setBackground(new Color(245, 245, 245));
@@ -99,7 +99,7 @@ public class MainFrame {
                 : new Color(147, 176, 255));
 
         // Right buttons panel
-        JPanel rightPanel = getPanel(footer);
+        JPanel rightPanel = getPanel(footer, window);
 
         // Add to footer
         footer.add(copyright, BorderLayout.WEST);
@@ -109,7 +109,7 @@ public class MainFrame {
         return footer;
     }
 
-    private static JPanel getPanel(JPanel footer) {
+    private static JPanel getPanel(JPanel footer, JFrame window) {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         rightPanel.setOpaque(false);
 
@@ -134,7 +134,7 @@ public class MainFrame {
         };
         logoutButton.addMouseListener(hover);
         helpButton.addMouseListener(hover);
-        logoutButton.addActionListener(e -> {
+        logoutButton.addActionListener(_ -> {
             int choice = JOptionPane.showConfirmDialog(
                     null,
                     "Are You Sure You Want To Log Out?",
@@ -148,6 +148,7 @@ public class MainFrame {
                 SwingUtilities.getWindowAncestor(footer).dispose();
             }
         });
+        helpButton.addActionListener(_ -> new AboutDialog(null).setVisible(true));
         rightPanel.add(logoutButton);
         rightPanel.add(helpButton);
         return rightPanel;
