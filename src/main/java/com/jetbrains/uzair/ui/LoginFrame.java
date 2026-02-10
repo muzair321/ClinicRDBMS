@@ -16,6 +16,9 @@ public class LoginFrame extends JFrame {
     private JPasswordField passwordField;
 
     public LoginFrame() {
+        ImageIcon logo1 = new ImageIcon(Objects.requireNonNull(MainFrame.class.getResource("/img/Clinic-Colored.png")));
+        Image img = logo1.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        setIconImage(img);
         setTitle("Clinic Login");
         setSize(450, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -123,6 +126,7 @@ public class LoginFrame extends JFrame {
 
     private JPanel buildButtons() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.setBackground(new Color(12, 38, 78));
         JButton loginBtn = new JButton("Login");
         loginBtn.addActionListener(_ -> login());
         getRootPane().setDefaultButton(loginBtn);

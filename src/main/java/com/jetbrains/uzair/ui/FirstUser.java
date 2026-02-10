@@ -16,6 +16,9 @@ public class FirstUser {
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
         frame.setResizable(false);
+        ImageIcon logo1 = new ImageIcon(Objects.requireNonNull(MainFrame.class.getResource("/img/Clinic-Colored.png")));
+        Image img = logo1.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        frame.setIconImage(img);
 
         //header
         JPanel header = new JPanel(new BorderLayout());
@@ -66,6 +69,7 @@ public class FirstUser {
         //buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        buttonPanel.setBackground(new Color(12, 38, 78));
         JButton btnSave = new JButton("Save");
         JButton btnCancel = new JButton("Cancel");
 

@@ -106,7 +106,7 @@ public class UsersPanel {
         JButton btnCancel = new JButton("Cancel");
         buttonPanel.add(btnSave);
         buttonPanel.add(btnCancel);
-        btnCancel.addActionListener(_ ->System.exit(0));
+        btnCancel.addActionListener(_ -> frame.dispose());
         btnSave.addActionListener(_ ->
         {
             if(name.getText().contains(" ")){
@@ -175,7 +175,7 @@ public class UsersPanel {
         JButton btnCancel = new JButton("Cancel");
         buttonPanel.add(btnSave);
         buttonPanel.add(btnCancel);
-        btnCancel.addActionListener(_ ->System.exit(0));
+        btnCancel.addActionListener(_ -> frame.dispose());
         btnSave.addActionListener(_ ->
         {
             if(pass.getText().isEmpty()){

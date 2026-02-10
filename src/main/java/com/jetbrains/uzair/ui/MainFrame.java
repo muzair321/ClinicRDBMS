@@ -22,6 +22,9 @@ public class MainFrame {
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
         frame.setBackground(new Color(12, 38, 78));
+        ImageIcon logo1 = new ImageIcon(Objects.requireNonNull(MainFrame.class.getResource("/img/Clinic-Colored.png")));
+        Image img = logo1.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        frame.setIconImage(img);
 
         //HEADER
         JPanel header = new JPanel(new BorderLayout());
