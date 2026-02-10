@@ -239,6 +239,7 @@ public class PatientPanel {
 //button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        buttonPanel.setBackground(new Color(12, 38, 78));
         JButton btnSave = new JButton("Save");
         JButton btnCancel = new JButton("Cancel");
 

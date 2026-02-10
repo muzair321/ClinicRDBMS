@@ -125,6 +125,7 @@ public class VisitPanel {
 //button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        buttonPanel.setBackground(new Color(12, 38, 78));
         JButton btnSave = new JButton("Save");
         JButton btnCancel = new JButton("Cancel");
 
@@ -256,6 +257,7 @@ public class VisitPanel {
             JPanel buttonPanel = new JPanel();
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
             buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+            buttonPanel.setBackground(new Color(12, 38, 78));
 
             JButton btnEdit = editButton2(v.getPatientId(), window, id, table);
             JButton btnClose = new JButton("Close");
