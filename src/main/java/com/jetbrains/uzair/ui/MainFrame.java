@@ -1,5 +1,6 @@
 package com.jetbrains.uzair.ui;
 
+import com.jetbrains.uzair.app.SQLiteBackup;
 import com.jetbrains.uzair.app.UserSession;
 
 import javax.swing.*;
@@ -121,6 +122,10 @@ public class MainFrame {
         helpButton.setToolTipText("Help");
         helpButton.setFocusPainted(false);
 
+        JButton backupButton = new JButton("Backup Data");
+        backupButton.setToolTipText("Help");
+        backupButton.setFocusPainted(false);
+
         // Hover effect (shared)
         MouseAdapter hover = new MouseAdapter() {
             @Override
@@ -134,6 +139,7 @@ public class MainFrame {
         };
         logoutButton.addMouseListener(hover);
         helpButton.addMouseListener(hover);
+        backupButton.addMouseListener(hover);
         logoutButton.addActionListener(_ -> {
             int choice = JOptionPane.showConfirmDialog(
                     null,
@@ -149,7 +155,9 @@ public class MainFrame {
             }
         });
         helpButton.addActionListener(_ -> new AboutDialog(null).setVisible(true));
+        backupButton.addActionListener(_ -> SQLiteBackup.backup());
         rightPanel.add(logoutButton);
+        rightPanel.add(backupButton);
         rightPanel.add(helpButton);
         return rightPanel;
     }
