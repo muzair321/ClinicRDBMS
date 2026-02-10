@@ -1,7 +1,5 @@
 package com.jetbrains.uzair.db;
 
-import com.jetbrains.uzair.app.FolderCreation;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,7 +29,7 @@ public class Database {
         return  conn;
     }
     //Initial Tables
-    public static void createTables(){
+    public static void createTables() throws SQLException{
         String[] sqls = {"""
                 CREATE TABLE IF NOT EXISTS patients(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -107,7 +105,7 @@ public class Database {
                 stmt.execute(sql);
             }
         } catch (SQLException e) {
-            System.err.println("Error Creating Tables: " + e.getMessage());
+            throw new SQLException("Error Creating Tables: " + e.getMessage());
         }
     }
 //Creating Indexes

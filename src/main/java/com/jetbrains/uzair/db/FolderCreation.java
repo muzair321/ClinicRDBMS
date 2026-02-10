@@ -1,4 +1,4 @@
-package com.jetbrains.uzair.app;
+package com.jetbrains.uzair.db;
 
 import java.io.IOException;
 import java.nio.file.Files;

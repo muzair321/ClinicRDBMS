@@ -10,8 +10,8 @@ public class Main {
     public static void main(String[] args){
         if(!FileChecker.exists()) {
             FirstUser.frame();
-            Database.createTables();
             try {
+                Database.createTables();
                 Database.addTriggers();
                 Database.addIndexes();
             } catch (SQLException e) {
