@@ -220,6 +220,7 @@ public class commonUI {
             JPanel buttonPanel = new JPanel();
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
             buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+            buttonPanel.setBackground(new Color(12, 38, 78));
             JButton btnEdit = PatientPanel.editButton2(table, window, id);
             JButton btnClose = new JButton("Close");
             btnClose.addActionListener(_ -> disp.dispose());

@@ -50,6 +50,7 @@ public class PatientPanel {
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
+        toolbar.setBackground(new Color(33, 69, 126));
         toolbar.add(btnAdd);
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnEdit);

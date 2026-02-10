@@ -124,12 +124,8 @@ public class LoginFrame extends JFrame {
     private JPanel buildButtons() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton loginBtn = new JButton("Login");
-
         loginBtn.addActionListener(_ -> login());
-
-        // Press ENTER to log in
         getRootPane().setDefaultButton(loginBtn);
-
         panel.add(Box.createHorizontalStrut(20));
         panel.add(loginBtn);
         return panel;

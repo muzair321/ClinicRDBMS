@@ -41,6 +41,7 @@ public class VisitPanel {
         btnDelete.setMnemonic('D');
         //toolbar
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        toolbar.setBackground(new Color(33, 69, 126));
         toolbar.add(btnView);
         if (UserSession.isAdmin()){toolbar.add(btnVisit);}
         toolbar.add(Box.createHorizontalStrut(20));

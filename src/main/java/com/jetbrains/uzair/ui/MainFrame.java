@@ -21,8 +21,9 @@ public class MainFrame {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
+        frame.setBackground(new Color(12, 38, 78));
 
-        // ================= HEADER =================
+        //HEADER
         JPanel header = new JPanel(new BorderLayout());
         header.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
         header.setBackground(new Color(12, 38, 78));
@@ -40,7 +41,7 @@ public class MainFrame {
 
         JPanel leftHeader = new JPanel();
         leftHeader.setLayout(new BoxLayout(leftHeader, BoxLayout.X_AXIS));
-        leftHeader.setOpaque(false); // keep header background visible
+        leftHeader.setOpaque(false);
         leftHeader.add(logoLabel);
         leftHeader.add(Box.createHorizontalStrut(15));
 
@@ -49,11 +50,10 @@ public class MainFrame {
         header.add(title, BorderLayout.CENTER);
         header.add(user, BorderLayout.EAST);
 
-        // ================= TABS =================
+        //TABS
         JTabbedPane tabs = new JTabbedPane();
         tabs.setFont(new Font("Segoe UI", Font.PLAIN, 17));
-
-        // Example panels (replace with your real panels)
+        tabs.setForeground(new Color(29, 60, 112));
         tabs.addTab("Patients", PatientPanel.mainWindow(frame));
         tabs.addTab("Visits", VisitPanel.mainWindow(frame));
         tabs.addTab("Inventory", InventoryPanel.mainWindow(frame));
@@ -62,11 +62,12 @@ public class MainFrame {
             tabs.addTab("Manage Users", UsersPanel.mainWindow(frame));
         }
 
-        // ================= FOOTER =================
+        // FOOTER
         JPanel footer = getJPanel();
+        footer.setBackground(new Color(12, 38, 78));
 
 
-        // ================= ADD TO FRAME =================
+        // ADD TO FRAME
         frame.add(header, BorderLayout.NORTH);
         frame.add(tabs, BorderLayout.CENTER);
         frame.add(footer, BorderLayout.SOUTH);
@@ -83,18 +84,16 @@ public class MainFrame {
         JLabel copyright =
                 new JLabel("© 2026 Clinic Software by Muhammad Uzair");
         copyright.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        copyright.setForeground(Color.GRAY);
+        copyright.setForeground(Color.WHITE);
 
         // Center
-        String roleText = UserSession.isAdmin()
-                ? "Admin Interface"
-                : "Standard Interface";
+        String roleText = UserSession.isAdmin() ? "Admin Interface" : "Standard Interface";
 
         JLabel roleLabel = new JLabel(roleText, SwingConstants.CENTER);
         roleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         roleLabel.setForeground(UserSession.isAdmin()
-                ? new Color(0, 120, 0)
-                : new Color(90, 90, 90));
+                ? new Color(158, 232, 145)
+                : new Color(147, 176, 255));
 
         // Right buttons panel
         JPanel rightPanel = getPanel(footer);

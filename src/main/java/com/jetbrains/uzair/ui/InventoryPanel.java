@@ -48,6 +48,7 @@ public class InventoryPanel {
         btnUpdate.setMnemonic('S');
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        toolbar.setBackground(new Color(33, 69, 126));
         toolbar.add(btnAdd);
         toolbar.add(Box.createHorizontalStrut(20));
         if(UserSession.isAdmin()){toolbar.add(btnEdit);}
@@ -99,7 +100,7 @@ public class InventoryPanel {
             amountS = String.valueOf(i.getAmount());
         }
         forum = new JDialog(window, t, true);
-        forum.setSize(500, 600);
+        forum.setSize(500, 300);
         forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         forum.setLocationRelativeTo(null);
         forum.setLayout(new BorderLayout());
@@ -133,6 +134,7 @@ public class InventoryPanel {
         //button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        buttonPanel.setBackground(new Color(12, 38, 78));
         JButton btnSave = new JButton("Save");
         JButton btnCancel = new JButton("Cancel");
 
@@ -282,6 +284,7 @@ public class InventoryPanel {
             JPanel buttonPanel = new JPanel();
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
             buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+            buttonPanel.setBackground(new Color(12, 38, 78));
 
             JButton btnEdit = editButton2(table, id, window);
             JButton btnClose = new JButton("Close");
@@ -442,6 +445,7 @@ public class InventoryPanel {
 
         // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(new Color(12, 38, 78));
 
         JButton updateBtn = new JButton("Update");
         JButton cancelBtn = new JButton("Cancel");

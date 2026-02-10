@@ -29,6 +29,7 @@ public class InventoryLogsPanel {
         searchField.addActionListener(_ -> btnSearch.doClick());
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        toolbar.setBackground(new Color(33, 69, 126));
         toolbar.add(btnRef);
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(searchField);

@@ -26,6 +26,7 @@ public class UsersPanel {
         btnDel.setMnemonic('D');
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        toolbar.setBackground(new Color(33, 69, 126));
         toolbar.add(btnAdd);
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(btnEdit);
@@ -100,6 +101,7 @@ public class UsersPanel {
         //buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        buttonPanel.setBackground(new Color(12, 38, 78));
         JButton btnSave = new JButton("Save");
         JButton btnCancel = new JButton("Cancel");
         buttonPanel.add(btnSave);
@@ -138,7 +140,7 @@ public class UsersPanel {
     }
     private static void changePasswordForum(JFrame window, JTable table){
         JDialog frame =  new JDialog( window, "Change First User Password", true);
-        frame.setSize(400, 300);
+        frame.setSize(400, 200);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
@@ -168,6 +170,7 @@ public class UsersPanel {
         //buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        buttonPanel.setBackground(new Color(12, 38, 78));
         JButton btnSave = new JButton("Save");
         JButton btnCancel = new JButton("Cancel");
         buttonPanel.add(btnSave);
@@ -227,6 +230,7 @@ public class UsersPanel {
         //buttons
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        toolbar.setBackground(new Color(33, 69, 126));
         JButton btnRef = new JButton("Refresh");
         btnRef.addActionListener(_ -> commonUI.refresh(t, 6));
         JButton btnSearch = new JButton("Search");
