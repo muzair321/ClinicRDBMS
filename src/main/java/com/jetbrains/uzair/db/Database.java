@@ -68,8 +68,8 @@ public class Database {
                 name TEXT UNIQUE NOT NULL,
                 storage TEXT NOT NULL CHECK (storage IN ('Bottles', 'Strips', 'Tablets', 'Tubes', 'Powder Packs')),
                 amount INTEGER NOT NULL CHECK (amount >= 0),
-                alert INTEGER NOT NULL CHECK (amount >= 0),
-                updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+                updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+                alert INTEGER NOT NULL CHECK (amount >= 0)
                 );
                 """,
                 """

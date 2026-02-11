@@ -9,7 +9,7 @@ import java.util.List;
 
 public class InventoryDB{
     public static void insert(Inventory i) throws SQLException {
-        String inventorySql = "INSERT INTO inventory(name, storage, amount) VALUES (?, ?, ?)";
+        String inventorySql = "INSERT INTO inventory(name, storage, amount, alert) VALUES (?, ?, ?, ?)";
         String logSql = "INSERT INTO inventory_logs(inventory_id, user_id, amount) VALUES (?, ?, ?)";
         try (Connection conn = Database.getConnection()) {
             conn.setAutoCommit(false);
@@ -19,6 +19,7 @@ public class InventoryDB{
                 ps.setString(1, i.getName());
                 ps.setString(2, i.getStorage());
                 ps.setInt(3, i.getAmount());
+                ps.setInt(4, i.getAlert());
                 ps.executeUpdate();
                 ResultSet keys = ps.getGeneratedKeys();
                 if (!keys.next()) {
@@ -82,7 +83,7 @@ public class InventoryDB{
     }
     public static Inventory returnUISingle(int id) throws SQLException{
         Inventory i = new Inventory();
-        String sql = "SELECT id, name, storage, amount, updated_at FROM inventory WHERE id = ?";
+        String sql = "SELECT id, name, storage, amount, updated_at, alert FROM inventory WHERE id = ?";
         try(Connection conn = Database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)){
             stmt.setInt(1, id);
@@ -93,6 +94,7 @@ public class InventoryDB{
                 i.setStorage(rs.getString(3));
                 i.setAmount(rs.getInt(4));
                 i.setUpdatedAt(rs.getString(5));
+                i.setAlert(rs.getInt(6));
             }
             return i;
         } catch (SQLException e) {
@@ -100,13 +102,14 @@ public class InventoryDB{
         }
     }
     public static void edit(Inventory i) throws SQLException{
-        String sql = "UPDATE inventory SET name =  ?, storage = ?, amount = ?, updated_at = datetime('now','localtime') WHERE id = ?";
+        String sql = "UPDATE inventory SET name =  ?, storage = ?, amount = ?, updated_at = datetime('now','localtime'), alert = ? WHERE id = ?";
         try (Connection conn = Database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)){
-            stmt.setInt(4, i.getId());
+            stmt.setInt(5, i.getId());
             stmt.setString(1, i.getName());
             stmt.setString(2, i.getStorage());
             stmt.setInt(3, i.getAmount());
+            stmt.setInt(4, i.getAlert());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException("Error Editing Inventory Item");

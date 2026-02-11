@@ -10,6 +10,7 @@ public class Inventory {
     private String name;
     private String storage;
     private int amount;
+    private int alert;
     private String updatedAt;
     //constructors
     public Inventory(){};
@@ -29,12 +30,14 @@ public class Inventory {
     public void setStorage(String storage){this.storage = storage;}
     public void setAmount(int amount){this.amount = amount;}
     public void setUpdatedAt(String updatedAt){this.updatedAt = updatedAt;}
+    public void setAlert(int alert){this.alert = alert;}
     //getters
     public int getId(){return id;}
     public String getName(){return name;}
     public String getStorage(){return storage;}
     public int getAmount(){return amount;}
     public String getUpdatedAt(){return updatedAt;}
+    public int getAlert(){return alert;}
     //convert array into object with checks
     public static Inventory convArrayToOb(String[] raw, boolean b) throws SQLException {
         Inventory i = new Inventory();
@@ -61,15 +64,18 @@ public class Inventory {
             throw new SQLException("Amount Can Not Be Empty");
         }
         int y;
+        int z;
         try {
             y = Integer.parseInt(raw[3]);
+            z = Integer.parseInt(raw[5]);
         } catch (NumberFormatException e) {
-            throw new SQLException("Amount Can Only Have Integer Numbers");
+            throw new SQLException("Amount/Alert Can Only Have Integer Numbers");
         }
-        if(y < 0){
-            throw new ValidationException("Amount Can Not Be Less Than '0'");
+        if(y < 0 || x < 0){
+            throw new ValidationException("Amount/Alert Can Not Be Less Than '0'");
         }
         i.setAmount(y);
+        i.setAlert(z);
         i.setUpdatedAt(raw[4]);
         return i;
     }
