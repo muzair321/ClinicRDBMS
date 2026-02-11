@@ -91,7 +91,9 @@ public class commonUI {
                 data = UsersDB.returnUI();
             } else if (ui == 6) {
                 data = UserLogsDB.returnUI();
-            } else{
+            } else if(ui == 7){
+                data = InventoryDB.returnAlerts();
+            }else{
                 throw new SQLException("Error Reading");
             }
         } catch (SQLException e) {
@@ -128,7 +130,7 @@ public class commonUI {
             headers.add("Item ID");
             headers.add("Name");
             headers.add("Storage Type");
-            headers.add("Amount");
+            headers.add("Stock");
             headers.add("Last Updated");
         }else if (ui == 4){
             headers.add("Log ID");
@@ -145,6 +147,13 @@ public class commonUI {
             headers.add("User ID");
             headers.add("Username");
             headers.add("Datetime");
+        }else if(ui == 7){
+            headers.add("Item ID");
+            headers.add("Item Name");
+            headers.add("Storage");
+            headers.add("Stock");
+            headers.add("Alert At");
+            headers.add("Last Updated");
         } else {
             headers.add("Error");
         }
@@ -203,6 +212,9 @@ public class commonUI {
                         return UsersDB.returnUI();
                     } else if (ui == 6) {
                         return UserLogsDB.returnUI();
+                    }
+                    else if (ui == 7) {
+                        return InventoryDB.returnAlerts();
                     }
                     return null;
                 }
@@ -396,6 +408,15 @@ public class commonUI {
         table.getSelectionModel().addListSelectionListener(_ -> {
             boolean selected = table.getSelectedRowCount() > 0;
             btnDel.setEnabled(selected);
+        });
+    }
+    public static void buttonHighlight(JButton btnUpdate, JButton btnView, JTable table) {
+        btnView.setEnabled(false);
+        btnUpdate.setEnabled(false);
+        table.getSelectionModel().addListSelectionListener(_ -> {
+            boolean selected = table.getSelectedRowCount() == 1;
+            btnUpdate.setEnabled(selected);
+            btnView.setEnabled(selected);
         });
     }
     //misc methods

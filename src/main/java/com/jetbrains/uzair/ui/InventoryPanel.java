@@ -35,8 +35,8 @@ public class InventoryPanel {
 //buttons
         JButton btnAdd = addButton(table, window);
         JButton btnEdit = editButton1(table, window);
-        JButton btnUpdate = update(table, window);
-        JButton btnView = viewItem(table, window);
+        JButton btnUpdate = update(table, window, 1);
+        JButton btnView = viewItem(table, window, 1);
         JButton btnDel = commonUI.deleteButton(table, window, 3);
         JButton btnRef = new JButton("Refresh");
         btnRef.addActionListener(_ -> commonUI.refresh(table, 3));
@@ -72,14 +72,14 @@ public class InventoryPanel {
         JButton btnAdd = new JButton("Add New");
         btnAdd.addActionListener(_ -> {
             try{
-                commonForum(table, -1, window);
+                commonForum(table, -1, window, 1);
             }catch (SQLException sqle){
                 JOptionPane.showMessageDialog(null, "Error Adding Patient: " + sqle.getMessage());
             }
         });
         return btnAdd;
     }
-    private static void commonForum(JTable table, int id, JFrame window) throws SQLException{
+    private static void commonForum(JTable table, int id, JFrame window, int ui) throws SQLException{
         JDialog forum;
         Inventory i;
         String t;
@@ -168,21 +168,21 @@ public class InventoryPanel {
                     Inventory newI = Inventory.convArrayToOb(raw, true);
                     InventoryDB.insert(newI);
                 }
-                commonUI.refresh(table, 3);
+                commonUI.refresh(table, (ui == 1  ? 3: 7));
                 forum.dispose();
             } catch (ValidationException | SQLException ve) {
                 JOptionPane.showMessageDialog(forum, ve.getMessage());
             }
         });
         forum.getRootPane().setDefaultButton(btnSave);
-        FocusUtils.enableArrowNavigation(name, storage, amount);
+        FocusUtils.enableArrowNavigation(name, storage, amount, alert);
         btnCancel.addActionListener(_ -> forum.dispose());
         forum.add(header, BorderLayout.NORTH);
         forum.add(formPanel, BorderLayout.CENTER);
         forum.add(buttonPanel, BorderLayout.SOUTH);
         forum.setVisible(true);
     }
-    private static JButton update(JTable table, JFrame window){
+    private static JButton update(JTable table, JFrame window, int ui){
         JButton btn = new JButton("Update Stock");
 
         btn.addActionListener(_ -> {
@@ -200,7 +200,11 @@ public class InventoryPanel {
             int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
 
             updateStock(id, window);
-            commonUI.refresh(table, 3);
+            if(ui == 1) {
+                commonUI.refresh(table, 3);
+            } else if (ui == 2) {
+                commonUI.refresh(table, 7);
+            }
         });
         return btn;
     }
@@ -221,13 +225,13 @@ public class InventoryPanel {
             int modelRow = table.convertRowIndexToModel(selectedRows[0]);
             int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
 
-            try {commonForum(table, id, window);} catch (SQLException ex) {
+            try {commonForum(table, id, window, 1);} catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed To Load Item Data");
             }
         });
         return btn;
     }
-    private static JButton viewItem(JTable table, JFrame window) {
+    private static JButton viewItem(JTable table, JFrame window, int ui) {
         JButton btnVew = new JButton("View Item Data");
         btnVew.addActionListener(_ -> {
             int[] selectedRows = table.getSelectedRows();
@@ -243,11 +247,11 @@ public class InventoryPanel {
 
             int modelRow = table.convertRowIndexToModel(selectedRows[0]);
             int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
-            itemDetails(table, window, id);
+            itemDetails(table, window, id, ui);
         });
         return btnVew;
     }
-    public static void itemDetails(JTable table, JFrame window, int id){
+    public static void itemDetails(JTable table, JFrame window, int id, int ui){
         try {
             Inventory i = InventoryDB.returnUISingle(id);
             JDialog disp = commonUI.commonDialog("Item Details", window);
@@ -298,7 +302,7 @@ public class InventoryPanel {
             buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
             buttonPanel.setBackground(new Color(12, 38, 78));
 
-            JButton btnEdit = editButton2(table, id, window);
+            JButton btnEdit = editButton2(table, id, window, ui);
             JButton btnClose = new JButton("Close");
             btnClose.addActionListener(_ -> disp.dispose());
             JButton btnDel = new JButton("Delete");
@@ -321,14 +325,13 @@ public class InventoryPanel {
                 try{
                     InventoryDB.delete(id);
                     JOptionPane.showMessageDialog(window, "Item Deleted Successfully");
-                    commonUI.refresh(table, 3);
+                    if(ui == 1) commonUI.refresh(table, 3); else if (ui == 2) commonUI.refresh(table, 7);
                     disp.dispose();
-                    commonUI.refresh(table, 3);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(disp, ex.getMessage());
                 }});
             JButton btnAddLog = new JButton("Update Stock");
-            btnAddLog.addActionListener(_ ->{updateStock(i.getId(), window); commonUI.refresh(table, 3);});
+            btnAddLog.addActionListener(_ ->{updateStock(i.getId(), window); if(ui == 1) commonUI.refresh(table, 3); else if (ui == 2) commonUI.refresh(table, 7);});
             disp.getRootPane().setDefaultButton(btnAddLog);
             if(UserSession.isAdmin()) {
                 commonUI.commonAddBtn(buttonPanel, btnDel, btnAddLog, btnEdit, btnClose);
@@ -412,15 +415,16 @@ public class InventoryPanel {
 
         return new JScrollPane(table);
     }
-    private static JButton editButton2(JTable table, int id, JFrame window){
+    private static JButton editButton2(JTable table, int id, JFrame window, int ui){
         JButton btn = new JButton("Edit Item");
         btn.addActionListener(_ -> {
             try {
-                commonForum(table, id, window);
+                commonForum(table, id, window, ui);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed To Load Item Data");
             }
-            commonUI.refresh(table, 3);
+            commonUI.refresh(table, (ui == 1  ? 3: 7));
+
         });
         return btn;
     }
@@ -551,5 +555,41 @@ public class InventoryPanel {
 
         dialog.setVisible(true);
     }
+    public static JDialog alertDialog(JFrame window){
+        JDialog panel = new JDialog(window, "Items Low On Stock", true);
+        panel.setSize(770, 810);
+        panel.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        panel.setLocationRelativeTo(null);
+        panel.setLayout(new BorderLayout());
 
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+//table
+        JTable table = commonUI.getDBData(window, 7);
+        if (table.getRowCount() == 0){return null;}
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        JScrollPane scroll = new JScrollPane(table);
+//buttons
+        JButton btnUpdate = update(table, window, 2);
+        JButton btnView = viewItem(table, window, 2);
+        JButton btnRef = new JButton("Refresh");
+        btnRef.addActionListener(_ -> commonUI.refresh(table, 7));
+        commonUI.buttonHighlight( btnUpdate, btnView,  table);
+        btnRef.setMnemonic('R');
+        btnUpdate.setMnemonic('S');
+//toolbar panel
+        toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        toolbar.setBackground(new Color(33, 69, 126));
+        toolbar.add(Box.createHorizontalStrut(10));
+        toolbar.add(btnUpdate);
+        toolbar.add(btnView);
+        toolbar.add(Box.createHorizontalStrut(10));
+        toolbar.add(btnRef);
+//main layout
+        panel.setLayout(new BorderLayout());
+        panel.add(toolbar, BorderLayout.NORTH);
+        panel.add(scroll, BorderLayout.CENTER);
+        panel.setVisible(true);
+        return panel;
+    }
 }

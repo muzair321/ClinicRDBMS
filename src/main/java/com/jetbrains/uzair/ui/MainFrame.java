@@ -77,6 +77,7 @@ public class MainFrame {
         frame.add(footer, BorderLayout.SOUTH);
 
         frame.setVisible(true);
+        InventoryPanel.alertDialog(frame);
     }
 
     private static JPanel getJPanel(JFrame window) {

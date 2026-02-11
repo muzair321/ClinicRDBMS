@@ -183,7 +183,6 @@ public class InventoryDB{
                 }
             }
         }
-        // Convert List to array
         return rows.toArray(new String[0][]);
     }
     public static void delete(int id) throws SQLException{
@@ -207,5 +206,34 @@ public class InventoryDB{
         }catch (SQLException e){
             throw new SQLException("Error Deleting Inventory List: " + e.getMessage());
         }
+    }
+    public static String[][] returnAlerts() throws SQLException{
+        List<String[]> rows = new ArrayList<>();
+        String sql = """
+        SELECT id,
+               name,
+               storage,
+               amount,
+               alert,
+               updated_at
+        FROM inventory
+        WHERE amount < alert
+        """;
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery() ) {
+            while (rs.next()) {
+                rows.add(new String[]{
+                        String.valueOf(rs.getInt("id")),
+                        rs.getString("name"),
+                        rs.getString("storage"),
+                        String.valueOf(rs.getInt("amount")),
+                        String.valueOf(rs.getInt("alert")),
+                        rs.getString("updated_at")
+                });
+
+            }
+        }
+        return rows.toArray(new String[0][]);
     }
 }
