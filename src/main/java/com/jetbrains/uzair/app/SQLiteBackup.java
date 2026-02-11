@@ -9,20 +9,12 @@ public class SQLiteBackup {
     // Path to your original SQLite DB
     private static final String DB_PATH = System.getProperty("user.home") + "/ClinicData/clinicData.db";
 
-    public static void backup(JFrame frame) {
-        showBackupDialog(frame);
+    public static void backup() {
+        SwingUtilities.invokeLater(SQLiteBackup::showBackupDialog);
     }
-    private static void showBackupDialog(JFrame frame) {
-        JFileChooser fileChooser = new JFileChooser() {
-            @Override
-            protected JDialog createDialog(java.awt.Component parent)
-                    throws java.awt.HeadlessException {
-                JDialog dialog = super.createDialog(parent);
-                dialog.setIconImage(new ImageIcon("src/main/resources/img/Clinic-Colored.png").getImage());
-                return dialog;
-            }
-        };
-        fileChooser.showOpenDialog(frame);
+
+    private static void showBackupDialog() {
+        JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Select Backup Location");
         fileChooser.setSelectedFile(new File("clinicData.db"));
         int userSelection = fileChooser.showSaveDialog(null);
