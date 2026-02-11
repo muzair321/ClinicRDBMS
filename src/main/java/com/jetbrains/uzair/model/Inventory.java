@@ -71,7 +71,7 @@ public class Inventory {
         } catch (NumberFormatException e) {
             throw new SQLException("Amount/Alert Can Only Have Integer Numbers");
         }
-        if(y < 0 || x < 0){
+        if(y < 0 || z < 0){
             throw new ValidationException("Amount/Alert Can Not Be Less Than '0'");
         }
         i.setAmount(y);

@@ -128,6 +128,12 @@ public class Database {
                 CREATE INDEX IF NOT EXISTS idx_inventory_name ON inventory(name);
                 """,
                 """
+                CREATE INDEX IF NOT EXISTS idx_inventory_amount ON inventory(amount);
+                """,
+                """
+                CREATE INDEX IF NOT EXISTS idx_inventory_alert ON inventory(alert);
+                """,
+                """
                 CREATE INDEX IF NOT EXISTS idx_inventory_updated_at ON inventory(updated_at);
                 """,
                 """
