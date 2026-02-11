@@ -37,7 +37,7 @@ public class Database {
                 age INTEGER NOT NULL CHECK (age >= 0),
                 gender TEXT NOT NULL CHECK ( gender IN ('Male', 'Female', 'Other')),
                 phone TEXT UNIQUE CHECK (phone IS NULL OR length(phone) >= 7),
-                created_at TEXT NOT NULL DEFAULT (datetime('now'))
+                created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
                 );
                 """,
                 """
@@ -55,7 +55,7 @@ public class Database {
                 illness TEXT,
                 treatment TEXT,
                 paid INTEGER NOT NULL CHECK (paid >= 0),
-                date TEXT NOT NULL DEFAULT (datetime('now')),
+                date TEXT NOT NULL DEFAULT (datetime('now','localtime')),
                 FOREIGN KEY (patient_id)
                     REFERENCES patients(id)
                     ON DELETE CASCADE
@@ -68,7 +68,8 @@ public class Database {
                 name TEXT UNIQUE NOT NULL,
                 storage TEXT NOT NULL CHECK (storage IN ('Bottles', 'Strips', 'Tablets', 'Tubes', 'Powder Packs')),
                 amount INTEGER NOT NULL CHECK (amount >= 0),
-                updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+                alert INTEGER NOT NULL CHECK (amount >= 0),
+                updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
                 );
                 """,
                 """
@@ -77,7 +78,7 @@ public class Database {
                 inventory_id INTEGER NOT NULL,
                 user_id INTEGER NOT NULL,
                 amount INTEGER NOT NULL CHECK(amount != 0),
-                date TEXT NOT NULL DEFAULT (datetime('now')),
+                date TEXT NOT NULL DEFAULT (datetime('now','localtime')),
                 FOREIGN KEY (inventory_id)
                     REFERENCES inventory(id)
                     ON DELETE CASCADE
@@ -92,7 +93,7 @@ public class Database {
                 CREATE TABLE IF NOT EXISTS user_logs(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER NOT NULL,
-                date TEXT NOT NULL DEFAULT (datetime ('now')),
+                date TEXT NOT NULL DEFAULT (datetime ('now','localtime')),
                 FOREIGN KEY (user_id)
                     REFERENCES users(id)
                     ON DELETE CASCADE
@@ -165,7 +166,7 @@ public class Database {
             FOR EACH ROW
             BEGIN
                 UPDATE inventory
-                SET updated_at = datetime('now')
+                SET updated_at = datetime('now','localtime')
                 WHERE id = NEW.inventory_id;
             END;
         """);
@@ -173,8 +174,5 @@ public class Database {
         } catch (SQLException e) {
             throw new SQLException("Error Adding Triggers");
         }
-    }
-//Backup
-    public static void backup(String location){
     }
 }

@@ -100,7 +100,7 @@ public class InventoryDB{
         }
     }
     public static void edit(Inventory i) throws SQLException{
-        String sql = "UPDATE inventory SET name =  ?, storage = ?, amount = ?, updated_at = datetime('now') WHERE id = ?";
+        String sql = "UPDATE inventory SET name =  ?, storage = ?, amount = ?, updated_at = datetime('now','localtime') WHERE id = ?";
         try (Connection conn = Database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)){
             stmt.setInt(4, i.getId());
