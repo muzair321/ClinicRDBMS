@@ -155,7 +155,7 @@ public class MainFrame {
             }
         });
         helpButton.addActionListener(_ -> new AboutDialog(null).setVisible(true));
-        backupButton.addActionListener(_ -> SQLiteBackup.backup());
+        backupButton.addActionListener(_ -> SQLiteBackup.backup(window));
         rightPanel.add(logoutButton);
         rightPanel.add(backupButton);
         rightPanel.add(helpButton);
