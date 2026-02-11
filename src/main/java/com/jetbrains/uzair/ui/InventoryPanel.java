@@ -86,6 +86,7 @@ public class InventoryPanel {
         String nameS = null;
         String storageS = "Bottles";
         String amountS = null;
+        String alertS = null;
         if(id == -1){
             t = "Add To Inventory";
             i = new Inventory();
@@ -100,9 +101,10 @@ public class InventoryPanel {
             nameS = i.getName();
             storageS = i.getStorage();
             amountS = String.valueOf(i.getAmount());
+            alertS = String.valueOf(i.getAlert());
         }
         forum = new JDialog(window, t, true);
-        forum.setSize(500, 300);
+        forum.setSize(500, 400);
         forum.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         forum.setLocationRelativeTo(null);
         forum.setLayout(new BorderLayout());
@@ -133,6 +135,13 @@ public class InventoryPanel {
         gbc.gridx = 1;
         JTextField amount = new JTextField(amountS, 15);
         formPanel.add(amount, gbc);
+        row++;
+        //alert
+        gbc.gridx = 0; gbc.gridy = row;
+        formPanel.add(new JLabel("Alert Amount:"), gbc);
+        gbc.gridx = 1;
+        JTextField alert = new JTextField(alertS, 15);
+        formPanel.add(alert, gbc);
         //button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
@@ -149,7 +158,8 @@ public class InventoryPanel {
                         name.getText(),
                         Objects.requireNonNull(storage.getSelectedItem()).toString(),
                         amount.getText(),
-                        String.valueOf(LocalDateTime.now())
+                        String.valueOf(LocalDateTime.now()),
+                        alert.getText()
                 };
                 if(id != -1) {
                     Inventory newI = Inventory.convArrayToOb(raw, false);
