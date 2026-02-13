@@ -1,0 +1,19 @@
+.barChart {
+    -fx-background-color: #8198bd;
+}
+
+.barChart-title {
+    -fx-font-size: 22px;
+    -fx-text-fill: #2c3e50;
+}
+
+.axis-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+.chart-bar {
+    -fx-bar-fill: #0C264EFF; /* blue */
+}
+.chart-bar:hover {
+    -fx-bar-fill: #7498cf;
+}
