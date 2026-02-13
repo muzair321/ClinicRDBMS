@@ -65,7 +65,6 @@ public class MainFrame {
         if(UserSession.isAdmin()) {
             tabs.addTab("Manage Users", UsersPanel.mainWindow(frame));
         }
-        tabs.addTab("Analytics", ChartPanel.mainFrame());
 
         // FOOTER
         JPanel footer = getJPanel(frame);

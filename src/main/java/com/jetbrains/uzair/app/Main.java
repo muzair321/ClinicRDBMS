@@ -1,9 +1,12 @@
 package com.jetbrains.uzair.app;
 
 import com.jetbrains.uzair.db.*;
+import com.jetbrains.uzair.model.Patient;
+import com.jetbrains.uzair.model.Visit;
 import com.jetbrains.uzair.ui.FirstUser;
 import com.jetbrains.uzair.ui.LoginFrame;
 
+import javax.swing.*;
 import java.sql.SQLException;
 
 public class Main {
@@ -19,4 +22,5 @@ public class Main {
             }
         }else {new LoginFrame();}
     }
+
 }
