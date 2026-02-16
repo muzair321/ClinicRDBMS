@@ -2,6 +2,7 @@ package com.jetbrains.uzair.ui;
 
 import com.jetbrains.uzair.app.SQLiteBackup;
 import com.jetbrains.uzair.app.UserSession;
+import javafx.application.Platform;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,13 +11,14 @@ import java.awt.event.MouseEvent;
 import java.util.Objects;
 
 public class MainFrame {
+    private static JFrame frame;
 
     public static void window() {
         SwingUtilities.invokeLater(MainFrame::createUI);
     }
 
     private static void createUI() {
-        JFrame frame = new JFrame("Changez Clinic");
+        frame = new JFrame("Changez Clinic");
         frame.setSize(1200, 900);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -65,7 +67,13 @@ public class MainFrame {
         if(UserSession.isAdmin()) {
             tabs.addTab("Manage Users", UsersPanel.mainWindow(frame));
         }
-        tabs.addTab("Analytics", ChartPanel.mainFrame());
+        tabs.addTab("Analytics", AnalyticsPanel.mainFrame());
+        if(!UserSession.isLoggedIn()){
+            tabs.remove(5);
+            tabs.revalidate();
+            tabs.repaint();
+        }
+
 
         // FOOTER
         JPanel footer = getJPanel(frame);
@@ -102,7 +110,7 @@ public class MainFrame {
                 : new Color(147, 176, 255));
 
         // Right buttons panel
-        JPanel rightPanel = getPanel(footer, window);
+        JPanel rightPanel = getPanel( window);
 
         // Add to footer
         footer.add(copyright, BorderLayout.WEST);
@@ -112,7 +120,7 @@ public class MainFrame {
         return footer;
     }
 
-    private static JPanel getPanel(JPanel footer, JFrame window) {
+    private static JPanel getPanel( JFrame window) {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         rightPanel.setOpaque(false);
 
@@ -151,9 +159,17 @@ public class MainFrame {
                     JOptionPane.QUESTION_MESSAGE
             );
             if (choice == JOptionPane.YES_OPTION) {
+                // 🔥 Clean JavaFX before closing
+                Platform.runLater(() -> {
+                    for (Window w : Window.getWindows()) {
+                        if (w instanceof JFrame frame) {
+                            detachFXPanels(frame);
+                        }
+                    }
+                });
                 UserSession.logout();
                 new LoginFrame();
-                SwingUtilities.getWindowAncestor(footer).dispose();
+                window.dispose();
             }
         });
         helpButton.addActionListener(_ -> new AboutDialog(null).setVisible(true));
@@ -162,5 +178,15 @@ public class MainFrame {
         rightPanel.add(backupButton);
         rightPanel.add(helpButton);
         return rightPanel;
+    }
+    private static void detachFXPanels(Container container) {
+        for (Component comp : container.getComponents()) {
+            if (comp instanceof javafx.embed.swing.JFXPanel fxPanel) {
+                fxPanel.setScene(null); // 🔥 important
+            }
+            if (comp instanceof Container child) {
+                detachFXPanels(child);
+            }
+        }
     }
 }

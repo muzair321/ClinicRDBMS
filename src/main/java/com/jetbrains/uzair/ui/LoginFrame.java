@@ -4,6 +4,7 @@ import com.jetbrains.uzair.app.UserSession;
 import com.jetbrains.uzair.db.UserLogsDB;
 import com.jetbrains.uzair.db.UsersDB;
 import com.jetbrains.uzair.model.User;
+import javafx.embed.swing.JFXPanel;
 
 import javax.swing.*;
 import java.awt.*;

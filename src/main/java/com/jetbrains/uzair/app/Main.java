@@ -3,8 +3,10 @@ package com.jetbrains.uzair.app;
 import com.jetbrains.uzair.db.*;
 import com.jetbrains.uzair.model.Patient;
 import com.jetbrains.uzair.model.Visit;
+import com.jetbrains.uzair.ui.FXInitializer;
 import com.jetbrains.uzair.ui.FirstUser;
 import com.jetbrains.uzair.ui.LoginFrame;
+import javafx.application.Platform;
 
 import javax.swing.*;
 import java.sql.SQLException;
@@ -20,7 +22,10 @@ public class Main {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        }else {new LoginFrame();}
+        }else {
+            Platform.setImplicitExit(false);
+            new FXInitializer();// VERY IMPORTANT
+            SwingUtilities.invokeLater(LoginFrame::new);}
     }
 
 }
