@@ -1,102 +1,71 @@
 package com.jetbrains.uzair.ui;
 
+import com.jetbrains.uzair.db.AnalyticsDB;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.Tooltip;
 
 import javax.swing.*;
-import java.awt.*;
-import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class BarChartFX extends JPanel {
-    private JFXPanel fxPanel;
-    private Connection conn;
-    private XYChart.Series<String, Number> series;
-
-    public BarChartFX(String dbPath){
-        setLayout(new BorderLayout());
-        fxPanel = new JFXPanel();
-        add(fxPanel, BorderLayout.CENTER);
-
-        try {
-            conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        Platform.runLater(this::initFX);
-    }
-    private void initFX(){
-
-
+public class BarChartFX{
+    private static XYChart.Series<String, Number> series;
+    public static JFXPanel start() {
+        JFXPanel panel = new JFXPanel();
+        // --- Step 1: Define the axes ---
         CategoryAxis xAxis = new CategoryAxis();
-        ObservableList<String> hours = FXCollections.observableArrayList();
+        xAxis.setLabel("Hours");
 
-        for (int h = 7; h <= 21; h++) {
-            hours.add(String.format("%02d:00", h));
-        }
-
-        xAxis.setCategories(hours);
         NumberAxis yAxis = new NumberAxis();
-
-        xAxis.setLabel("Hour");
         yAxis.setLabel("Visits");
 
+        // --- Step 2: Create the BarChart ---
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-        barChart.setAnimated(true);
-
+        barChart.setAnimated(false);
+        barChart.setTitle("Busy Hours");
+        // --- Step 3: Create a data series ---
         series = new XYChart.Series<>();
+        series.setName("Clinic Daily Visits");
+        // Add data
+        LinkedHashMap<String, Integer> data = AnalyticsDB.visits();
+        ArrayList<String> keys = new ArrayList<>(data.keySet());
+        for (String key : keys) {
+            series.getData().add(new XYChart.Data<>(key, data.get(key)));
+        }
 
+        // --- Step 4: Add series to chart ---
         barChart.getData().add(series);
-
-        StackPane root = new StackPane(barChart);
-        Scene scene = new Scene(root, 900, 500);
-
-        // Load CSS
-        String css = getClass().getResource("/dashboard.css").toExternalForm();
+        for (XYChart.Data<String, Number> data1 : series.getData()) {
+            Tooltip tooltip = new Tooltip(data1.getYValue().toString());
+            tooltip.setShowDelay(javafx.util.Duration.seconds(0.1));
+            // The getNode() method returns the actual graphical bar/node
+            Tooltip.install(data1.getNode(), tooltip);
+        }
+        // --- Step 5: Show chart in a Scene ---
+        Scene scene = new Scene(barChart, 1920, 200);
+        String css = BarChartFX.class.getResource("/dashboard.css").toExternalForm();
         scene.getStylesheets().add(css);
-
-        fxPanel.setScene(scene);
-
-        updateChart();
+        panel.setScene(scene);
+        return panel;
     }
-    private void updateChart() {
-
+    public static void update(){
+        LinkedHashMap<String, Integer> data = AnalyticsDB.visits();
+        ArrayList<String> keys = new ArrayList<>(data.keySet());
         Platform.runLater(() -> {
-
             series.getData().clear();
-
-            Map<String, Integer> hourMap = new HashMap<>();
-
-            for (int h = 7; h <= 21; h++) {
-                hourMap.put(String.format("%02d", h), 0);
+            for(String key:  keys){
+                series.getData().add(new XYChart.Data<>(key, data.get(key)));
             }
-            try {
-                String sql = """
-                SELECT strftime('%H', date) AS hour, COUNT(*) AS visits
-                FROM visits
-                WHERE date(date) = date('now')
-                GROUP BY hour
-            """;
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    hourMap.put(rs.getString("hour"), rs.getInt("visits"));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            for (int h = 7; h <= 21; h++) {
-                String hour = String.format("%02d", h);
-                series.getData().add(new XYChart.Data<>(hour + ":00", hourMap.get(hour)));
+            for (XYChart.Data<String, Number> data1 : series.getData()) {
+                Tooltip tooltip = new Tooltip(data1.getYValue().toString());
+                tooltip.setShowDelay(javafx.util.Duration.seconds(0.1));
+                // The getNode() method returns the actual graphical bar/node
+                Tooltip.install(data1.getNode(), tooltip);
             }
         });
     }
