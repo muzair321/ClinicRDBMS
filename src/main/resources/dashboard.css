@@ -16,4 +16,11 @@
 }
 .chart-bar:hover {
     -fx-bar-fill: #7498cf;
+
+}
+/* Style the tooltip itself */
+.tooltip {
+    -fx-background-color: #123261;
+    -fx-text-fill: #ccd7ec;
+    -fx-font-size: 14px;
 }
