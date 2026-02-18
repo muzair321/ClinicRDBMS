@@ -32,7 +32,7 @@ public class BarChartFX{
         series = new XYChart.Series<>();
         series.setName("Clinic Daily Visits");
         // Add data
-        LinkedHashMap<String, Integer> data = AnalyticsDB.visits();
+        LinkedHashMap<String, Integer> data = AnalyticsDB.visitsToday();
         ArrayList<String> keys = new ArrayList<>(data.keySet());
         for (String key : keys) {
             series.getData().add(new XYChart.Data<>(key, data.get(key)));
@@ -54,7 +54,7 @@ public class BarChartFX{
         return panel;
     }
     public static void update(){
-        LinkedHashMap<String, Integer> data = AnalyticsDB.visits();
+        LinkedHashMap<String, Integer> data = AnalyticsDB.visitsToday();
         ArrayList<String> keys = new ArrayList<>(data.keySet());
         Platform.runLater(() -> {
             series.getData().clear();

@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
 
 import java.util.LinkedHashMap;
@@ -17,7 +16,7 @@ public class AgePieChartFX {
     private static PieChart chart;
     public static JFXPanel start(){
         JFXPanel panel = new JFXPanel();
-        LinkedHashMap<String, Integer> chartMap = AnalyticsDB.genderToday();
+        LinkedHashMap<String, Integer> chartMap = AnalyticsDB.ageToday();
         pieData = FXCollections.observableArrayList();
         chartMap.forEach((name, value) -> {
             pieData.add(new PieChart.Data(name, value));
@@ -25,7 +24,7 @@ public class AgePieChartFX {
         chart = new PieChart(pieData);
         chart.setLabelsVisible(false);
         chart.setAnimated(false);
-        chart.setTitle("Gender Distribution");
+        chart.setTitle("Age Distribution");
         for (PieChart.Data data1 : chart.getData()) {
             Tooltip tooltip = new Tooltip(data1.getName() + ": " + (int)(data1.getPieValue()));
             tooltip.setShowDelay(javafx.util.Duration.seconds(0.1));
@@ -40,7 +39,7 @@ public class AgePieChartFX {
     }
     public static void update() {
         // Get fresh data from DB on the calling thread
-        LinkedHashMap<String, Integer> newData = AnalyticsDB.genderToday();
+        LinkedHashMap<String, Integer> newData = AnalyticsDB.ageToday();
 
         Platform.runLater(() -> {
             // 1. Clear existing data points
@@ -50,7 +49,7 @@ public class AgePieChartFX {
                 pieData.add(new PieChart.Data(name, value));
             });
             for (PieChart.Data data1 : chart.getData()) {
-                Tooltip tooltip = new Tooltip(data1.getName() + data1.getPieValue());
+                Tooltip tooltip = new Tooltip(data1.getName() + " : " + (int)(data1.getPieValue()));
                 tooltip.setShowDelay(javafx.util.Duration.seconds(0.1));
                 // The getNode() method returns the actual graphical bar/node
                 Tooltip.install(data1.getNode(), tooltip);

@@ -8,6 +8,7 @@ public class PieCharts {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(GenderPieChartFX.start());
+        panel.add(AgePieChartFX.start());
         return panel;
     }
 }

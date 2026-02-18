@@ -1,9 +1,5 @@
 package com.jetbrains.uzair.db;
 
-import javafx.beans.Observable;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.PieChart;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +7,7 @@ import java.sql.Statement;
 import java.util.LinkedHashMap;
 
 public class AnalyticsDB {
-    public static LinkedHashMap<String, Integer> visits(){
+    public static LinkedHashMap<String, Integer> visitsToday(){
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
         String sql = """
                 SELECT strftime('%H', date) AS hour, COUNT(*) AS visits
@@ -58,6 +54,51 @@ public class AnalyticsDB {
                     if (rs.getString("sex").equals(key)) {
                         data.put(key, rs.getInt("visitors"));
                     }
+                }
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return data;
+    }
+    public static LinkedHashMap<String, Integer> ageToday(){
+        LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
+        String[] keys = {"0-2", "3-12", "13-20", "21-35", "36-55", "56-65", "66-75", "76-100+"};
+        int[] groups = {0, 0, 0, 0, 0, 0, 0, 0};
+        String sql= """
+                SELECT p.age AS age, COUNT(*) AS count
+                FROM visits v
+                JOIN patients p ON p.id = v.patient_id
+                WHERE date(date) = date('now')
+                GROUP BY age;
+                """;
+        try(Connection conn = Database.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            while(rs.next()){
+                int num = rs.getInt("age");
+                int count = rs.getInt("count");
+                if(num <= 2){
+                    groups[0] += count;
+                } else if (num <= 12) {
+                    groups[1] += count;
+                } else if (num <= 20) {
+                    groups[2] += count;
+                } else if (num <= 35) {
+                    groups[3] += count;
+                } else if (num <= 55) {
+                    groups[4] += count;
+                } else if (num <= 65) {
+                    groups[5] += count;
+                } else if (num <= 75) {
+                    groups[6] += count;
+                }else {
+                    groups[7] += count;
+                }
+                int i = 0;
+                for (String key: keys){
+                    data.put(key, groups[i]);
+                    i++;
                 }
             }
         }catch (SQLException e){

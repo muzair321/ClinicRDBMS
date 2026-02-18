@@ -27,3 +27,4 @@
 .default-color0.chart-pie { -fx-pie-color: #0C264EFF; } /* Gold */
 .default-color1.chart-pie { -fx-pie-color: #1548a5; } /* Orange */
 .default-color2.chart-pie { -fx-pie-color: #4a83e1; } /* Purple */
+.default-color7.chart-pie { -fx-pie-color: #c52525; }

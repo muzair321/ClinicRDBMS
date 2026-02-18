@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
 
 import java.util.LinkedHashMap;
@@ -50,7 +49,7 @@ public class GenderPieChartFX {
                 pieData.add(new PieChart.Data(name, value));
             });
             for (PieChart.Data data1 : chart.getData()) {
-                Tooltip tooltip = new Tooltip(data1.getName() + data1.getPieValue());
+                Tooltip tooltip = new Tooltip(data1.getName() + " : " + (int)(data1.getPieValue()));
                 tooltip.setShowDelay(javafx.util.Duration.seconds(0.1));
                 // The getNode() method returns the actual graphical bar/node
                 Tooltip.install(data1.getNode(), tooltip);

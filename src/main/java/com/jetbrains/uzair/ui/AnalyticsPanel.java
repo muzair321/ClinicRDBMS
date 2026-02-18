@@ -23,6 +23,7 @@ public class AnalyticsPanel {
             Platform.runLater(() -> {
                 BarChartFX.update();
                 GenderPieChartFX.update();
+                AgePieChartFX.update();
             });
         });
 
