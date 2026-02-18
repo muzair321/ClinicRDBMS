@@ -12,7 +12,7 @@ import javafx.scene.control.Tooltip;
 
 import java.util.LinkedHashMap;
 
-public class GenderPieChartFX {
+public class AgePieChartFX {
     private static ObservableList<PieChart.Data> pieData;
     private static PieChart chart;
     public static JFXPanel start(){
@@ -27,7 +27,7 @@ public class GenderPieChartFX {
         chart.setAnimated(false);
         chart.setTitle("Gender Distribution");
         for (PieChart.Data data1 : chart.getData()) {
-            Tooltip tooltip = new Tooltip(data1.getName() + " : " + (int)(data1.getPieValue()));
+            Tooltip tooltip = new Tooltip(data1.getName() + ": " + (int)(data1.getPieValue()));
             tooltip.setShowDelay(javafx.util.Duration.seconds(0.1));
             // The getNode() method returns the actual graphical bar/node
             Tooltip.install(data1.getNode(), tooltip);
