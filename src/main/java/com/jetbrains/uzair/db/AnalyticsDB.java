@@ -12,7 +12,7 @@ public class AnalyticsDB {
         String sql = """
                 SELECT strftime('%H', date) AS hour, COUNT(*) AS visits
                     FROM visits
-                    WHERE date(date) = date('now')
+                    WHERE date(date) = date('now', 'localtime')
                     GROUP BY hour;
                 """;
         try (Connection conn = Database.getConnection();
@@ -39,19 +39,18 @@ public class AnalyticsDB {
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
         String[] keys = {"Male", "Female", "Other"};
         String sql= """
-                SELECT p.gender AS sex, COUNT(*) AS visitors
+                SELECT p.gender AS gender, COUNT(*) AS visitors
                 FROM visits v
                 JOIN patients p ON p.id = v.patient_id
-                WHERE date(date) = date('now')
-                GROUP BY sex;
+                WHERE date(date) = date('now', 'localtime')
+                GROUP BY gender;
                 """;
         try(Connection conn = Database.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql)){
             while(rs.next()){
-                System.out.println(rs.getString("sex") +rs.getInt("visitors"));
                 for (String key: keys) {
-                    if (rs.getString("sex").equals(key)) {
+                    if (rs.getString("gender").equals(key)) {
                         data.put(key, rs.getInt("visitors"));
                     }
                 }
@@ -69,7 +68,7 @@ public class AnalyticsDB {
                 SELECT p.age AS age, COUNT(*) AS count
                 FROM visits v
                 JOIN patients p ON p.id = v.patient_id
-                WHERE date(date) = date('now')
+                WHERE date(date) = date('now', 'localtime')
                 GROUP BY age;
                 """;
         try(Connection conn = Database.getConnection();
@@ -103,6 +102,54 @@ public class AnalyticsDB {
             }
         }catch (SQLException e){
             e.printStackTrace();
+        }
+        return data;
+    }
+    public static LinkedHashMap<String, Integer> itemsToday(int choice){
+        LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
+        String sql = """
+                SELECT
+                    i.name,
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today,
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) >= DATE('now', 'localtime', '-7 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_last_7_days,
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) >= DATE('now', 'localtime', '-30 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_last_30_days,
+                    COALESCE(ABS(SUM(CASE WHEN l.amount < 0 THEN l.amount ELSE 0 END)), 0) as total
+                FROM inventory i
+                LEFT JOIN inventory_logs l ON i.id = l.inventory_id
+                GROUP BY i.id, i.name
+                ORDER BY i.name;
+                """;
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)
+        ){
+            switch (choice){
+                case 0 :
+                    while (rs.next()) {
+                        data.put(rs.getString("i.name"), rs.getInt("taken_today"));
+                    }
+                    break;
+                case 1:
+                    while (rs.next()) {
+                        data.put(rs.getString("i.name"), rs.getInt("taken_last_7_days"));
+                    }
+                    break;
+                case 2:
+                    while (rs.next()) {
+                        data.put(rs.getString("i.name"), rs.getInt("taken_last_30_days"));
+                    }
+                    break;
+                case 3:
+                    while (rs.next()) {
+                        data.put(rs.getString("i.name"), rs.getInt("total"));
+                    }
+                    break;
+                default:
+                    throw new SQLException("Error In Switch");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
         return data;
     }
