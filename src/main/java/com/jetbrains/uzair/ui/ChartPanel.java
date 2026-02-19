@@ -10,6 +10,7 @@ public class ChartPanel {
 
         frame.add(BarChartFX.start(), BorderLayout.NORTH );
         frame.add(PieCharts.mainFrame(), BorderLayout.CENTER);
+        frame.add(InventoryBarChartFX.start(), BorderLayout.SOUTH);
         return frame;
     }
 }

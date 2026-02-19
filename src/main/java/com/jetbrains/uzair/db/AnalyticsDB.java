@@ -109,7 +109,7 @@ public class AnalyticsDB {
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
         String sql = """
                 SELECT
-                    i.name,
+                    i.name as name,
                     COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today,
                     COALESCE(ABS(SUM(CASE WHEN DATE(l.date) >= DATE('now', 'localtime', '-7 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_last_7_days,
                     COALESCE(ABS(SUM(CASE WHEN DATE(l.date) >= DATE('now', 'localtime', '-30 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_last_30_days,
@@ -126,22 +126,22 @@ public class AnalyticsDB {
             switch (choice){
                 case 0 :
                     while (rs.next()) {
-                        data.put(rs.getString("i.name"), rs.getInt("taken_today"));
+                        data.put(rs.getString("name"), rs.getInt("taken_today"));
                     }
                     break;
                 case 1:
                     while (rs.next()) {
-                        data.put(rs.getString("i.name"), rs.getInt("taken_last_7_days"));
+                        data.put(rs.getString("name"), rs.getInt("taken_last_7_days"));
                     }
                     break;
                 case 2:
                     while (rs.next()) {
-                        data.put(rs.getString("i.name"), rs.getInt("taken_last_30_days"));
+                        data.put(rs.getString("name"), rs.getInt("taken_last_30_days"));
                     }
                     break;
                 case 3:
                     while (rs.next()) {
-                        data.put(rs.getString("i.name"), rs.getInt("total"));
+                        data.put(rs.getString("name"), rs.getInt("total"));
                     }
                     break;
                 default:

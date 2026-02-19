@@ -24,6 +24,7 @@ public class AnalyticsPanel {
                 BarChartFX.update();
                 GenderPieChartFX.update();
                 AgePieChartFX.update();
+                InventoryBarChartFX.update();
             });
         });
 
