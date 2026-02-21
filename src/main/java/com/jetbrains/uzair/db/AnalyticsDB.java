@@ -105,47 +105,23 @@ public class AnalyticsDB {
         }
         return data;
     }
-    public static LinkedHashMap<String, Integer> itemsToday(int choice){
+    public static LinkedHashMap<String, Integer> itemsToday(){
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
         String sql = """
                 SELECT
                     i.name as name,
-                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today,
-                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) >= DATE('now', 'localtime', '-7 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_last_7_days,
-                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) >= DATE('now', 'localtime', '-30 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_last_30_days,
-                    COALESCE(ABS(SUM(CASE WHEN l.amount < 0 THEN l.amount ELSE 0 END)), 0) as total
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
                 FROM inventory i
                 LEFT JOIN inventory_logs l ON i.id = l.inventory_id
-                GROUP BY i.id, i.name
-                ORDER BY i.name;
+                GROUP BY i.id
+                ORDER BY taken_today DESC;
                 """;
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)
         ){
-            switch (choice){
-                case 0 :
-                    while (rs.next()) {
-                        data.put(rs.getString("name"), rs.getInt("taken_today"));
-                    }
-                    break;
-                case 1:
-                    while (rs.next()) {
-                        data.put(rs.getString("name"), rs.getInt("taken_last_7_days"));
-                    }
-                    break;
-                case 2:
-                    while (rs.next()) {
-                        data.put(rs.getString("name"), rs.getInt("taken_last_30_days"));
-                    }
-                    break;
-                case 3:
-                    while (rs.next()) {
-                        data.put(rs.getString("name"), rs.getInt("total"));
-                    }
-                    break;
-                default:
-                    throw new SQLException("Error In Switch");
+            for (int i = 0; rs.next() && i < 15; i++) {
+                data.put(rs.getString("name"), rs.getInt("taken_today"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

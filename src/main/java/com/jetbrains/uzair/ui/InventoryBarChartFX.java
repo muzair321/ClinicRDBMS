@@ -32,7 +32,7 @@ public class InventoryBarChartFX{
         series = new XYChart.Series<>();
         series.setName("Clinic Item Usage");
         // Add data
-        LinkedHashMap<String, Integer> data = AnalyticsDB.itemsToday(0);
+        LinkedHashMap<String, Integer> data = AnalyticsDB.itemsToday();
         ArrayList<String> keys = new ArrayList<>(data.keySet());
         for (String key : keys) {
             series.getData().add(new XYChart.Data<>(key, data.get(key)));
@@ -54,7 +54,7 @@ public class InventoryBarChartFX{
         return panel;
     }
     public static void update(){
-        LinkedHashMap<String, Integer> data = AnalyticsDB.itemsToday(0);
+        LinkedHashMap<String, Integer> data = AnalyticsDB.itemsToday();
         ArrayList<String> keys = new ArrayList<>(data.keySet());
         Platform.runLater(() -> {
             series.getData().clear();
