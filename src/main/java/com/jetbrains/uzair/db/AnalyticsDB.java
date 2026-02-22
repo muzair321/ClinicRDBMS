@@ -5,11 +5,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.LinkedHashMap;
 
 public class AnalyticsDB {
     public static LinkedHashMap<String, Integer> visitsToday(int filter){
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
+        YearMonth current = YearMonth.now();
         LocalDate today = LocalDate.now();
         String[] sql = {"""
                 SELECT strftime('%H', date) AS hour, COUNT(*) AS visits
@@ -42,6 +44,15 @@ public class AnalyticsDB {
                 WHERE date(date) >= date('now', 'localtime', '-29 days')
                 GROUP BY visit_day
                 ORDER BY visit_day;
+                """,
+                """
+                SELECT
+                    strftime('%Y-%m', date) AS month,
+                    COUNT(*) AS visits
+                FROM visits
+                WHERE date(date) >= date('now', 'localtime', '-11 months')
+                GROUP BY month
+                ORDER BY month;
                 """};
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement()
@@ -85,6 +96,20 @@ public class AnalyticsDB {
                 while (rs.next()) {
                     for (String key: keys) {
                         if (rs.getString("visit_day").equals(key)) {
+                            data.put(key, rs.getInt("visits"));
+                        }
+                    }
+                }
+            }
+            else if (filter == 3){
+                for (int i = 11; i >= 0; i--) {
+                    YearMonth ym = current.minusMonths(i);
+                    data.put(ym.toString(), 0);
+                }
+                String[] keys = data.keySet().toArray(new String[0]);
+                while (rs.next()) {
+                    for (String key: keys) {
+                        if (rs.getString("month").equals(key)) {
                             data.put(key, rs.getInt("visits"));
                         }
                     }

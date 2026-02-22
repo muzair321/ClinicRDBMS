@@ -12,16 +12,16 @@ public class AnalyticsPanel {
 
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
 
-        JComboBox<String> filter = new JComboBox<>(new String[]{"Today", "Last 7 Days", "Last 30 Days", "All Time"});
+        JComboBox<String> filter = new JComboBox<>(new String[]{"Today", "Last 7 Days", "Last 30 Days", "Last 12 Months"});
         filter.setSelectedItem("Today");
 
         JPanel scroll = new JPanel();
         scroll.setLayout(new BoxLayout(scroll, BoxLayout.Y_AXIS));
         assert filter.getSelectedItem() != null;
-        scroll.add(ChartPanel.mainFrame(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : 2 ));
+        scroll.add(ChartPanel.mainFrame(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 :filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3 ));
         filter.addActionListener(e -> {
             Platform.runLater(() -> {
-                BarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : 2 );
+                BarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 :filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3 );
             });
         });
 

@@ -33,7 +33,7 @@ public class BarChartFX{
         // --- Step 2: Create the BarChart ---
         barChart = new BarChart<>(xAxis, yAxis);
         barChart.setAnimated(false);
-        barChart.setTitle("Patient Visits " + (filter == 0 ? "(24-hrs)" : filter == 1 ? "(7-days)" : filter == 2 ? "(30-days)" :"(All-Time)"));
+        barChart.setTitle("Patient Visits " + (filter == 0 ? "(24-hrs)" : filter == 1 ? "(7-days)" : filter == 2 ? "(30-days)" :"(12-months)"));
         // --- Step 3: Create a data series ---
         series = new XYChart.Series<>();
         series.setName("Clinic Daily Visits");
@@ -60,7 +60,7 @@ public class BarChartFX{
         return panel;
     }
     public static void update(int filter){
-        barChart.setTitle("Patient Visits " + (filter == 0 ? "(24-hrs)" : filter == 1 ? "(7-days)" : filter == 2 ? "(30-days)" :"(All-Time)"));
+        barChart.setTitle("Patient Visits " + (filter == 0 ? "(24-hrs)" : filter == 1 ? "(7-days)" : filter == 2 ? "(30-days)" :"(12-months)"));
         xAxis.setLabel(filter == 0 ? "Hours" : filter == 1 || filter == 2 ? "Days" : "Months");
         LinkedHashMap<String, Integer> data = AnalyticsDB.visitsToday(filter);
         ArrayList<String> keys = new ArrayList<>(data.keySet());
