@@ -121,19 +121,40 @@ public class AnalyticsDB {
             return null;
         }
     }
-    public static LinkedHashMap<String, Integer> genderToday(){
+    public static LinkedHashMap<String, Integer> genderToday(int filter){
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
         String[] keys = {"Male", "Female", "Other"};
-        String sql= """
+        String[] sql= {"""
                 SELECT p.gender AS gender, COUNT(*) AS visitors
                 FROM visits v
                 JOIN patients p ON p.id = v.patient_id
                 WHERE date(date) = date('now', 'localtime')
                 GROUP BY gender;
-                """;
+                """,
+                """
+                SELECT p.gender AS gender, COUNT(*) AS visitors
+                FROM visits v
+                JOIN patients p ON p.id = v.patient_id
+                WHERE date(date) >= date('now', 'localtime', '-6 days')
+                GROUP BY gender;
+                """,
+                """
+                SELECT p.gender AS gender, COUNT(*) AS visitors
+                FROM visits v
+                JOIN patients p ON p.id = v.patient_id
+                WHERE date(date) >= date('now', 'localtime', '-29 days')
+                GROUP BY gender;
+                """,
+                """
+                SELECT p.gender AS gender, COUNT(*) AS visitors
+                FROM visits v
+                JOIN patients p ON p.id = v.patient_id
+                WHERE date(date) >= date('now', 'localtime', '-11 months')
+                GROUP BY gender;
+                """};
         try(Connection conn = Database.getConnection();
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)){
+        ResultSet rs = stmt.executeQuery(sql[filter])){
             while(rs.next()){
                 for (String key: keys) {
                     if (rs.getString("gender").equals(key)) {
@@ -146,20 +167,41 @@ public class AnalyticsDB {
         }
         return data;
     }
-    public static LinkedHashMap<String, Integer> ageToday(){
+    public static LinkedHashMap<String, Integer> ageToday(int filter){
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
         String[] keys = {"0-2", "3-12", "13-20", "21-35", "36-55", "56-65", "66-75", "76-100+"};
         int[] groups = {0, 0, 0, 0, 0, 0, 0, 0};
-        String sql= """
+        String[] sql= {"""
                 SELECT p.age AS age, COUNT(*) AS count
                 FROM visits v
                 JOIN patients p ON p.id = v.patient_id
                 WHERE date(date) = date('now', 'localtime')
                 GROUP BY age;
-                """;
+                """,
+                """
+                SELECT p.age AS age, COUNT(*) AS count
+                FROM visits v
+                JOIN patients p ON p.id = v.patient_id
+                WHERE date(date) = date('now', 'localtime', '-6 days')
+                GROUP BY age;
+                """,
+                """
+                SELECT p.age AS age, COUNT(*) AS count
+                FROM visits v
+                JOIN patients p ON p.id = v.patient_id
+                WHERE date(date) = date('now', 'localtime', '-29 days')
+                GROUP BY age;
+                """,
+                """
+                SELECT p.age AS age, COUNT(*) AS count
+                FROM visits v
+                JOIN patients p ON p.id = v.patient_id
+                WHERE date(date) = date('now', 'localtime', '-11 months')
+                GROUP BY age;
+                """};
         try(Connection conn = Database.getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql)){
+            ResultSet rs = stmt.executeQuery(sql[filter])){
             while(rs.next()){
                 int num = rs.getInt("age");
                 int count = rs.getInt("count");
@@ -191,9 +233,9 @@ public class AnalyticsDB {
         }
         return data;
     }
-    public static LinkedHashMap<String, Integer> itemsToday(){
+    public static LinkedHashMap<String, Integer> itemsToday(int filter){
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
-        String sql = """
+        String[] sql = {"""
                 SELECT
                     i.name as name,
                     COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
@@ -201,10 +243,37 @@ public class AnalyticsDB {
                 LEFT JOIN inventory_logs l ON i.id = l.inventory_id
                 GROUP BY i.id
                 ORDER BY taken_today DESC;
-                """;
+                """,
+                """
+                SELECT
+                    i.name as name,
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime', '-6 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
+                FROM inventory i
+                LEFT JOIN inventory_logs l ON i.id = l.inventory_id
+                GROUP BY i.id
+                ORDER BY taken_today DESC;
+                """,
+                """
+                SELECT
+                    i.name as name,
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime', '-29 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
+                FROM inventory i
+                LEFT JOIN inventory_logs l ON i.id = l.inventory_id
+                GROUP BY i.id
+                ORDER BY taken_today DESC;
+                """,
+                """
+                SELECT
+                    i.name as name,
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime', '-11 months') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
+                FROM inventory i
+                LEFT JOIN inventory_logs l ON i.id = l.inventory_id
+                GROUP BY i.id
+                ORDER BY taken_today DESC;
+                """};
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)
+             ResultSet rs = stmt.executeQuery(sql[filter])
         ){
             for (int i = 0; rs.next() && i < 15; i++) {
                 data.put(rs.getString("name"), rs.getInt("taken_today"));
