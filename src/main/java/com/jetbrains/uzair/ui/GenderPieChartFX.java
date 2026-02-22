@@ -14,9 +14,9 @@ import java.util.LinkedHashMap;
 public class GenderPieChartFX {
     private static ObservableList<PieChart.Data> pieData;
     private static PieChart chart;
-    public static JFXPanel start(){
+    public static JFXPanel start(int filter){
         JFXPanel panel = new JFXPanel();
-        LinkedHashMap<String, Integer> chartMap = AnalyticsDB.genderToday();
+        LinkedHashMap<String, Integer> chartMap = AnalyticsDB.genderToday(filter);
         pieData = FXCollections.observableArrayList();
         chartMap.forEach((name, value) -> {
             pieData.add(new PieChart.Data(name, value));
@@ -37,9 +37,9 @@ public class GenderPieChartFX {
         panel.setScene(scene);
         return panel;
     }
-    public static void update() {
+    public static void update(int filter) {
         // Get fresh data from DB on the calling thread
-        LinkedHashMap<String, Integer> newData = AnalyticsDB.genderToday();
+        LinkedHashMap<String, Integer> newData = AnalyticsDB.genderToday(filter);
 
         Platform.runLater(() -> {
             // 1. Clear existing data points

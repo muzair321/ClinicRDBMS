@@ -4,11 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PieCharts {
-    public static JPanel mainFrame(){
+    public static JPanel mainFrame(int filter){
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.add(GenderPieChartFX.start());
-        panel.add(AgePieChartFX.start());
+        panel.add(GenderPieChartFX.start(filter));
+        panel.add(AgePieChartFX.start(filter));
         return panel;
     }
 }

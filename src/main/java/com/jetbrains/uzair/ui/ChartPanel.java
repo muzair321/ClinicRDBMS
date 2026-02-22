@@ -9,8 +9,8 @@ public class ChartPanel {
         frame.setBounds(new Rectangle(1920, 785));
 
         frame.add(BarChartFX.start(filter), BorderLayout.NORTH );
-        frame.add(PieCharts.mainFrame(), BorderLayout.CENTER);
-        frame.add(InventoryBarChartFX.start(), BorderLayout.SOUTH);
+        frame.add(PieCharts.mainFrame(filter), BorderLayout.CENTER);
+        frame.add(InventoryBarChartFX.start(filter), BorderLayout.SOUTH);
         return frame;
     }
 }

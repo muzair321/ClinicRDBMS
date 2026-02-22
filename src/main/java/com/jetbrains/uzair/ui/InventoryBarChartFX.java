@@ -15,7 +15,7 @@ import java.util.*;
 
 public class InventoryBarChartFX{
     private static XYChart.Series<String, Number> series;
-    public static JFXPanel start() {
+    public static JFXPanel start(int filter) {
         JFXPanel panel = new JFXPanel();
         // --- Step 1: Define the axes ---
         CategoryAxis xAxis = new CategoryAxis();
@@ -32,7 +32,7 @@ public class InventoryBarChartFX{
         series = new XYChart.Series<>();
         series.setName("Clinic Item Usage");
         // Add data
-        LinkedHashMap<String, Integer> data = AnalyticsDB.itemsToday();
+        LinkedHashMap<String, Integer> data = AnalyticsDB.itemsToday(filter);
         ArrayList<String> keys = new ArrayList<>(data.keySet());
         for (String key : keys) {
             series.getData().add(new XYChart.Data<>(key, data.get(key)));
@@ -53,8 +53,8 @@ public class InventoryBarChartFX{
         panel.setScene(scene);
         return panel;
     }
-    public static void update(){
-        LinkedHashMap<String, Integer> data = AnalyticsDB.itemsToday();
+    public static void update(int filter){
+        LinkedHashMap<String, Integer> data = AnalyticsDB.itemsToday(filter);
         ArrayList<String> keys = new ArrayList<>(data.keySet());
         Platform.runLater(() -> {
             series.getData().clear();

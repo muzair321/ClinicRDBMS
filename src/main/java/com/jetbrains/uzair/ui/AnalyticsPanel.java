@@ -22,23 +22,14 @@ public class AnalyticsPanel {
         filter.addActionListener(e -> {
             Platform.runLater(() -> {
                 BarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 :filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3 );
+                GenderPieChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 :filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3 );
+                AgePieChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 :filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3 );
+                InventoryBarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 :filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3 );
             });
         });
 
 //buttons
-        JButton btnAdd = new JButton();
-        JButton refreshButton = new JButton("Refresh Chart");
-        refreshButton.addActionListener(e -> {
-            Platform.runLater(() -> {
-                BarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 :filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3);
-                GenderPieChartFX.update();
-                AgePieChartFX.update();
-                InventoryBarChartFX.update();
-            });
-        });
-
-        btnAdd.setMnemonic('A');
-        refreshButton.setMnemonic('R');
+        JButton refreshButton = getJButton(filter);
 //toolbar panel
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
@@ -54,5 +45,19 @@ public class AnalyticsPanel {
 
         panel.setVisible(true);
         return panel;
+    }
+
+    private static JButton getJButton(JComboBox<String> filter) {
+        JButton refreshButton = new JButton("Refresh Chart");
+        refreshButton.addActionListener(e -> {
+            Platform.runLater(() -> {
+                BarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3);
+                GenderPieChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3 );
+                AgePieChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3 );
+                InventoryBarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3 );
+            });
+        });
+        refreshButton.setMnemonic('R');
+        return refreshButton;
     }
 }
