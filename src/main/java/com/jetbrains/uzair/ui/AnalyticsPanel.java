@@ -19,13 +19,18 @@ public class AnalyticsPanel {
         scroll.setLayout(new BoxLayout(scroll, BoxLayout.Y_AXIS));
         assert filter.getSelectedItem() != null;
         scroll.add(ChartPanel.mainFrame(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : 2 ));
+        filter.addActionListener(e -> {
+            Platform.runLater(() -> {
+                BarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : 2 );
+            });
+        });
 
 //buttons
         JButton btnAdd = new JButton();
         JButton refreshButton = new JButton("Refresh Chart");
         refreshButton.addActionListener(e -> {
             Platform.runLater(() -> {
-                BarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : 2 );
+                BarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 :filter.getSelectedItem().equals("Last 30 Days") ? 2 : 3);
                 GenderPieChartFX.update();
                 AgePieChartFX.update();
                 InventoryBarChartFX.update();

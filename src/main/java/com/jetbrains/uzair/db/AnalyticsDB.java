@@ -4,11 +4,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 
 public class AnalyticsDB {
     public static LinkedHashMap<String, Integer> visitsToday(int filter){
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
+        LocalDate today = LocalDate.now();
         String[] sql = {"""
                 SELECT strftime('%H', date) AS hour, COUNT(*) AS visits
                     FROM visits
@@ -31,11 +33,20 @@ public class AnalyticsDB {
                 WHERE date(date) >= date('now', 'localtime', '-6 days')
                 GROUP BY strftime('%w', date)
                 ORDER BY strftime('%w', date);
+                """,
+                """
+                SELECT
+                    date(date) AS visit_day,
+                    COUNT(*) AS visits
+                FROM visits
+                WHERE date(date) >= date('now', 'localtime', '-29 days')
+                GROUP BY visit_day
+                ORDER BY visit_day;
                 """};
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement()
         ){
-            ResultSet rs = stmt.executeQuery(filter == 0 ? sql[0]: filter == 1 ? sql[1] : null);
+            ResultSet rs = stmt.executeQuery(sql[filter]);
             if (filter == 0) {
                 for (int i = 0; i < 25; i++) {
                     data.put(i + ":00", 0);
@@ -65,7 +76,20 @@ public class AnalyticsDB {
                     }
                 }
             }
-
+            else if (filter == 2){
+                for (int i = 29; i >= 0; i--) {
+                    LocalDate d = today.minusDays(i);
+                    data.put(d.toString(), 0);
+                }
+                String[] keys = data.keySet().toArray(new String[0]);
+                while (rs.next()) {
+                    for (String key: keys) {
+                        if (rs.getString("visit_day").equals(key)) {
+                            data.put(key, rs.getInt("visits"));
+                        }
+                    }
+                }
+            }
             return data;
         } catch (Exception e) {
             e.printStackTrace();

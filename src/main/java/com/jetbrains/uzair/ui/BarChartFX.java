@@ -17,21 +17,23 @@ import java.awt.*;
 import java.util.*;
 
 public class BarChartFX{
+    private static BarChart<String, Number> barChart;
     private static XYChart.Series<String, Number> series;
+    private static CategoryAxis xAxis;
     public static JFXPanel start(int filter) {
         JFXPanel panel = new JFXPanel();
 
         // --- Step 1: Define the axes ---
-        CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("Hours");
+        xAxis = new CategoryAxis();
+        xAxis.setLabel(filter == 0 ? "Hours" : filter == 1 || filter == 2 ? "Days" : "Months");
 
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Visits");
 
         // --- Step 2: Create the BarChart ---
-        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart = new BarChart<>(xAxis, yAxis);
         barChart.setAnimated(false);
-        barChart.setTitle("Busy Hours");
+        barChart.setTitle("Patient Visits " + (filter == 0 ? "(24-hrs)" : filter == 1 ? "(7-days)" : filter == 2 ? "(30-days)" :"(All-Time)"));
         // --- Step 3: Create a data series ---
         series = new XYChart.Series<>();
         series.setName("Clinic Daily Visits");
@@ -58,6 +60,8 @@ public class BarChartFX{
         return panel;
     }
     public static void update(int filter){
+        barChart.setTitle("Patient Visits " + (filter == 0 ? "(24-hrs)" : filter == 1 ? "(7-days)" : filter == 2 ? "(30-days)" :"(All-Time)"));
+        xAxis.setLabel(filter == 0 ? "Hours" : filter == 1 || filter == 2 ? "Days" : "Months");
         LinkedHashMap<String, Integer> data = AnalyticsDB.visitsToday(filter);
         ArrayList<String> keys = new ArrayList<>(data.keySet());
         Platform.runLater(() -> {
