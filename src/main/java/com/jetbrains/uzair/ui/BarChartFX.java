@@ -9,14 +9,18 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Background;
+import javafx.scene.paint.Paint;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.*;
 
 public class BarChartFX{
     private static XYChart.Series<String, Number> series;
-    public static JFXPanel start() {
+    public static JFXPanel start(int filter) {
         JFXPanel panel = new JFXPanel();
+
         // --- Step 1: Define the axes ---
         CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel("Hours");
@@ -32,7 +36,7 @@ public class BarChartFX{
         series = new XYChart.Series<>();
         series.setName("Clinic Daily Visits");
         // Add data
-        LinkedHashMap<String, Integer> data = AnalyticsDB.visitsToday();
+        LinkedHashMap<String, Integer> data = AnalyticsDB.visitsToday(filter);
         ArrayList<String> keys = new ArrayList<>(data.keySet());
         for (String key : keys) {
             series.getData().add(new XYChart.Data<>(key, data.get(key)));
@@ -53,8 +57,8 @@ public class BarChartFX{
         panel.setScene(scene);
         return panel;
     }
-    public static void update(){
-        LinkedHashMap<String, Integer> data = AnalyticsDB.visitsToday();
+    public static void update(int filter){
+        LinkedHashMap<String, Integer> data = AnalyticsDB.visitsToday(filter);
         ArrayList<String> keys = new ArrayList<>(data.keySet());
         Platform.runLater(() -> {
             series.getData().clear();

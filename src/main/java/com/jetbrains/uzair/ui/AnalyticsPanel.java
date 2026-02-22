@@ -12,16 +12,20 @@ public class AnalyticsPanel {
 
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
 
+        JComboBox<String> filter = new JComboBox<>(new String[]{"Today", "Last 7 Days", "Last 30 Days", "All Time"});
+        filter.setSelectedItem("Today");
+
         JPanel scroll = new JPanel();
         scroll.setLayout(new BoxLayout(scroll, BoxLayout.Y_AXIS));
-        scroll.add(ChartPanel.mainFrame());
+        assert filter.getSelectedItem() != null;
+        scroll.add(ChartPanel.mainFrame(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : 2 ));
 
 //buttons
         JButton btnAdd = new JButton();
         JButton refreshButton = new JButton("Refresh Chart");
         refreshButton.addActionListener(e -> {
             Platform.runLater(() -> {
-                BarChartFX.update();
+                BarChartFX.update(filter.getSelectedItem().equals("Today")? 0 : filter.getSelectedItem().equals("Last 7 Days") ? 1 : 2 );
                 GenderPieChartFX.update();
                 AgePieChartFX.update();
                 InventoryBarChartFX.update();
@@ -34,7 +38,7 @@ public class AnalyticsPanel {
         toolbar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         toolbar.setBackground(new Color(33, 69, 126));
-        toolbar.add(btnAdd);
+        toolbar.add(filter);
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(Box.createHorizontalStrut(20));
         toolbar.add(refreshButton);

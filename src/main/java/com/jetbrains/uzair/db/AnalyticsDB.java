@@ -7,28 +7,65 @@ import java.sql.Statement;
 import java.util.LinkedHashMap;
 
 public class AnalyticsDB {
-    public static LinkedHashMap<String, Integer> visitsToday(){
+    public static LinkedHashMap<String, Integer> visitsToday(int filter){
         LinkedHashMap<String, Integer> data = new LinkedHashMap<>();
-        String sql = """
+        String[] sql = {"""
                 SELECT strftime('%H', date) AS hour, COUNT(*) AS visits
                     FROM visits
                     WHERE date(date) = date('now', 'localtime')
                     GROUP BY hour;
-                """;
+                """,
+                """
+                SELECT
+                    CASE strftime('%w', date)
+                        WHEN '0' THEN 'Sunday'
+                        WHEN '1' THEN 'Monday'
+                        WHEN '2' THEN 'Tuesday'
+                        WHEN '3' THEN 'Wednesday'
+                        WHEN '4' THEN 'Thursday'
+                        WHEN '5' THEN 'Friday'
+                        WHEN '6' THEN 'Saturday'
+                    END AS weekday,
+                    COUNT(*) AS visits
+                FROM visits
+                WHERE date(date) >= date('now', 'localtime', '-6 days')
+                GROUP BY strftime('%w', date)
+                ORDER BY strftime('%w', date);
+                """};
         try (Connection conn = Database.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)
+             Statement stmt = conn.createStatement()
         ){
-            for (int i = 0; i < 25; i++) {
-                data.put(i + ":00", 0);
-            }
-            while (rs.next()) {
+            ResultSet rs = stmt.executeQuery(filter == 0 ? sql[0]: filter == 1 ? sql[1] : null);
+            if (filter == 0) {
                 for (int i = 0; i < 25; i++) {
-                    if (rs.getInt("hour") == i) {
-                        data.put(i + ":00", rs.getInt("visits"));
+                    data.put(i + ":00", 0);
+                }
+                while (rs.next()) {
+                    for (int i = 0; i < 25; i++) {
+                        if (rs.getInt("hour") == i) {
+                            data.put(i + ":00", rs.getInt("visits"));
+                        }
                     }
                 }
             }
+            else if (filter == 1){
+                data.put("Sunday", 0);
+                data.put("Monday", 0);
+                data.put("Tuesday", 0);
+                data.put("Wednesday", 0);
+                data.put("Thursday", 0);
+                data.put("Friday", 0);
+                data.put("Saturday", 0);
+                String[] keys = data.keySet().toArray(new String[0]);
+                while (rs.next()) {
+                    for (String key: keys) {
+                        if (rs.getString("weekday").equals(key)) {
+                            data.put(key, rs.getInt("visits"));
+                        }
+                    }
+                }
+            }
+
             return data;
         } catch (Exception e) {
             e.printStackTrace();

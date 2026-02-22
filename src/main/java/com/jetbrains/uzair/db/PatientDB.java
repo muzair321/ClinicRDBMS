@@ -40,7 +40,7 @@ public class PatientDB {
     public static String[][] returnUI() throws SQLException{
         String[][] returnSet;
         int count = 0;
-        String sql = "SELECT * FROM patients";
+        String sql = "SELECT * FROM patients ORDER BY id DESC";
         try(Connection conn = Database.getConnection()){
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();

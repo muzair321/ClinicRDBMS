@@ -225,8 +225,7 @@ public class PatientPanel {
         formPanel.add(new JLabel("Gender:"), gbc);
 
         gbc.gridx = 1;
-        JComboBox<String> gender =
-                new JComboBox<>(new String[]{"Male", "Female", "Other"});
+        JComboBox<String> gender = new JComboBox<>(new String[]{"Male", "Female", "Other"});
         gender.setSelectedItem(genderS);
         formPanel.add(gender, gbc);
         row++;
