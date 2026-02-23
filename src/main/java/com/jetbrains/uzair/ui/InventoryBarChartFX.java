@@ -56,7 +56,6 @@ public class InventoryBarChartFX{
     public static void update(int filter){
         LinkedHashMap<String, Integer> data = AnalyticsDB.itemsToday(filter);
         ArrayList<String> keys = new ArrayList<>(data.keySet());
-        Platform.runLater(() -> {
             series.getData().clear();
             for(String key:  keys){
                 series.getData().add(new XYChart.Data<>(key, data.get(key)));
@@ -67,6 +66,5 @@ public class InventoryBarChartFX{
                 // The getNode() method returns the actual graphical bar/node
                 Tooltip.install(data1.getNode(), tooltip);
             }
-        });
     }
 }

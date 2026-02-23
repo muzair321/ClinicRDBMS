@@ -182,21 +182,21 @@ public class AnalyticsDB {
                 SELECT p.age AS age, COUNT(*) AS count
                 FROM visits v
                 JOIN patients p ON p.id = v.patient_id
-                WHERE date(date) = date('now', 'localtime', '-6 days')
+                WHERE date(date) >= date('now', 'localtime', '-6 days')
                 GROUP BY age;
                 """,
                 """
                 SELECT p.age AS age, COUNT(*) AS count
                 FROM visits v
                 JOIN patients p ON p.id = v.patient_id
-                WHERE date(date) = date('now', 'localtime', '-29 days')
+                WHERE date(date) >= date('now', 'localtime', '-29 days')
                 GROUP BY age;
                 """,
                 """
                 SELECT p.age AS age, COUNT(*) AS count
                 FROM visits v
                 JOIN patients p ON p.id = v.patient_id
-                WHERE date(date) = date('now', 'localtime', '-11 months')
+                WHERE date(date) >= date('now', 'localtime', '-11 months')
                 GROUP BY age;
                 """};
         try(Connection conn = Database.getConnection();
@@ -222,11 +222,11 @@ public class AnalyticsDB {
                 }else {
                     groups[7] += count;
                 }
-                int i = 0;
-                for (String key: keys){
-                    data.put(key, groups[i]);
-                    i++;
-                }
+            }
+            int i = 0;
+            for (String key: keys){
+                data.put(key, groups[i]);
+                i++;
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -247,7 +247,7 @@ public class AnalyticsDB {
                 """
                 SELECT
                     i.name as name,
-                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime', '-6 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) >= DATE('now', 'localtime', '-6 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
                 FROM inventory i
                 LEFT JOIN inventory_logs l ON i.id = l.inventory_id
                 GROUP BY i.id
@@ -256,7 +256,7 @@ public class AnalyticsDB {
                 """
                 SELECT
                     i.name as name,
-                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime', '-29 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) >= DATE('now', 'localtime', '-29 days') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
                 FROM inventory i
                 LEFT JOIN inventory_logs l ON i.id = l.inventory_id
                 GROUP BY i.id
@@ -265,7 +265,7 @@ public class AnalyticsDB {
                 """
                 SELECT
                     i.name as name,
-                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) = DATE('now', 'localtime', '-11 months') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
+                    COALESCE(ABS(SUM(CASE WHEN DATE(l.date) >= DATE('now', 'localtime', '-11 months') AND l.amount < 0 THEN l.amount ELSE 0 END)), 0) as taken_today
                 FROM inventory i
                 LEFT JOIN inventory_logs l ON i.id = l.inventory_id
                 GROUP BY i.id

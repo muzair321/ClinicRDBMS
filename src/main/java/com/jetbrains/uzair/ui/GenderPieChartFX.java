@@ -41,7 +41,7 @@ public class GenderPieChartFX {
         // Get fresh data from DB on the calling thread
         LinkedHashMap<String, Integer> newData = AnalyticsDB.genderToday(filter);
 
-        Platform.runLater(() -> {
+
             // 1. Clear existing data points
             pieData.clear();
             // 2. Add new data points (Chart updates automatically)
@@ -54,6 +54,6 @@ public class GenderPieChartFX {
                 // The getNode() method returns the actual graphical bar/node
                 Tooltip.install(data1.getNode(), tooltip);
             }
-        });
+
     }
 }

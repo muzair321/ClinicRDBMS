@@ -64,7 +64,6 @@ public class BarChartFX{
         xAxis.setLabel(filter == 0 ? "Hours" : filter == 1 || filter == 2 ? "Days" : "Months");
         LinkedHashMap<String, Integer> data = AnalyticsDB.visitsToday(filter);
         ArrayList<String> keys = new ArrayList<>(data.keySet());
-        Platform.runLater(() -> {
             series.getData().clear();
             for(String key:  keys){
                 series.getData().add(new XYChart.Data<>(key, data.get(key)));
@@ -75,6 +74,5 @@ public class BarChartFX{
                 // The getNode() method returns the actual graphical bar/node
                 Tooltip.install(data1.getNode(), tooltip);
             }
-        });
     }
 }
