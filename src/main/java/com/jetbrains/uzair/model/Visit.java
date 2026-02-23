@@ -49,7 +49,7 @@ public class Visit {
         try {
             v.setPaid(Integer.parseInt(raw[4]));
         } catch (NumberFormatException e) {
-            throw new ValidationException("Enter Numbers Only In Paid");
+            throw new ValidationException("Enter Numbers Only In Payment");
         }
         return v;
     }

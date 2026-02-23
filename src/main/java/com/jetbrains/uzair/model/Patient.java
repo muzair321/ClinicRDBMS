@@ -52,7 +52,7 @@ public class Patient {
         try {
             p.setAge(Integer.parseInt(raw[2]));
         } catch (NumberFormatException e) {
-            throw new ValidationException("Enter Only Numbers In Phone Number");
+            throw new ValidationException("Age Must Have Numbers Only");
         }
         p.setGender(raw[3]);
         String phone = raw[4];
@@ -68,6 +68,9 @@ public class Patient {
     public static Patient check(Patient p, boolean b) throws ValidationException{
         if(p.getName().isEmpty()){
             throw new ValidationException("Name Cannot Be Null");
+        }
+        if (!p.getName().matches("^[a-zA-Z ]+$")){
+            throw new ValidationException("Name Can Only Have Letters");
         }
         if(p.getAge() < 0 ){
             throw new ValidationException("Age Cannot Be Negative");
@@ -91,7 +94,6 @@ public class Patient {
                 throw new ValidationException("Phone Number Can Only Contain Dashes And Numbers");
             }
         }
-        System.out.println(p.getPhone());
         return p;
     }
 }

@@ -177,6 +177,7 @@ public class PatientDB {
         WHERE name LIKE ? 
            OR id LIKE ? 
            OR phone LIKE ?
+        ORDER BY id DESC;
         """;
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

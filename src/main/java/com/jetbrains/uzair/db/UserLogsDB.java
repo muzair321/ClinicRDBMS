@@ -24,6 +24,7 @@ public class UserLogsDB {
                     ul.date
                 FROM user_logs ul
                 JOIN users u ON u.id = ul.user_id
+                ORDER BY ul.id DESC;
                 """;
         try(Connection conn = Database.getConnection();
             Statement stmt = conn.createStatement()){
@@ -52,6 +53,7 @@ public class UserLogsDB {
                 WHERE ul.user_id LIKE ?
                     OR u.username LIKE ?
                     OR ul.date LIKE ?
+                ORDER BY ul.id DESC;
                 """;
         try(Connection conn = Database.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {

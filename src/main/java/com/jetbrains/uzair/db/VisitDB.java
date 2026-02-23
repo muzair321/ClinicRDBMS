@@ -46,6 +46,7 @@ public class VisitDB {
                v.date
         FROM visits v
         JOIN patients p ON p.id = v.patient_id
+        ORDER BY v.id DESC;
     """;
         List<String[]> rows = new ArrayList<>();
         try (Connection conn = Database.getConnection();
@@ -80,6 +81,7 @@ public class VisitDB {
         WHERE p.name LIKE ?
             OR date LIKE ?
             OR v.patient_id LIKE ?
+        ORDER BY v.id DESC;
         """;
 
         try (Connection conn = Database.getConnection();

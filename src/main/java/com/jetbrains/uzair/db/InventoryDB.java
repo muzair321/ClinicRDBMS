@@ -55,7 +55,7 @@ public class InventoryDB{
     public static String[][] returnUI() throws SQLException{
         String[][] returnSet;
         int count = 0;
-        String sql = "SELECT * FROM inventory";
+        String sql = "SELECT * FROM inventory ORDER BY id DESC";
         try(Connection conn = Database.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql)){
@@ -165,6 +165,7 @@ public class InventoryDB{
         FROM inventory
         WHERE name LIKE ?
             OR storage LIKE ?
+        ORDER BY id DESC;
         """;
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

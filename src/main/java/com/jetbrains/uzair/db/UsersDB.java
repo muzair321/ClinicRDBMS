@@ -114,6 +114,7 @@ public class UsersDB {
                username,
                admin
         FROM users
+        ORDER BY id DESC;
         """;
         try(Connection conn = Database.getConnection();
             Statement stmt = conn.createStatement();

@@ -51,6 +51,7 @@ public class InventoryLogsDB {
         FROM inventory_logs l
         JOIN users u ON u.id = l.user_id
         JOIN inventory i ON i.id = l.inventory_id
+        ORDER BY l.id DESC;
         """;
         try(Connection conn = Database.getConnection();
             Statement stmt = conn.createStatement();
@@ -91,6 +92,7 @@ public class InventoryLogsDB {
         WHERE u.username LIKE ?
             OR i.name LIKE ?
             OR l.date LIKE ?
+        ORDER BY l.id DESC;
         """;
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
