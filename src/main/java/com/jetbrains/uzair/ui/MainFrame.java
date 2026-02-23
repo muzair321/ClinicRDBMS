@@ -65,9 +65,9 @@ public class MainFrame {
         tabs.addTab("Inventory", InventoryPanel.mainWindow(frame));
         tabs.addTab("Inventory Logs", InventoryLogsPanel.mainWindow(frame));
         if(UserSession.isAdmin()) {
+            tabs.addTab("Analytics", AnalyticsPanel.mainFrame());
             tabs.addTab("Manage Users", UsersPanel.mainWindow(frame));
         }
-        tabs.addTab("Analytics", AnalyticsPanel.mainFrame());
         if(!UserSession.isLoggedIn()){
             tabs.remove(5);
             tabs.revalidate();
