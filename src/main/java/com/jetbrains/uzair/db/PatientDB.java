@@ -55,7 +55,7 @@ public class PatientDB {
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             for(int i = 0; rs.next() && i < returnSet.length; i++){
-                returnSet[i][0] = Integer.toString(rs.getInt(1));
+                returnSet[i][0] = "PAT-" + (Integer.toString(rs.getInt(1)));
                 returnSet[i][1] = rs.getString(2);
                 returnSet[i][2] = Integer.toString(rs.getInt(3));
                 returnSet[i][3] = rs.getString(4);

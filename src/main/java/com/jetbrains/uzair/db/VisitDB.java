@@ -55,7 +55,7 @@ public class VisitDB {
             while (rs.next()) {
                 rows.add(new String[]{
                         String.valueOf(rs.getInt("id")),
-                        String.valueOf(rs.getInt("patient_id")),
+                        "PAT-" + String.valueOf(rs.getInt("patient_id")),
                         rs.getString("patient_name"),
                         rs.getString("illness"),
                         rs.getString("date")

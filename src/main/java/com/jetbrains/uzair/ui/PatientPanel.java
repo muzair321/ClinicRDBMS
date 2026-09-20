@@ -95,7 +95,8 @@ public class PatientPanel {
                 JOptionPane.showMessageDialog(window, "Select Only 1 Patient");
                 return;
             }
-            int modelRow = table.convertRowIndexToModel(selectedRows[0]);
+
+            int modelRow = table.convertRowIndexToModel((selectedRows[0]));
             int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
 
             try {
@@ -123,7 +124,8 @@ public class PatientPanel {
             }
 
             int modelRow = table.convertRowIndexToModel(selectedRows[0]);
-            int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
+            String formattedID = (table.getModel().getValueAt(modelRow, 0).toString()).substring(4);
+            int id = Integer.parseInt(formattedID);
             commonUI.patientDetails(table, window, id);
         });
         return btnVew;
@@ -157,7 +159,8 @@ public class PatientPanel {
                 return;
             }
             int modelRow = table.convertRowIndexToModel(selectedRows[0]);
-            int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
+            String formattedID = (table.getModel().getValueAt(modelRow, 0).toString()).substring(4);
+            int id = Integer.parseInt(formattedID);
 
             try {commonForum(table, id, window);} catch (SQLException ex) {
                 JOptionPane.showMessageDialog(window, "Failed to load patient data");
@@ -231,7 +234,7 @@ public class PatientPanel {
         row++;
 //phone
         gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(new JLabel("Phone Number:"), gbc);
+        formPanel.add(new JLabel("CNIC / Phone:"), gbc);
         gbc.gridx = 1;
         JTextField phone = new JTextField(phoneS, 15);
         formPanel.add(phone, gbc);

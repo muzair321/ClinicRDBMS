@@ -83,15 +83,15 @@ public class Patient {
         }
         if(b) {
             if (!PatientDB.checkPhone(p.getPhone())) {
-                throw new ValidationException("Phone Number Already Exists In Records");
+                throw new ValidationException("CNIC / Phone Already Exists In Records");
             }
         }
         if(p.getPhone() != null) {
             if((p.getPhone().length() < 7)){
-                throw new ValidationException("Phone Number Has To Be Longer Than 7");
+                throw new ValidationException("CNIC / Phone Has To Be Longer Than 7");
             }
             if(!p.getPhone().matches("^[0-9-]+$")){
-                throw new ValidationException("Phone Number Can Only Contain Dashes And Numbers");
+                throw new ValidationException("CNIC / Phone Can Only Contain Dashes And Numbers");
             }
         }
         return p;

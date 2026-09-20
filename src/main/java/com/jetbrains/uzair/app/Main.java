@@ -1,8 +1,6 @@
 package com.jetbrains.uzair.app;
 
 import com.jetbrains.uzair.db.*;
-import com.jetbrains.uzair.model.Patient;
-import com.jetbrains.uzair.model.Visit;
 import com.jetbrains.uzair.ui.FXInitializer;
 import com.jetbrains.uzair.ui.FirstUser;
 import com.jetbrains.uzair.ui.LoginFrame;
@@ -12,7 +10,7 @@ import javax.swing.*;
 import java.sql.SQLException;
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         if(!FileChecker.exists()) {
             FirstUser.frame();
             try {
@@ -24,7 +22,7 @@ public class Main {
             }
         }else {
             Platform.setImplicitExit(false);
-            new FXInitializer();// VERY IMPORTANT
+            new FXInitializer();
             SwingUtilities.invokeLater(LoginFrame::new);}
     }
 

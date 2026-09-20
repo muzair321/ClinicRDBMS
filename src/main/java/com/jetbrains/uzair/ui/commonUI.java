@@ -113,16 +113,16 @@ public class commonUI {
     private static ArrayList<String> getStrings(int ui) {
         var headers = new ArrayList<String>();
         if(ui == 1) {
-            headers.add("ID");
+            headers.add("MRR");
             headers.add("Name");
             headers.add("Age");
             headers.add("Gender");
-            headers.add("Phone Number");
+            headers.add("CNIC / Phone");
             headers.add("Created At");
         }
         else if(ui == 2){
             headers.add("Visit ID");
-            headers.add("Patient ID");
+            headers.add("Patient MRR");
             headers.add("Patient Name");
             headers.add("Illness");
             headers.add("Date Of Visit");
@@ -236,6 +236,9 @@ public class commonUI {
             worker.execute();
         }
     }
+
+
+
     //make a read only text field
     public static JTextField createReadOnlyField(String text, Font font) {
         JTextField field = new JTextField(text);
@@ -258,9 +261,9 @@ public class commonUI {
             gbc.anchor = GridBagConstraints.WEST;
             int row = 0;
             gbc.gridx = 0; gbc.gridy = row;
-            panel.add(new JLabel("ID:"), gbc);
+            panel.add(new JLabel("MRR:"), gbc);
             gbc.gridx = 1;
-            panel.add(commonUI.createReadOnlyField(String.valueOf(p.getId()), valueFont), gbc);
+            panel.add(commonUI.createReadOnlyField("PAT-" + String.valueOf(p.getId()), valueFont), gbc);
             row++;
             gbc.gridx = 0; gbc.gridy = row;
             panel.add(new JLabel("Name:"), gbc);
@@ -278,7 +281,7 @@ public class commonUI {
             panel.add(commonUI.createReadOnlyField(p.getGender(), valueFont), gbc);
             row++;
             gbc.gridx = 0; gbc.gridy = row;
-            panel.add(new JLabel("Phone Number:"), gbc);
+            panel.add(new JLabel("CNIC / Phone:"), gbc);
             gbc.gridx = 1;
             panel.add(commonUI.createReadOnlyField(p.getPhone(), valueFont), gbc);
             row++;
@@ -356,7 +359,7 @@ public class commonUI {
             List<Integer> patientIds = new ArrayList<>();
             for (int viewRow : selectedRows) {
                 int modelRow = table.convertRowIndexToModel(viewRow);
-                int id = Integer.parseInt(table.getModel().getValueAt(modelRow, 0).toString());
+                int id = Integer.parseInt((table.getModel().getValueAt(modelRow, 0).toString()).substring(4));
                 patientIds.add(id);
             }
             try {SoundPlayer.play("popup.wav");} catch (RuntimeException ex) {JOptionPane.showMessageDialog(window, ex.getMessage());}
