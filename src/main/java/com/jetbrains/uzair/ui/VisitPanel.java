@@ -24,7 +24,7 @@ public class VisitPanel {
     //clinic letterhead — update these for your clinic
     private static final String CLINIC_NAME = "Changez Clinic";
     private static final String CLINIC_ADDRESS = "Main Bazaar, Chak Beli Khan, Rawalpindi";
-    private static final String CLINIC_CONTACT = "Tel: 0311-5116317   |   info@citycareclinic.com";
+    private static final String CLINIC_CONTACT = "Tel: 0311-5116317   |   asimhort1@gmail.com";
     //put a logo.png on the classpath (e.g. src/main/resources/logo.png) to have it appear automatically
     private static final String LOGO_RESOURCE = "/img/Clinic-Colored.png";
     private static BufferedImage clinicLogo;
